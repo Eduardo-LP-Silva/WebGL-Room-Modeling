@@ -80,15 +80,15 @@ class MySceneGraph
     {
         if (rootElement.nodeName != "yas")
             return "root tag <yas> missing";
-
+ 
         var nodes = rootElement.children;
 
         // Reads the names of the nodes to an auxiliary buffer.
         var nodeNames = [];
 
-        for (var i = 0; i < nodes.length; i++) {
+        for (var i = 0; i < nodes.length; i++) 
             nodeNames.push(nodes[i].nodeName);
-        }
+        
 
         var error;
 
@@ -324,9 +324,9 @@ class MySceneGraph
             return "No axis length defined for scene\n";
     }
 
-    parseViews(sceneNode)
+    parseViews(viewNode)
     {
-        var children = initialsNode.children;
+        var children = viewNode.children;
 
         var nodeNames = [];
 
@@ -336,9 +336,9 @@ class MySceneGraph
         //TODO Do smt with this information
     }
 
-    parseAmbient(sceneNode)
+    parseAmbient(ambientNode)
     {
-        var children = initialsNode.children;
+        var children = ambientNode.children;
 
         var nodeNames = [];
 
@@ -648,7 +648,33 @@ class MySceneGraph
     {
         // TODO: Parse block
 
-        console.log("Parsed textures");
+        var children = texturesNode.children;
+
+        var nodeNames = [];
+
+        for (var i = 0; i < children.length; i++)
+            nodeNames.push(children[i].nodeName);
+
+        for(var i = 0; i < children.length; i++)
+        {
+            if(children[i].nodeName != "texture")
+            {
+                this.onXMLMinorError("unknown tag <" + children[i].nodeName + ">");
+                continue;
+            }   
+
+            var textureID = this.reader.getString(children[i], "id");
+
+            if (textureID == null)
+                return "no ID defined for texture";
+
+            var textureFile = this.reader.getString(chidlren[i], "file");
+
+            if(textureFile == null)
+                return "No file defined for texture\n";
+
+            //TODO Create CGF Appearance?
+        }
 
         return null;
     }
@@ -657,7 +683,8 @@ class MySceneGraph
      * Parses the <MATERIALS> node.
      * @param {materials block element} materialsNode
      */
-    parseMaterials(materialsNode) {
+    parseMaterials(materialsNode) 
+    {
         // TODO: Parse block
         this.log("Parsed materials");
         return null;
