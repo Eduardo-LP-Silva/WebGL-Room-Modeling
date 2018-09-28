@@ -46,7 +46,9 @@ class MySceneGraph
         this.reader.open('scenes/' + filename, this);
 
         this.translationCoords = []; //x,y,z
-        this.referenceLength = null;
+        this.referenceLength = 0;
+        this.ambientIllumination = [];
+        this.background = [];
     }
 
 
@@ -91,6 +93,7 @@ class MySceneGraph
         
 
         var error;
+        var index;
 
         // Processes each node, verifying errors.
 
@@ -147,8 +150,8 @@ class MySceneGraph
         }
 
         // <TEXTURES>
-        if ((index = nodeNames.indexOf("TEXTURES")) == -1)
-            return "tag <TEXTURES> missing";
+        if ((index = nodeNames.indexOf("textures")) == -1)
+            return "tag <textures> missing";
         else {
             if (index != TEXTURES_INDEX)
                 this.onXMLMinorError("tag <TEXTURES> out of order");
@@ -157,6 +160,8 @@ class MySceneGraph
             if ((error = this.parseTextures(nodes[index])) != null)
                 return error;
         }
+
+        /*
 
         // <MATERIALS>
         if ((index = nodeNames.indexOf("MATERIALS")) == -1)
@@ -180,12 +185,12 @@ class MySceneGraph
             //Parse NODES block
             if ((error = this.parseNodes(nodes[index])) != null)
                 return error;
-        }
+        } */
     }
 
     /**
      * Parses the <INITIALS> block.
-     */
+     *
     parseInitials(initialsNode) {
 
         var children = initialsNode.children;
@@ -297,7 +302,7 @@ class MySceneGraph
         this.log("Parsed initials");
 
         return null;
-    }
+    } */
 
     /**
      * Parses the <ILLUMINATION> block.
@@ -345,7 +350,26 @@ class MySceneGraph
         for (var i = 0; i < children.length; i++)
             nodeNames.push(children[i].nodeName);
 
-        //TODO Do smt with this information
+        var index = nodeNames.indexOf("ambient");
+
+        if(index == null)
+            return "<ambient> illumination tag not found\n";
+
+        this.ambientIllumination.push(this.reader.getFloat(children[index], "r"));
+        this.ambientIllumination.push(this.reader.getFloat(children[index], "g"));
+        this.ambientIllumination.push(this.reader.getFloat(children[index], "b"));
+        this.ambientIllumination.push(this.reader.getFloat(children[index], "a"));
+
+        index = nodeNames.indexOf("background");
+
+        if(index == null)
+            return "<backgroud> tag not found\n";
+
+        this.background.push(this.reader.getFloat(children[index], "r"));
+        this.background.push(this.reader.getFloat(children[index], "g"));
+        this.background.push(this.reader.getFloat(children[index], "b"));
+        this.background.push(this.reader.getFloat(children[index], "a"));
+        
     }
 
 
@@ -606,26 +630,10 @@ class MySceneGraph
                 else
                     targetPosition.push(tz);
             }
-            else
-                return "light target position undefined for ID = " + lightId;
 
             // TODO: Store Light global information.
-            
-            var light = new CGFlight(this.scene, lightId);
 
-            light.setAmbient(ambientIllumination[0], ambientIllumination[1], ambientIllumination[2], ambientIllumination[3]);
-            light.setDiffuse(diffuseIllumination[0], diffuseIllumination[1], diffuseIllumination[2], diffuseIllumination[3]);
-            light.setSpecular(specularIllumination[0], specularIllumination[1], specularIllumination[2], specularIllumination[3]);
-            light.setPosition(positionLight[0], positionLight[1], positionLight[2], positionLight[3]);
-            light.setSpotExponent(exponent);
-            light.setSpotCutOff(angle);
-            
-            if(enableIndex == 1)
-                light.enable();
-            else
-                light.disable();
-
-            this.lights[lightId] = light;
+            this.lights[lightId] = [enableIndex, positionLight, ambientIllumination, diffuseIllumination, specularIllumination];
         
             numLights++;
         }
@@ -668,7 +676,7 @@ class MySceneGraph
             if (textureID == null)
                 return "no ID defined for texture";
 
-            var textureFile = this.reader.getString(chidlren[i], "file");
+            var textureFile = this.reader.getString(children[i], "file");
 
             if(textureFile == null)
                 return "No file defined for texture\n";

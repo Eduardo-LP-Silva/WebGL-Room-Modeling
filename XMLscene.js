@@ -3,7 +3,8 @@ var DEGREE_TO_RAD = Math.PI / 180;
 /**
  * XMLscene class, representing the scene that is to be rendered.
  */
-class XMLscene extends CGFscene {
+class XMLscene extends CGFscene 
+{
     /**
      * @constructor
      * @param {MyInterface} myinterface 
@@ -40,7 +41,7 @@ class XMLscene extends CGFscene {
      * Initializes the scene cameras.
      */
     initCameras() {
-        this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
+       this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
     }
     /**
      * Initializes the scene lights with the values read from the XML file.
@@ -80,15 +81,19 @@ class XMLscene extends CGFscene {
     /* Handler called when the graph is finally loaded. 
      * As loading is asynchronous, this may be called already after the application has started the run loop
      */
-    onGraphLoaded() {
-        this.camera.near = this.graph.near;
-        this.camera.far = this.graph.far;
+    onGraphLoaded() 
+    {
+        //this.camera.near = this.graph.near;
+        //this.camera.far = this.graph.far;
 
-        //TODO: Change reference length according to parsed graph
-        
         this.axis = new CGFaxis(this, this.graph.referenceLength);
 
-        // TODO: Change ambient and background details according to parsed graph
+        // TODO: Change background details according to parsed graph
+
+        this.gl.clearColor(this.graph.background[0], this.graph.background[1], this.graph.background[2], this.graph.background[3]);
+
+        this.setGlobalAmbientLight(this.graph.ambientIllumination[0], 
+            this.graph.ambientIllumination[1], this.graph.ambientIllumination[2], this.graph.ambientIllumination[3]);
 
         this.initLights();
 
@@ -102,7 +107,8 @@ class XMLscene extends CGFscene {
     /**
      * Displays the scene.
      */
-    display() {
+    display() 
+    {
         // ---- BEGIN Background, camera and axis setup
 
         // Clear image and depth buffer everytime we update the scene
@@ -118,7 +124,8 @@ class XMLscene extends CGFscene {
 
         this.pushMatrix();
 
-        if (this.sceneInited) {
+        if (this.sceneInited) 
+        {
             // Draw axis
             this.axis.display();
 
