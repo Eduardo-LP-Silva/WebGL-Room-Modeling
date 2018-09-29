@@ -7,7 +7,7 @@ var AMBIENT_INDEX = 2;
 var LIGHTS_INDEX = 3;
 var TEXTURES_INDEX = 4;
 var MATERIALS_INDEX = 5;
-var NODES_INDEX = 6;
+var TRANSFORMATIONS_INDEX = 6;
 
 /**
  * MySceneGraph class, representing the scene graph.
@@ -26,13 +26,17 @@ class MySceneGraph
         scene.graph = this;
 
         this.nodes = [];
-
         this.idRoot = null; // The id of the root element.
-
         this.axisCoords = [];
         this.axisCoords['x'] = [1, 0, 0];
         this.axisCoords['y'] = [0, 1, 0];
         this.axisCoords['z'] = [0, 0, 1];
+        this.referenceLength = 0;
+        this.ambientIllumination = [];
+        this.background = [];
+        this.textures = [];
+        this.materials = [];
+        this.transformations = [];
 
         // File reading 
         this.reader = new CGFXMLreader();
@@ -44,13 +48,7 @@ class MySceneGraph
          */
 
         this.reader.open('scenes/' + filename, this);
-
-        this.translationCoords = []; //x,y,z
-        this.referenceLength = 0;
-        this.ambientIllumination = [];
-        this.background = [];
     }
-
 
     /*
      * Callback to be executed after successful reading
@@ -63,7 +61,8 @@ class MySceneGraph
         // Here should go the calls for different functions to parse the various blocks
         var error = this.parseXMLFile(rootElement);
 
-        if (error != null) {
+        if (error != null) 
+        {
             this.onXMLError(error);
             return;
         }
@@ -91,9 +90,7 @@ class MySceneGraph
         for (var i = 0; i < nodes.length; i++) 
             nodeNames.push(nodes[i].nodeName);
         
-
-        var error;
-        var index;
+        var error, index;
 
         // Processes each node, verifying errors.
 
@@ -110,8 +107,7 @@ class MySceneGraph
                 return error; 
         }
 
-        //<VIEWS>
-
+        //<views>
         if((index = nodeNames.indexOf("views")) == -1)
             return "tag <views> missing\n";
         else
@@ -123,8 +119,7 @@ class MySceneGraph
                 return error;
         }
 
-        //<Ambient>
-
+        //<ambient>
         if((index = nodeNames.indexOf("ambient")) == -1)
             return "tag <ambient> missing\n";
         else
@@ -136,7 +131,7 @@ class MySceneGraph
                 return error;
         }
 
-        // <LIGHTS>
+        // <lights>
         if ((index = nodeNames.indexOf("lights")) == -1)
             return "tag <lights> missing";
         else 
@@ -144,36 +139,51 @@ class MySceneGraph
             if (index != LIGHTS_INDEX)
                 this.onXMLMinorError("tag <lights> out of order");
 
-            //Parse LIGHTS block
+            //Parse lights block
             if ((error = this.parseLights(nodes[index])) != null)
                 return error;
         }
 
-        // <TEXTURES>
+        // <textures>
         if ((index = nodeNames.indexOf("textures")) == -1)
             return "tag <textures> missing";
-        else {
+        else 
+        {
             if (index != TEXTURES_INDEX)
                 this.onXMLMinorError("tag <TEXTURES> out of order");
 
-            //Parse TEXTURES block
+            //Parse textures block
             if ((error = this.parseTextures(nodes[index])) != null)
                 return error;
         }
 
-        /*
-
-        // <MATERIALS>
-        if ((index = nodeNames.indexOf("MATERIALS")) == -1)
-            return "tag <MATERIALS> missing";
-        else {
+        // <materials>
+        if ((index = nodeNames.indexOf("materials")) == -1)
+            return "tag <materials> missing";
+        else 
+        {
             if (index != MATERIALS_INDEX)
-                this.onXMLMinorError("tag <MATERIALS> out of order");
+                this.onXMLMinorError("tag <materials> out of order");
 
-            //Parse MATERIALS block
+            //Parse materials block
             if ((error = this.parseMaterials(nodes[index])) != null)
                 return error;
         }
+
+        // <transformations>
+        if ((index = nodeNames.indexOf("transformations")) == -1)
+            return "tag <transformations> missing";
+        else 
+        {
+            if (index != TRANSFORMATIONS_INDEX)
+                this.onXMLMinorError("tag <transformations> out of order");
+
+            //Parse transformations block
+            if ((error = this.parseTransformations(nodes[index])) != null)
+                return error;
+        }
+
+        /*
 
         // <NODES>
         if ((index = nodeNames.indexOf("NODES")) == -1)
@@ -305,17 +315,9 @@ class MySceneGraph
     } */
 
     /**
-     * Parses the <ILLUMINATION> block.
-     * @param {illumination block element} illuminationNode
-     *
-    parseIllumination(illuminationNode) {
-        // TODO: Parse Illumination node
-
-        this.log("Parsed illumination");
-
-        return null;
-    } */
-
+     * Parses the <scene> node
+     * @param {scene block element} sceneNode 
+     */
     parseScene(sceneNode)
     {
         var root = this.reader.getString(sceneNode, "root");
@@ -327,8 +329,14 @@ class MySceneGraph
 
         if(this.referenceLength == null || isNaN(this.referenceLength))
             return "No axis length defined for scene\n";
+
+        this.log("Parsed scene");
     }
 
+    /**
+     * Parses the <views> node
+     * @param {views block element} viewNode 
+     */
     parseViews(viewNode)
     {
         var children = viewNode.children;
@@ -339,8 +347,14 @@ class MySceneGraph
             nodeNames.push(children[i].nodeName);
 
         //TODO Do smt with this information
+
+        this.log("Parsed views");
     }
 
+    /**
+     * Parses the <ambient> node
+     * @param {ambient block element} ambientNode 
+     */
     parseAmbient(ambientNode)
     {
         var children = ambientNode.children;
@@ -355,21 +369,22 @@ class MySceneGraph
         if(index == null)
             return "<ambient> illumination tag not found\n";
 
-        this.ambientIllumination.push(this.reader.getFloat(children[index], "r"));
-        this.ambientIllumination.push(this.reader.getFloat(children[index], "g"));
-        this.ambientIllumination.push(this.reader.getFloat(children[index], "b"));
-        this.ambientIllumination.push(this.reader.getFloat(children[index], "a"));
+        this.ambientIllumination = this.retrieveColor(children[index], "<ambient> tag");
+
+        if(typeof this.ambientIllumination == "string")
+            return this.ambientIllumination;
 
         index = nodeNames.indexOf("background");
 
         if(index == null)
             return "<backgroud> tag not found\n";
 
-        this.background.push(this.reader.getFloat(children[index], "r"));
-        this.background.push(this.reader.getFloat(children[index], "g"));
-        this.background.push(this.reader.getFloat(children[index], "b"));
-        this.background.push(this.reader.getFloat(children[index], "a"));
-        
+        this.background = this.retrieveColor(children[index], "<background> tag");
+
+        if(typeof this.background == "string")
+            return this.background;  
+
+        this.log("Parsed ambient");
     }
 
 
@@ -479,126 +494,24 @@ class MySceneGraph
                 return "light position undefined for ID = " + lightId;
 
             // Retrieves the ambient component.
-            var ambientIllumination = [];
+            var ambientIllumination = this.retrieveColor(grandChildren[ambientIndex], lightId);
 
-            if (ambientIndex != -1) 
-            {
-                // R
-                var r = this.reader.getFloat(grandChildren[ambientIndex], 'r');
-
-                if (!(r != null && !isNaN(r) && r >= 0 && r <= 1))
-                    return "unable to parse R component of the ambient illumination for ID = " + lightId;
-                else
-                    ambientIllumination.push(r);
-
-                // G
-                var g = this.reader.getFloat(grandChildren[ambientIndex], 'g');
-
-                if (!(g != null && !isNaN(g) && g >= 0 && g <= 1))
-                    return "unable to parse G component of the ambient illumination for ID = " + lightId;
-                else
-                    ambientIllumination.push(g);
-
-                // B
-                var b = this.reader.getFloat(grandChildren[ambientIndex], 'b');
-
-                if (!(b != null && !isNaN(b) && b >= 0 && b <= 1))
-                    return "unable to parse B component of the ambient illumination for ID = " + lightId;
-                else
-                    ambientIllumination.push(b);
-
-                // A
-                var a = this.reader.getFloat(grandChildren[ambientIndex], 'a');
-
-                if (!(a != null && !isNaN(a) && a >= 0 && a <= 1))
-                    return "unable to parse A component of the ambient illumination for ID = " + lightId;
-                else
-                    ambientIllumination.push(a);
-            }
-            else
-                return "ambient component undefined for ID = " + lightId;
+            if(typeof ambientIllumination == "string")
+                return ambientIllumination;
 
             //Retrieves the diffuse component
 
-            var diffuseIllumination = [];
+            var diffuseIllumination = this.retrieveColor(grandChildren[diffuseIndex], lightId);
 
-            if (diffuseIndex != -1) 
-            {
-                // R
-                var dr = this.reader.getFloat(grandChildren[diffuseIndex], 'r');
-
-                if (!(dr != null && !isNaN(dr) && dr >= 0 && dr <= 1))
-                    return "unable to parse R component of the diffuse illumination for ID = " + lightId;
-                else
-                    diffuseIllumination.push(dr);
-
-                // G
-                var dg = this.reader.getFloat(grandChildren[diffuseIndex], 'g');
-
-                if (!(dg != null && !isNaN(dg) && dg >= 0 && dg <= 1))
-                    return "unable to parse G component of the diffuse illumination for ID = " + lightId;
-                else
-                    diffuseIllumination.push(dg);
-
-                // B
-                var db = this.reader.getFloat(grandChildren[diffuseIndex], 'b');
-
-                if (!(db != null && !isNaN(db) && db >= 0 && db <= 1))
-                    return "unable to parse B component of the diffuse illumination for ID = " + lightId;
-                else
-                    diffuseIllumination.push(db);
-
-                // A
-                var da = this.reader.getFloat(grandChildren[diffuseIndex], 'a');
-
-                if (!(da != null && !isNaN(da) && da >= 0 && da <= 1))
-                    return "unable to parse A component of the diffuse illumination for ID = " + lightId;
-                else
-                    diffuseIllumination.push(da);
-            }
-            else
-                return "diffuse component undefined for ID = " + lightId;
+            if(typeof diffuseIllumination == "string")
+                return diffuseIllumination;
 
             //Retrieves the specular component
 
-            var specularIllumination = [];
+            var specularIllumination = this.retrieveColor(grandChildren[specularIndex], lightId);
 
-            if (specularIndex != -1) 
-            {
-                // R
-                var sr = this.reader.getFloat(grandChildren[specularIndex], 'r');
-
-                if (!(sr != null && !isNaN(sr) && sr >= 0 && sr <= 1))
-                    return "unable to parse R component of the specular illumination for ID = " + lightId;
-                else
-                    specularIllumination.push(sr);
-
-                // G
-                var sg = this.reader.getFloat(grandChildren[specularIndex], 'g');
-
-                if (!(sg != null && !isNaN(sg) && sg >= 0 && sg <= 1))
-                    return "unable to parse G component of the specular illumination for ID = " + lightId;
-                else
-                    specularIllumination.push(sg);
-
-                // B
-                var sb = this.reader.getFloat(grandChildren[specularIndex], 'b');
-
-                if (!(sb != null && !isNaN(sb) && sb >= 0 && sb <= 1))
-                    return "unable to parse B component of the specular illumination for ID = " + lightId;
-                else
-                    specularIllumination.push(sb);
-
-                // A
-                var sa = this.reader.getFloat(grandChildren[specularIndex], 'a');
-
-                if (!(sa != null && !isNaN(sa) && sa >= 0 && sa <= 1))
-                    return "unable to parse A component of the diffuse illumination for ID = " + lightId;
-                else
-                    specularIllumination.push(sa);
-            }
-            else
-                return "specular component undefined for ID = " + lightId;
+            if(typeof specularIllumination == "string")
+                return specularIllumination;
 
             //Retrieves the target component
 
@@ -631,8 +544,6 @@ class MySceneGraph
                     targetPosition.push(tz);
             }
 
-            // TODO: Store Light global information.
-
             this.lights[lightId] = [enableIndex, positionLight, ambientIllumination, diffuseIllumination, specularIllumination];
         
             numLights++;
@@ -644,20 +555,15 @@ class MySceneGraph
             this.onXMLMinorError("too many lights defined; WebGL imposes a limit of 8 lights");
 
         this.log("Parsed lights");
-
-        return null;
     }
 
     /**
-     * Parses the <TEXTURES> block. 
+     * Parses the <textures> block. 
      * @param {textures block element} texturesNode
      */
     parseTextures(texturesNode) 
     {
-        // TODO: Parse block
-
         var children = texturesNode.children;
-
         var nodeNames = [];
 
         for (var i = 0; i < children.length; i++)
@@ -676,27 +582,250 @@ class MySceneGraph
             if (textureID == null)
                 return "no ID defined for texture";
 
+            if(this.textures[textureID] != null)
+                return "ID must be unique for each texture (conflict: ID = " + textureID + ")";
+
             var textureFile = this.reader.getString(children[i], "file");
 
             if(textureFile == null)
                 return "No file defined for texture\n";
 
-            //TODO Create CGF Appearance?
+            this.textures[textureID] = [textureFile];
         }
 
-        return null;
+        this.log("Parsed textures");
     }
 
     /**
-     * Parses the <MATERIALS> node.
+     * Parses the <materials> node.
      * @param {materials block element} materialsNode
      */
     parseMaterials(materialsNode) 
     {
-        // TODO: Parse block
-        this.log("Parsed materials");
-        return null;
+        var children = materialsNode.children;
+        var nodeNames = [], nodeNames = [];
+        var grandChildren = [];
+        var shininess, shininessIndex;
+        var emission = [], emissionIndex;
+        var ambient = [], ambientIndex;
+        var diffuse = [], diffuseIndex;
+        var specular = [], specularIndex;
 
+        for (var i = 0; i < children.length; i++)
+            nodeNames.push(children[i].nodeName);
+
+        for(var i = 0; i < children.length; i++)
+        {
+            if(children[i].nodeName != "material")
+            {
+                this.onXMLMinorError("unknown tag <" + children[i].nodeName + ">");
+                continue;
+            }   
+
+            var materialID = this.reader.getString(children[i], "id");
+
+            if (materialID == null)
+                return "no ID defined for texture";
+
+            if(this.materials[materialID] != null)
+                return "ID must be unique for each material (conflict: ID = " + materialID + ")";
+
+            shininess = this.reader.getFloat(children[i], "shininess");
+
+            if (shininess == null)
+                return "no shininess defined for material";
+
+            nodeNames = [];
+            grandChildren = children[i].children;
+
+            for(var j = 0; j < grandChildren.length; j++)
+                nodeNames.push(grandChildren[j].nodeName);
+
+            emissionIndex = nodeNames.indexOf("emission");
+            ambientIndex = nodeNames.indexOf("ambient");
+            diffuseIndex = nodeNames.indexOf("diffuse");
+            specularIndex = nodeNames.indexOf("specular");
+            
+            //Gets emission component
+
+            emission = this.retrieveColor(grandChildren[emissionIndex], materialID);
+
+            if(typeof emission == "string")
+                return emission;
+
+            //Gets ambient component
+
+            ambient = this.retrieveColor(grandChildren[ambientIndex], materialID);
+
+            if(typeof ambient == "string")
+                return emission;
+                
+            //Gets diffuse component
+
+            diffuse = this.retrieveColor(grandChildren[diffuseIndex], materialID);
+
+            if(typeof diffuse == "string")
+                return diffuse;
+
+            //Gets specular component
+
+            specular = this.retrieveColor(grandChildren[specularIndex], materialID);
+
+            if(typeof specular == "string")
+                return specular;   
+
+            this.materials[materialID] = [shininess, emission, ambient, diffuse, specular];
+        }
+
+        this.log("Parsed materials");
+    }
+
+    /**
+     * Parses the <transformations> node
+     * @param {transformation block element} transformationsNode 
+     */
+    parseTransformations(transformationsNode)
+    {
+        var children = transformationsNode.children, nodeNames = [];
+
+        for(var i = 0; i < children.length; i++)
+            nodeNames.push(children[i].nodeName);
+
+        for(i = 0; i < children.length; i++)
+        {
+            if(children[i].nodeName != "transformation")
+            {
+                this.onXMLMinorError("unknown tag <" + children[i].nodeName + ">");
+                continue;
+            }
+
+            this.parseTransformation(children[i]);
+        }
+
+        this.log("Parsed transformations");
+    }
+
+    /**
+     * Parses a single transformation block
+     * @param {a single transformation block} transformationBlock 
+     */
+    parseTransformation(transformationBlock)
+    {
+        var transformationID = this.reader.getString(transformationBlock, "id");
+
+        if(transformationID == null)
+            return "No ID defined for this transformation";
+
+        if(this.transformations[transformationID] != null)
+            return "ID must be unique for each transformation (conflict: ID = " + transformationID + ")";
+
+        this.transformations[transformationID] = mat4.create();
+
+        var transformationErrorTag = "Transformation " + transformationID + ": ";
+        var children = transformationBlock.children;
+        var xyz;
+
+        for(var i = 0; i < children.length; i++)
+        {
+            switch(children[i].nodeName)
+            {
+                case "translate":
+                    xyz = this.getXYZ(children[i]);
+
+                    if(typeof xyz == "string")
+                        return transformationErrorTag + xyz;
+                    else
+                        mat4.translate(this.transformations[transformationID], this.transformations[transformationID], 
+                            xyz);
+
+                    break;
+
+                case "scale":
+                    xyz = this.getXYZ(children[i]);
+
+                    if(typeof xyz == "string")
+                        return transformationErrorTag + xyz;
+                    else
+                        mat4.scale(this.transformations[transformationID], this.transformations[transformationID], 
+                            xyz);
+
+                    break;
+
+                case "rotate":
+                    
+                    var axis = this.reader.getFloat(children[i], "axis"), 
+                        angle = this.reader.getFloat(children[i], "angle");
+
+                    if(axis == nill || angle == null)
+                        return transformationErrorTag + "Rotation not properly defined";
+
+                    mat4.rotate(this.transformations[transformationID], this.transformations[transformationID], 
+                        angle * DEGREE_TO_RAD, axis);
+
+                    break;
+            }
+        } 
+    }
+
+    /**
+     * Returns the XYZ values from a tag
+     * @param {the tag containing the XYZ values} tag 
+     */
+    getXYZ(tag)
+    {
+        var xyz = [];
+
+        xyz.push(this.reader.getFloat(tag, "x"));
+        xyz.push(this.reader.getFloat(tag, "y"));
+        xyz.push(this.reader.getFloat(tag, "z"));
+
+        if(xyz[0] == null || xyz[1] == null || xyz[2] == null)
+            return "XYZ values not properly defined";
+        else
+            return xyz;
+    }
+
+    /**
+     * Retrieves RGBA components from a generic tag
+     * @param {tag containing RGBA components} tag
+     * @param {object ID} ID
+     */
+    retrieveColor(tag, ID)
+    {
+        var colorArray = [];
+
+        var r = this.reader.getFloat(tag, 'r');
+
+        if (!(r != null && !isNaN(r) && r >= 0 && r <= 1))
+            return "unable to parse R component for ID = " + ID;
+        else
+            colorArray.push(r);
+
+        // G
+        var g = this.reader.getFloat(tag, 'g');
+
+        if (!(g != null && !isNaN(g) && g >= 0 && g <= 1))
+            return "unable to parse G component for ID = " + ID;
+        else
+            colorArray.push(g);
+
+        // B
+        var b = this.reader.getFloat(tag, 'b');
+
+        if (!(b != null && !isNaN(b) && b >= 0 && b <= 1))
+            return "unable to parse B component for ID = " + ID;
+        else
+            colorArray.push(b);
+
+        // A
+        var a = this.reader.getFloat(tag, 'a');
+
+        if (!(a != null && !isNaN(a) && a >= 0 && a <= 1))
+            return "unable to parse A component for ID = " + ID;
+        else
+            colorArray.push(a);
+
+        return colorArray;
     }
 
     /**

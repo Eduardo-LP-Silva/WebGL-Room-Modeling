@@ -13,6 +13,7 @@
     <!-- deve definir-se um objeto para raiz da arvore, assim -->
     <!-- como o comprimento dos tres eixos (cilindros) -->
     <scene root="rootObject" axis_length="5" />
+
     <views default="perspective" >
         <!-- tem de existir, pelo menos, uma vista de -->
         <!-- entre as seguintes (perspective ou ortho) -->
@@ -21,28 +22,53 @@
             <to x="0" y="0" z="0" />
         </perspective>
         <ortho id="ortho"  near="1" far="5" left="10" right="10" top="10" bottom="10" />
-</views>
- <ambient>
-    <ambient r="0.2" g="0.2" b="0.2" a="1" />
-    <background r="0" g="0" b="0" a="1" />
-</ambient>
-<lights>
-    <!-- Deve existir um ou mais blocos "omni" ou "spot" -->
-    <!-- Os identificadores "id" nao podem ser repetidos -->
-    <omni id="omni" enabled="1" >
-        <location  x="0" y="10" z="0" w="1" />       	   
-        <ambient r="0.2" g="0.2" b="0.2" a="1.0" />        	 
-        <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />        
-        <specular r="1.0" g="1.0" b="1.0" a="1.0" /> 
-    </omni>
-    
-    <!--TODO: voltar a por o spot -->
+    </views>
 
-</lights>
-<textures>
-    <!-- Deve existir um ou mais blocos "texture" -->
-    <!-- Os identificadores "id" nao podem ser repetidos -->
-    <texture id="trunk" file="images/trunk-image.jpg" />
-</textures>
+    <ambient>
+        <ambient r="0.2" g="0.2" b="0.2" a="1" />
+        <background r="0" g="0" b="0" a="1" />
+    </ambient>
+
+    <lights>
+        <!-- Deve existir um ou mais blocos "omni" ou "spot" -->
+        <!-- Os identificadores "id" nao podem ser repetidos -->
+        <omni id="omni" enabled="1" >
+            <location  x="0" y="10" z="0" w="1" />       	   
+            <ambient r="0.2" g="0.2" b="0.2" a="1.0" />        	 
+            <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />        
+            <specular r="1.0" g="1.0" b="1.0" a="1.0" /> 
+        </omni>
+        
+        <!--TODO: voltar a por o spot -->
+
+    </lights>
+    
+    <textures>
+        <!-- Deve existir um ou mais blocos "texture" -->
+        <!-- Os identificadores "id" nao podem ser repetidos -->
+        <texture id="trunk" file="images/trunk-image.jpg" />
+    </textures>
+
+    <materials>
+        <!-- Deve existir um ou mais blocos "material" -->
+        <!-- Os identificadores "id" nao podem ser repetidos -->
+        <material id="material_01" shininess = "0.3" >
+            <emission r="0.3" g="0.3" b="0.3" a="1" />
+            <ambient r="0.6" g="0.6" b="0.6" a="1" />
+            <diffuse r="0.4" g="0.4" b="0.4" a="1" />
+            <specular r="0.5" g="0.5" b="0.5" a="1" />
+        </material>
+    </materials>
+
+    <transformations>
+        <!-- Deve existir um ou mais blocos "transformation" -->
+        <!-- Os identificadores "id" nao podem ser repetidos -->
+        <!-- Os angulos sao expressos em graus -->
+        <transformation id="tfg01">
+            <!-- instrucoes a usar sem limite nem ordem -->
+            <!-- deve existir pelo menos uma transformacao -->
+            <scale x="1" y="1" z="2" />
+        </transformation>
+    </transformations>
 
 </yas>
