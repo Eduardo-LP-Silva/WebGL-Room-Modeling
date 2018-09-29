@@ -8,6 +8,8 @@ var LIGHTS_INDEX = 3;
 var TEXTURES_INDEX = 4;
 var MATERIALS_INDEX = 5;
 var TRANSFORMATIONS_INDEX = 6;
+var PRIMITIVES_INDEX = 7;
+var COMPONENTS_INDEX = 8;
 
 /**
  * MySceneGraph class, representing the scene graph.
@@ -183,136 +185,19 @@ class MySceneGraph
                 return error;
         }
 
-        /*
+        // <primitives>
+        if ((index = nodeNames.indexOf("primitives")) == -1)
+            return "tag <primitives> missing";
+        else 
+        {
+            if (index != PRIMITIVES_INDEX)
+                this.onXMLMinorError("tag <primitives> out of order");
 
-        // <NODES>
-        if ((index = nodeNames.indexOf("NODES")) == -1)
-            return "tag <NODES> missing";
-        else {
-            if (index != NODES_INDEX)
-                this.onXMLMinorError("tag <NODES> out of order");
-
-            //Parse NODES block
-            if ((error = this.parseNodes(nodes[index])) != null)
+            //Parse transformations block
+            if ((error = this.parsePrimitives(nodes[index])) != null)
                 return error;
-        } */
+        }
     }
-
-    /**
-     * Parses the <INITIALS> block.
-     *
-    parseInitials(initialsNode) {
-
-        var children = initialsNode.children;
-
-        var nodeNames = [];
-
-        for (var i = 0; i < children.length; i++)
-            nodeNames.push(children[i].nodeName);
-
-        // Frustum planes
-        // (default values)
-        this.near = 0.1;
-        this.far = 500;
-        var indexFrustum = nodeNames.indexOf("frustum");
-        if (indexFrustum == -1) {
-            this.onXMLMinorError("frustum planes missing; assuming 'near = 0.1' and 'far = 500'");
-        }
-        else {
-            this.near = this.reader.getFloat(children[indexFrustum], 'near');
-            this.far = this.reader.getFloat(children[indexFrustum], 'far');
-
-            if (!(this.near != null && !isNaN(this.near))) {
-                this.near = 0.1;
-                this.onXMLMinorError("unable to parse value for near plane; assuming 'near = 0.1'");
-            }
-            else if (!(this.far != null && !isNaN(this.far))) {
-                this.far = 500;
-                this.onXMLMinorError("unable to parse value for far plane; assuming 'far = 500'");
-            }
-
-            if (this.near >= this.far)
-                return "'near' must be smaller than 'far'";
-        }
-
-        // Checks if at most one translation, three rotations, and one scaling are defined.
-        if (initialsNode.getElementsByTagName('translation').length > 1)
-            return "no more than one initial translation may be defined";
-
-        if (initialsNode.getElementsByTagName('rotation').length > 3)
-            return "no more than three initial rotations may be defined";
-
-        if (initialsNode.getElementsByTagName('scale').length > 1)
-            return "no more than one scaling may be defined";
-
-        // Initial transforms.
-        this.initialTranslate = [];
-        this.initialScaling = [];
-        this.initialRotations = [];
-
-        // Gets indices of each element.
-        var translationIndex = nodeNames.indexOf("translation");
-        var thirdRotationIndex = nodeNames.indexOf("rotation");
-        var secondRotationIndex = nodeNames.indexOf("rotation", thirdRotationIndex + 1);
-        var firstRotationIndex = nodeNames.lastIndexOf("rotation");
-        var scalingIndex = nodeNames.indexOf("scale");
-
-        // Checks if the indices are valid and in the expected order.
-        // Translation.
-        this.initialTransforms = mat4.create();
-        mat4.identity(this.initialTransforms);
-
-        if (translationIndex == -1)
-            this.onXMLMinorError("initial translation undefined; assuming T = (0, 0, 0)");
-        else {
-            var tx = this.reader.getFloat(children[translationIndex], 'x');
-            var ty = this.reader.getFloat(children[translationIndex], 'y');
-            var tz = this.reader.getFloat(children[translationIndex], 'z');
-
-            if (tx == null || ty == null || tz == null) {
-                tx = 0;
-                ty = 0;
-                tz = 0;
-                this.onXMLMinorError("failed to parse coordinates of initial translation; assuming zero");
-            }
-
-            //TODO: Save translation data
-            
-            this.translationCoords.push(tx, ty, tz);
-
-        }
-
-        //TODO: Parse Rotations
-
-        if (firstRotationIndex == -1)
-            this.onXMLMinorError("initial first rotation undefined; assuming ");
-        else {
-            var rx = this.reader.getFloat(children[firstRotationIndex], 'x');
-            var ry = this.reader.getFloat(children[translationIndex], 'y');
-            var rz = this.reader.getFloat(children[translationIndex], 'z');
-
-            if (tx == null || ty == null || tz == null) {
-                tx = 0;
-                ty = 0;
-                tz = 0;
-                this.onXMLMinorError("failed to parse coordinates of initial translation; assuming zero");
-            }
-
-            //TODO: Save translation data
-            
-            this.translationCoords.push(tx, ty, tz);
-
-        }
-
-
-        //TODO: Parse Scaling
-
-        //TODO: Parse Reference length
-
-        this.log("Parsed initials");
-
-        return null;
-    } */
 
     /**
      * Parses the <scene> node
@@ -340,7 +225,6 @@ class MySceneGraph
     parseViews(viewNode)
     {
         var children = viewNode.children;
-
         var nodeNames = [];
 
         for (var i = 0; i < children.length; i++)
@@ -358,7 +242,6 @@ class MySceneGraph
     parseAmbient(ambientNode)
     {
         var children = ambientNode.children;
-
         var nodeNames = [];
 
         for (var i = 0; i < children.length; i++)
@@ -768,6 +651,15 @@ class MySceneGraph
     }
 
     /**
+     * Parses the primitives node
+     * @param {primitives block} primitivesNode 
+     */
+    parsePrimitives(primitivesNode)
+    {
+        var children = primitivesNode.children;
+    }
+
+    /**
      * Returns the XYZ values from a tag
      * @param {the tag containing the XYZ values} tag 
      */
@@ -832,7 +724,8 @@ class MySceneGraph
      * Parses the <NODES> block.
      * @param {nodes block element} nodesNode
      */
-    parseNodes(nodesNode) {
+    parseNodes(nodesNode) 
+    {
         // TODO: Parse block
         this.log("Parsed nodes");
         return null;
@@ -842,7 +735,8 @@ class MySceneGraph
      * Callback to be executed on any read error, showing an error on the console.
      * @param {string} message
      */
-    onXMLError(message) {
+    onXMLError(message) 
+    {
         console.error("XML Loading Error: " + message);
         this.loadedOk = false;
     }
@@ -851,7 +745,8 @@ class MySceneGraph
      * Callback to be executed on any minor error, showing a warning on the console.
      * @param {string} message
      */
-    onXMLMinorErro(message) {
+    onXMLMinorErro(message) 
+    {
         console.warn("Warning: " + message);
     }
 
@@ -860,15 +755,19 @@ class MySceneGraph
      * Callback to be executed on any message.
      * @param {string} message
      */
-    log(message) {
+    log(message) 
+    {
         console.log("   " + message);
     }
 
     /**
      * Displays the scene, processing each node, starting in the root node.
      */
-    displayScene() {
+    displayScene() 
+    {
         // entry point for graph rendering
         //TODO: Render loop starting at root of graph
+
+
     }
 }

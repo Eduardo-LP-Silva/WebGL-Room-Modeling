@@ -88,8 +88,6 @@ class XMLscene extends CGFscene
 
         this.axis = new CGFaxis(this, this.graph.referenceLength);
 
-        // TODO: Change background details according to parsed graph
-
         this.gl.clearColor(this.graph.background[0], this.graph.background[1], this.graph.background[2], this.graph.background[3]);
 
         this.setGlobalAmbientLight(this.graph.ambientIllumination[0], 
@@ -99,7 +97,7 @@ class XMLscene extends CGFscene
 
         // Adds lights group.
         this.interface.addLightsGroup(this.graph.lights);
-
+        
         this.sceneInited = true;
     }
 
