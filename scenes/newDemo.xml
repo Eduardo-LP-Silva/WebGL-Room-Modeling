@@ -1,22 +1,8 @@
-<!-- Os comentarios devem ter espacos no inicio e no fim, a -->
-<!-- separar dos hifens -->
-<!-- Nao devem ser usados caracteres especiais (p.ex. acentos) -->
-<!-- Todas as tags e atributos sao obrigatorios, exceto onde for -->
-<!-- referido o contrario -->
-<!-- Na descricao abaixo, os simbolos utilizados tem o seguinte significado: -->
-    <!-- ii: integer value -->
-    <!-- ff: float value -->
-    <!-- ss: string value -->
-    <!-- cc: character "x" or "y" or "z" -->
-    <!-- tt: "0" or "1" with Boolean significance -->
 <yas>
-    <!-- deve definir-se um objeto para raiz da arvore, assim -->
-    <!-- como o comprimento dos tres eixos (cilindros) -->
+
     <scene root="rootObject" axis_length="5" />
 
     <views default="perspective" >
-        <!-- tem de existir, pelo menos, uma vista de -->
-        <!-- entre as seguintes (perspective ou ortho) -->
         <perspective id="perspective" near="1" far="5" angle="30">
             <from x="10" y="10" z="10" />
             <to x="0" y="0" z="0" />
@@ -30,27 +16,20 @@
     </ambient>
 
     <lights>
-        <!-- Deve existir um ou mais blocos "omni" ou "spot" -->
-        <!-- Os identificadores "id" nao podem ser repetidos -->
         <omni id="omni" enabled="1" >
             <location  x="0" y="10" z="0" w="1" />
             <ambient r="0.2" g="0.2" b="0.2" a="1.0" />
             <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
         </omni>
-
         <!--TODO: voltar a por o spot -->
     </lights>
 
     <textures>
-        <!-- Deve existir um ou mais blocos "texture" -->
-        <!-- Os identificadores "id" nao podem ser repetidos -->
         <texture id="wood_texture" file="images/wood-image.jpg" />
     </textures>
 
     <materials>
-        <!-- Deve existir um ou mais blocos "material" -->
-        <!-- Os identificadores "id" nao podem ser repetidos -->
         <material id="material_01" shininess = "0.3" >
             <emission r="0.3" g="0.3" b="0.3" a="1" />
             <ambient r="0.6" g="0.6" b="0.6" a="1" />
@@ -60,118 +39,66 @@
     </materials>
 
     <transformations>
-        <!-- Deve existir um ou mais blocos "transformation" -->
-        <!-- Os identificadores "id" nao podem ser repetidos -->
-        <!-- Os angulos sao expressos em graus -->
         <transformation id="transformation_01"> <!-- topo -->
-            <!-- instrucoes a usar sem limite nem ordem -->
-            <!-- deve existir pelo menos uma transformacao -->
-            <!-- <scale x="1" y="1" z="2" /> -->
-            <translate x="0" y="0" z="10">
+            <translate x="0" y="0" z="10"/>
         </transformation>
-        <transformation id="transformation_02" ><!-- pernas -->
-          <translate x="-4" y="-4" z="5" >
+
+        <transformation id="transformation_02"> <!-- pernas -->
+          <translate x="-4" y="-4" z="5"/>
         </transformation>
-        <transformation id="transformation_03" >
-          <translate x="-4" y="4" z="5" >
+
+        <transformation id="transformation_03">
+          <translate x="-4" y="4" z="5"/>
         </transformation>
-        <transformation id="transformation_04" >
-          <translate x="4" y="-4" z="5" >
+
+        <transformation id="transformation_04">
+          <translate x="4" y="-4" z="5"/>
         </transformation>
-        <transformation id="transformation_05" >
-          <translate x="4" y="4" z="5" >
+
+        <transformation id="transformation_05">
+          <translate x="4" y="4" z="5"/>
         </transformation>
     </transformations>
 
     <primitives>
-        <!-- Uma "primitive" e' uma primitiva e pode ser usada em nos folha -->
-        <!-- Deve existir um ou mais blocos "primitive" -->
-        <!-- Os identificadores "id" nao podem ser repetidos -->
-
-        <!-- apenas pode existir UMA das seguintes tags: -->
-        <!--    rectangle, triangle, cylinder, sphere, torus -->
-        <!-- os parametros devem ser interpretados, genericamente, -->
-        <!-- como em WebGL; o cilindro deve adicionalmente ter tampas -->
-        <!--
-        <rectangle x1="ff" y1="ff" x2="ff" y2="ff" />
-        <triangle   x1="ff" y1="ff" z1="ff"
-                    x2="ff" y2="ff" z2="ff"
-                    x3="ff" y3="ff" z3="ff" />
-        <cylinder base="ff" top="ff" height="ff" slices="ii" stacks="ii" />
-        <sphere radius="ff" slices="ii" stacks="ii" />
-        <torus inner="ff" outer="ff" slices="ii" loops="ii" /> -->
-
         <primitive id="table_top">
           <rectangle x1="1" y1="5" x2="6" y2="1" />
-
         </primitive>
 
         <primitive id="table_leg">
           <cylinder base="2" top="2" height="10" slices="10" stacks="10" />
         </primitive>
-    </primitives >
-
-
+    </primitives>
 
     <components>
       <component id="component_table_top">
-        <!-- Uma "component" e' um objeto composto e pode ser -->
-        <!--      usada em nos intermédios -->
-        <!-- bloco "transformation" e' obrigatorio -->
+
         <transformation>
-            <!-- deve conter uma referencia a uma das "transformation" -->
-            <!-- declaradas anteriormente -->
             <transformationref id="transformation_01" />
-            <!-- ou, ALTERNATIVAMENTE, transformacoes explicitas, -->
-            <!-- usando zero ou mais das instrucoes seguintes, sem -->
-            <!--        limite nem ordem -->
-            <!-- ex: bloco transformation pode ficar sem conteudo -->
-            <!--<translate x="ff" y="ff" z="ff" />
-            <rotate axis="cc" angle="ff" />
-            <scale x="ff" y="ff" z="ff" /> -->
           </transformation>
-          <!-- declaracao obrigatoria de pelo menos um material; -->
-          <!-- o material id="inherit", mantem (herda) material do "pai" -->
-          <!-- se varios materiais declarados, o default e' o -->
-          <!-- primeiro material; de cada vez que se pressione a tecla m/M, -->
-          <!-- o material muda para o proximo material da lista; do -->
-          <!-- ultimo material da lista volta ao primeiro -->
+
           <materials>
             <material id="material_01" />
           </materials>
-          <!-- declaracao obrigatoria de texture -->
-          <!-- id="inherit" mantem (herda) a textura do objecto "pai" -->
-          <!-- id="none" remove a textura recebida do pai -->
-          <!-- a textura declarada sobrepoe a textura recebida do -->
-          <!-- objecto "pai" -->
-          <!-- length_s e length_t sao fatores de escala de textura:-->
-          <!-- Exemplo length_s=3.0: uma ocorrencia da textura, em -->
-          <!-- comprimento, deve cobrir um comprimento igual -->
-          <!-- a 3 unidades;  -->
-          <!-- Exemplo length_t=0.4, uma ocorrencia da textura, em -->
-          <!-- largura, deve cobrir uma largura igual a 0.4 unidades.  -->
-          <!-- E' permitido que objetos afetados por Transf. Geometr. -->
-          <!-- do tipo escalamento violem esta regra.        -->
-          <!-- Nao e' necessario aplicar fatores de escala em  -->
-          <!-- quadricas (esfera, cilindro...) -->
+
           <texture id="wood_texture" length_s="2" length_t="2" />
-          <!-- bloco "children" obrigatorio num "component" -->
+
           <children>
-            <!-- deve existir uma ou mais tags "componentref" e/ou -->
-            <!-- "primitiveref", identificando outros -->
-            <!-- componentes ou primitivas -->
-            <!-- <componentref id="ss" /> -->
             <primitiveref id="table_top" />
           </children>
         </component>
+
         <component id="component_table_leg_01">
           <transformation>
               <transformationref id="transformation_02" />
             </transformation>
+
             <materials>
               <material id="material_01" />
             </materials>
+
             <texture id="wood_texture" length_s="2" length_t="2" />
+
             <children>
               <primitiveref id="table_leg" />
             </children>

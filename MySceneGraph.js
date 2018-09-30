@@ -39,6 +39,7 @@ class MySceneGraph
         this.textures = [];
         this.materials = [];
         this.transformations = [];
+        this.treeNodes = [];
 
         // File reading 
         this.reader = new CGFXMLreader();
@@ -89,8 +90,11 @@ class MySceneGraph
         // Reads the names of the nodes to an auxiliary buffer.
         var nodeNames = [];
 
-        for (var i = 0; i < nodes.length; i++) 
+        for (var i = 0; i < nodes.length; i++)
             nodeNames.push(nodes[i].nodeName);
+           
+        
+            
         
         var error, index;
 
@@ -209,6 +213,8 @@ class MySceneGraph
 
         if(root == null)
             return "No root defined for scene\n";
+        else
+            this.treeNodes[root] = root;
 
         this.referenceLength = this.reader.getFloat(sceneNode, "axis_length");
 
@@ -569,12 +575,9 @@ class MySceneGraph
      */
     parseTransformations(transformationsNode)
     {
-        var children = transformationsNode.children, nodeNames = [];
+        var children = transformationsNode.children;
 
         for(var i = 0; i < children.length; i++)
-            nodeNames.push(children[i].nodeName);
-
-        for(i = 0; i < children.length; i++)
         {
             if(children[i].nodeName != "transformation")
             {
@@ -657,8 +660,29 @@ class MySceneGraph
     parsePrimitives(primitivesNode)
     {
         var children = primitivesNode.children;
+
+        for(var i = 0; i < children.length; i++)
+        {
+            if(children[i].nodeName != "primitive")
+            {
+                this.onXMLMinorError("unknown tag <" + children[i].nodeName + ">");
+                continue;
+            }
+            else
+                this.parsePrimitive(children[i]);
+        }
+            
+        this.log("parsed primitives");
     }
 
+    /**
+     * Processes a single primitive block
+     * @param {the single primitive block to be processed} primitiveBlock 
+     */
+    parsePrimitive(primitiveBlock)
+    {
+        
+    }
     /**
      * Returns the XYZ values from a tag
      * @param {the tag containing the XYZ values} tag 
@@ -745,7 +769,7 @@ class MySceneGraph
      * Callback to be executed on any minor error, showing a warning on the console.
      * @param {string} message
      */
-    onXMLMinorErro(message) 
+    onXMLMinorError(message) 
     {
         console.warn("Warning: " + message);
     }
