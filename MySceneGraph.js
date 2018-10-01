@@ -201,6 +201,20 @@ class MySceneGraph
             if ((error = this.parsePrimitives(nodes[index])) != null)
                 return error;
         }
+
+        // <components>
+
+        if ((index = nodeNames.indexOf("components")) == -1)
+            return "tag <components> missing";
+        else 
+        {
+            if (index != COMPONENTS_INDEX)
+                this.onXMLMinorError("tag <components> out of order");
+
+            //Parse transformations block
+            if ((error = this.parseComponents(nodes[index])) != null)
+                return error;
+        }
     }
 
     /**
@@ -642,7 +656,7 @@ class MySceneGraph
                     var axis = this.reader.getFloat(children[i], "axis"), 
                         angle = this.reader.getFloat(children[i], "angle");
 
-                    if(axis == nill || angle == null)
+                    if(axis == null || angle == null)
                         return transformationErrorTag + "Rotation not properly defined";
 
                     mat4.rotate(this.transformations[transformationID], this.transformations[transformationID], 
@@ -750,6 +764,237 @@ class MySceneGraph
         
         this.nodes[primitiveID] = new MyNode(build, primitiveID);
         
+    }
+    /**
+     * Processes the components node
+     * @param {The components node} componentsNode 
+     */
+    parseComponents(componentsNode)
+    {
+        var children = componentsNode.children;
+        var componentID;
+        var error;
+
+        //First pass - Merely add them to the list
+        for(let i = 0; i < children.length; i++)
+        {
+            if(children[i].nodeName != "component")
+            {
+                this.onXMLMinorError("unknown tag <" + children[i].nodeName + ">");
+                continue;
+            }
+
+            componentID = this.reader.getString(children[i], "id");
+
+            if(this.nodes[componentID] != null)
+                return "ID must be unique for each transformation (conflict: ID = " + componentID+ ")";
+            else
+                this.nodes[componentID] = new MyNode(null, componentID);
+        }
+
+        //Second pass - parse children block for each component
+        for(let i = 0; i < children.length; i++)
+        {
+            componentID = this.reader.getString(children[i], "id");
+            let j;
+
+            for(j = 0; j < children[i].children.length; j++)
+                if(children[i].children[j].nodeName == "children")
+                    break;
+
+            if(j == null)
+                return "No children tag present in component " + componentID;
+
+            
+            error = this.parseComponentChildren(children[i].children[j], componentID);
+
+            if(typeof error == "string")
+                return error;
+        }
+
+        //Third pass - analyze & parse remaining details
+        /*
+        for(let i = 0; i < children.length; i++)
+        {
+            
+            let error = this.parseComponent(children[i]);
+
+            if(error != null)
+                return error;
+            
+        } */
+
+        this.log("Parsed components");
+    }
+
+    /**
+     * Processes a single component block
+     * @param {The single component block} componentBlock 
+     */
+    parseComponent(componentBlock)
+    {
+        var children = componentBlock.children;
+        var i, nodeNames = [], index;
+        var tranformationMatrix, materialList = [], childrenList = [];
+        var error;
+
+        for(i = 0; i < children.length; i++)
+            nodeNames.push(children[i].nodeName);
+
+        if(typeof (childrenList = this.parseComponentTransformation(children[index], componentID)) == "string")
+            return childrenList;
+
+        index = nodeNames.indexOf("transformation");
+
+        if(index == null)
+            return "No transformation tag present in component " + componentID;
+    
+        if(typeof (tranformationMatrix = this.parseComponentTransformation(children[index], componentID)) == "string")
+            return tranformationMatrix;
+
+        index = nodeNames.indexOf("materials");
+            
+        if(index == null)
+            return "No materials tag present in component " + componentID;
+    
+        if(typeof (materialList = this.parseComponentMaterials(children[index], componentID)) == "string")
+            return materialList;
+    }
+
+    /**
+     * Parses the children block in a component.
+     * @param {The component's children block} componentChildrenBlock 
+     * @param {The component's ID} componentID 
+     */
+    parseComponentChildren(componentChildrenBlock, componentID)
+    {
+        var children = componentChildrenBlock.children;
+
+        if(children.length == 0)
+            return "Component " + componentID + ": At least one child must be declared";
+
+        var childrenID, childrenList = [];
+
+        for(let i = 0; i < children.length; i++)
+        {
+            childrenID = this.reader.getString(children[i], "id");
+
+            if(this.nodes[childrenID] == null)
+                return "Component " + componentID + ": Children " + childrenID +  "not previously declared";
+            
+            this.nodes[childrenID].father = this.nodes[componentID];
+            childrenList.push(this.nodes[childrenID]);
+        }
+
+        this.nodes[componentID].children = childrenList;
+    }
+
+    /**
+     * Parses the transformation block of a component.
+     * @param {The component's tranformation block} componentTransformationBlock 
+     * @param {The component's ID} componentID
+     */
+    parseComponentTransformation(componentTransformationBlock, componentID)
+    {
+        var children = componentTransformationBlock.children;
+        var transformationMatrix, xyz;
+
+        for(let i = 0; i < children.length; i++)
+        {
+            switch(children[i].nodeName)
+            {
+                case "transformationref":
+                    let transformationID = this.reader.getString(children[i], "id");
+
+                    if(this.transformations[transformationID] == null)
+                        return "Component " + componentID + ": Transformation " + transformationID + 
+                            " not defined previously";
+                  
+                    if(i == 0)
+                        transformationMatrix = this.transformations[transformationID];
+                    else
+                        mat4.multiply(transformationMatrix, this.transformations[transformationID], transformationMatrix);
+
+                    break;
+
+                case "translate":
+
+                    if(i == 0)
+                        transformationMatrix = mat4.create();
+
+                    xyz = this.getXYZ(children[i]);
+
+                    if(typeof xyz == "string")
+                        return transformationErrorTag + xyz;
+                    else
+                        mat4.translate(transformationMatrix, transformationMatrix, xyz);
+
+                    break;
+
+                case "scale":
+
+                    if(i == 0)
+                        transformationMatrix = mat4.create();
+
+                    xyz = this.getXYZ(children[i]);
+
+                    if(typeof xyz == "string")
+                        return transformationErrorTag + xyz;
+                    else
+                        mat4.scale(transformationMatrix, transformationMatrix, xyz);
+
+                    break;
+
+                case "rotate":
+                
+                    if(i == 0)
+                        transformationMatrix = mat4.create();
+
+                    var axis = this.reader.getFloat(children[i], "axis"), 
+                        angle = this.reader.getFloat(children[i], "angle");
+
+                    if(axis == null || angle == null)
+                        return transformationErrorTag + "Rotation not properly defined";
+
+                    mat4.rotate(transformationMatrix, transformationMatrix, angle * DEGREE_TO_RAD, axis);
+
+                    break;
+        
+            }
+        }
+
+        return tranformationMatrix;
+    }
+
+    /**
+     * Parses the materials block in a component.
+     * @param {The component's materials block} componentMaterialsBlock 
+     * @param {The component's ID} componentID 
+     */
+    parseComponentMaterials(componentMaterialsBlock, componentID)
+    {
+        children = componentMaterialsBlock.children;
+        var materialID;
+
+        for(let i = 0; i < children.length; i++)
+        {
+            if(children[i].nodeName != "material")
+            {
+                this.onXMLMinorError("unknown tag <" + children[i].nodeName + ">");
+                continue;
+            }
+
+            materialID = this.reader.get(children[i], "id");
+
+            if(materialID == "inherit")
+            
+
+            if(this.materials[materialID] == null)
+                return "Component " + componentID + ": Material " + materialID + 
+                " not defined previously";
+
+            
+        }
     }
 
     /**

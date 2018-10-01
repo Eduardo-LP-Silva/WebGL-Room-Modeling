@@ -6,12 +6,14 @@
      /**
       * Constructor
       */
-     constructor(build, id, children = null, texture = null, material = null)
+     constructor(build = null, id, children = [], transformations = null, textures = [], materials = [], father = null)
      {
         this.id = id;
         this.build = build;
         this.children = children;
-        this.texture = texture;
-        this.material = material;
+        this.textures = textures;
+        this.materials = materials;
+        this.transformations = transformations;
+        this.father = father;
      }
  }
