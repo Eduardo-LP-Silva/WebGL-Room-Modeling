@@ -669,7 +669,13 @@ class MySceneGraph
                 continue;
             }
             else
-                this.parsePrimitive(children[i]);
+            {
+                var error = this.parsePrimitive(children[i]);
+
+                if(error != null)
+                    return error;
+            }
+                
         }
             
         this.log("parsed primitives");
@@ -681,8 +687,71 @@ class MySceneGraph
      */
     parsePrimitive(primitiveBlock)
     {
+        var primitiveID = this.reader.getString(primitiveBlock, "id");
+        var build;
+
+        if(this.nodes[primitiveID] != null)
+            return "ID must be unique for each primitive (conflict: ID = " + primitiveID + ")";
+
+        var children = primitiveBlock.children;
+
+        if(children.length == 0)
+            return "At least one primitive object must be declared";
+
+        switch(children[0].nodeName)
+        {
+            case "rectangle":
+                build = new MyQuad(this.scene, this.reader.getFloat(children[0], "x1"), 
+                    this.reader.getFloat(children[0], "y1"), this.reader.getFloat(children[0], "x2"), 
+                    this.reader.getFloat(children[0], "y2"));
+
+                this.nodes[primitiveID] = new MyNode(build, primitiveID);
+                break;
+
+            case "triangle":
+                var vCoords = [], p1 = [], p2 = [], p3 = [];
+
+                p1.push(this.reader.getFloat(children[0], "x1"), this.reader.getFloat(children[0], "y1"), 
+                    this.reader.getFloat(children[0], "z1"));
+
+                p2.push(this.reader.getFloat(children[0], "x2"), this.reader.getFloat(children[0], "y2"), 
+                    this.reader.getFloat(children[0], "z2"));
+
+                p3.push(this.reader.getFloat(children[0], "x3"), this.reader.getFloat(children[0], "y3"), 
+                    this.reader.getFloat(children[0], "z3"));
+                
+                vCoords.push(p1, p2, p3);
+
+                build = new MyTriangle(this.scene, vCoords);
+                break;
+
+            case "cylinder":
+                build = new MyCylinder(this.scene, this.reader.getFloat(children[0], "base"), 
+                    this.reader.getFloat(children[0], "top"), this.reader.getFloat(children[0], "height"), 
+                    this.reader.getFloat(children[0], "slices"), this.reader.getFloat(children[0], "stacks"));
+
+                break;
+
+            case "sphere":
+                build = new MySphere(this.scene, this.reader.getFloat(children[0], "slices"), 
+                    this.reader.getFloat(children[0], "stacks"), this.reader.getFloat(children[0], "radius"));
+                break;
+
+            case "torus":
+                build = new MyTorus(this.scene, this.reader.getFloat(children[0], "inner"), 
+                    this.reader.getFloat(children[0], "outer"), this.reader.getFloat(children[0], "slices"), 
+                    this.reader.getFloat(children[0], "loops"));
+
+                break;
+
+            default:
+                return "Tag not identified on primitive " + primitiveID;
+        }
+        
+        this.nodes[primitiveID] = new MyNode(build, primitiveID);
         
     }
+
     /**
      * Returns the XYZ values from a tag
      * @param {the tag containing the XYZ values} tag 
