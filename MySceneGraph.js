@@ -813,7 +813,7 @@ class MySceneGraph
         }
 
         //Third pass - analyze & parse remaining details
-        /*
+        
         for(let i = 0; i < children.length; i++)
         {
             
@@ -822,7 +822,7 @@ class MySceneGraph
             if(error != null)
                 return error;
             
-        } */
+        } 
 
         this.log("Parsed components");
     }
@@ -835,14 +835,11 @@ class MySceneGraph
     {
         var children = componentBlock.children;
         var i, nodeNames = [], index;
-        var tranformationMatrix, materialList = [], childrenList = [];
-        var error;
+        var tranformationMatrix, materialList = [], textureSpecs = [];
+        var componentID = this.reader.getString(componentBlock, "id");
 
         for(i = 0; i < children.length; i++)
             nodeNames.push(children[i].nodeName);
-
-        if(typeof (childrenList = this.parseComponentTransformation(children[index], componentID)) == "string")
-            return childrenList;
 
         index = nodeNames.indexOf("transformation");
 
@@ -859,6 +856,14 @@ class MySceneGraph
     
         if(typeof (materialList = this.parseComponentMaterials(children[index], componentID)) == "string")
             return materialList;
+
+        index = nodeNames.indexOf("texture");
+
+        if(index == null)
+            return "No texture tag present in component: " + componentID;
+
+        if(typeof (textureSpecs = this.parseComponentTexture(children[index], componentID)) == "string")
+            return textureSpecs;
     }
 
     /**
@@ -963,7 +968,7 @@ class MySceneGraph
             }
         }
 
-        return tranformationMatrix;
+        this.nodes[componentID].transformations = transformationMatrix;
     }
 
     /**
@@ -973,8 +978,8 @@ class MySceneGraph
      */
     parseComponentMaterials(componentMaterialsBlock, componentID)
     {
-        children = componentMaterialsBlock.children;
-        var materialID;
+        var children = componentMaterialsBlock.children;
+        var materialID, materialList = [];
 
         for(let i = 0; i < children.length; i++)
         {
@@ -984,16 +989,59 @@ class MySceneGraph
                 continue;
             }
 
-            materialID = this.reader.get(children[i], "id");
+            materialID = this.reader.getString(children[i], "id");
 
             if(materialID == "inherit")
-            
+            {
+                let fatherMaterials = this.nodes[componentID].father.materials;
 
-            if(this.materials[materialID] == null)
-                return "Component " + componentID + ": Material " + materialID + 
-                " not defined previously";
+                for(let j = 0; j < fatherMaterials.length(); j++)
+                    materialList.push(fatherMaterials[j]);
+            }
+            else
+            {
+                if(this.materials[materialID] == null)
+                    return "Component " + componentID + ": Material " + materialID + 
+                        " not defined previously";
+                else
+                    materialList.push(this.materials[materialID]);
+            }
+        }
 
-            
+        this.nodes[componentID].materials = materialList;
+    }
+
+    /**
+     * Parses the texture tag of a component.
+     * @param {The component's texture tag} componentTextureTag 
+     * @param {The component's id} componentID 
+     */
+    parseComponentTexture(componentTextureTag, componentID)
+    {
+        var textureID = this.reader.getString(componentTextureTag, "id");
+
+        switch(textureID)
+        {
+            case "inherit":
+                this.nodes[componentID].texture = this.nodes[componentID].father.texture;
+                break;
+
+            case "none":
+                this.nodes[componentID].texture = null;
+                break;
+
+            default:
+
+                if(this.textures[textureID] == null)
+                    return "Component " + componentID + ": Texture " + textureID + " not defined previously";
+                    
+                    let textureSpecs = [];
+                    textureSpecs.push(this.textures[textureID]);
+                    textureSpecs.push(this.reader.getFloat(componentTextureTag, "length_s"));
+                    textureSpecs.push(this.reader.getFloat(componentTextureTag, "length_t"));
+
+                this.nodes[componentID].texture = textureSpecs;
+                
         }
     }
 
