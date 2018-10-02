@@ -1,6 +1,6 @@
 <yas>
 
-    <scene root="rootObject" axis_length="5" />
+    <scene root="table" axis_length="5" />
 
     <views default="perspective" >
         <perspective id="perspective" near="1" far="5" angle="30">
@@ -71,8 +71,18 @@
     </primitives>
 
     <components>
-      <component id="component_table_top">
 
+      <component id="table">
+        <children>
+          <componentref id="component_table_top">
+          <componentref id="component_table_leg_01">
+          <componentref id="component_table_leg_02">
+          <componentref id="component_table_leg_03">
+          <componentref id="component_table_leg_04">
+        </children>
+      </component>
+
+      <component id="component_table_top">
         <transformation>
             <transformationref id="transformation_01" />
           </transformation>

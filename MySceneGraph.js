@@ -1151,9 +1151,6 @@ class MySceneGraph
      */
     displayScene() 
     {
-        // entry point for graph rendering
-        //TODO: Render loop starting at root of graph
-
-
+        
     }
 }
