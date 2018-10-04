@@ -5,7 +5,7 @@ class MyCylinder extends CGFobject
         super(scene);
         this.slices = slices;
         this.stacks = stacks;
-		this.minS = minS;
+				this.minS = minS;
         this.maxS = maxS;
         this.minT = minT;
         this.maxT = maxT;
@@ -19,25 +19,39 @@ class MyCylinder extends CGFobject
 
 	initBuffers()
 	{
-        var i;
-
         this.vertices = [];
         this.indices = [];
-        this.normals = [];
-	    this.texCoords = [];
+				this.normals = [];
+				this.texCoords = [];
 
-        var ang = 2*Math.PI / this.slices;
-        var i, j;
+				const basetopDif = this.baseRadius - this.topRadius;
+				const normalX = this.height / Math.sqrt( basetopDif** 2 + this.height ** 2);
+				const normalY = basetopDif / Math.sqrt( basetopDif** 2 + this.height ** 2);
+
+
+        const ang = 2*Math.PI / this.slices;
 
         //Filling Vertices, normals and texCoords
-        
-        for(i = 0; i < this.stacks; i++)
-        {
-            for(j = 0; j < this.slices; j++)
-            {
 
-                this.vertices.push(Math.cos(j * ang),Math.sin(j * ang), i);
-                this.normals.push(Math.cos(j * ang), Math.sin(j * ang), 0);
+        for(let i = 0; i <= this.stacks; i++)
+        {
+
+
+            for(let j = 0; j <= this.slices; j++)
+            {
+							let theta = (j*ang);
+							let x = Math.cos(theta);
+							let z = Math.sin(theta);
+							let y = this.height * i / this.stacks;
+
+							let X = (1 - (i/this.stacks)) * x * this.baseRadius + this.topRadius * x * i/this.stacks;
+							let Z = (1 - (i/this.stacks)) * z * this.baseRadius + this.topRadius * z * i/this.stacks;
+
+
+
+
+                this.vertices.push(X, y, Z);
+                this.normals.push(x* normalX, normalY, z*normalX);
                 this.texCoords.push(this.minS + j * (this.maxS - this.minS) / this.slices,
                 this.minT + i * (this.maxT - this.minT) / this.stacks);
             }
@@ -45,12 +59,15 @@ class MyCylinder extends CGFobject
 
         //Filling Indexs
 
-        for(i = 0; i <= this.stacks * this.slices -1 - this.slices; i++)
+        for(let i = 0; i < this.stacks; i++)
         {
-            this.indices.push(i, i + this.slices, i + this.slices - 1);
-            this.indices.push(i, i + this.slices - 1, i + this.slices);
-            this.indices.push(i, i + 1, i + this.slices);
-            this.indices.push(i, i + this.slices, i + 1);
+            for(let j = 0; j < this.slices; j++){
+							let index = j+i*(this.slices+1);
+
+							this.indices.push(index, index+1, index + this.slices + 2);
+							this.indices.push(index, index + this.slices + 2 , index + this.slices + 1);
+
+						}
         }
 
 		this.primitiveType=this.scene.gl.TRIANGLES;
