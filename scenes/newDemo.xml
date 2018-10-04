@@ -1,6 +1,6 @@
 <yas>
 
-    <scene root="rootObject" axis_length="5" />
+    <scene root="table" axis_length="5" />
 
     <views default="perspective" >
         <perspective id="perspective" near="1" far="5" angle="30">
@@ -58,6 +58,10 @@
         <transformation id="transformation_05">
           <translate x="4" y="4" z="5"/>
         </transformation>
+
+        <transformation id="transformation_06">
+          <translate x="0" y="0" z="2"/>
+        </transformation>
     </transformations>
 
     <primitives>
@@ -71,17 +75,37 @@
     </primitives>
 
     <components>
-      <component id="component_table_top">
 
+      <component id="table">
+        <transformation>
+            <transformationref id="transformation_06" />
+        </transformation>
+
+        <materials>
+          <material id="material_01" />
+        </materials>
+
+        <texture id="wood_texture" length_s="1" length_t="1" />
+
+        <children>
+          <componentref id="component_table_top" />
+          <componentref id="component_table_leg_01" />
+          <componentref id="component_table_leg_02" />
+          <componentref id="component_table_leg_03" />
+          <componentref id="component_table_leg_04" />
+        </children>
+      </component>
+
+      <component id="component_table_top">
         <transformation>
             <transformationref id="transformation_01" />
-          </transformation>
+        </transformation>
 
           <materials>
             <material id="material_01" />
           </materials>
 
-          <texture id="wood_texture" length_s="2" length_t="2" />
+          <texture id="wood_texture" length_s="1" length_t="1" />
 
           <children>
             <primitiveref id="table_top" />
@@ -97,7 +121,7 @@
               <material id="material_01" />
             </materials>
 
-            <texture id="wood_texture" length_s="2" length_t="2" />
+            <texture id="wood_texture" length_s="1" length_t="1" />
 
             <children>
               <primitiveref id="table_leg" />
@@ -111,7 +135,7 @@
               <materials>
                 <material id="material_01" />
               </materials>
-              <texture id="wood_texture" length_s="2" length_t="2" />
+              <texture id="wood_texture" length_s="1" length_t="1" />
               <children>
                 <primitiveref id="table_leg" />
               </children>
@@ -124,7 +148,7 @@
                 <materials>
                   <material id="material_01" />
                 </materials>
-                <texture id="wood_texture" length_s="2" length_t="2" />
+                <texture id="wood_texture" length_s="1" length_t="1" />
                 <children>
                   <primitiveref id="table_leg" />
                 </children>
@@ -137,7 +161,7 @@
                   <materials>
                     <material id="material_01" />
                   </materials>
-                  <texture id="wood_texture" length_s="2" length_t="2" />
+                  <texture id="wood_texture" length_s="1" length_t="1" />
                   <children>
                     <primitiveref id="table_leg" />
                   </children>

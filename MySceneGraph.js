@@ -39,7 +39,7 @@ class MySceneGraph
         this.textures = [];
         this.materials = [];
         this.transformations = [];
-        this.treeNodes = [];
+        this.root = null;
 
         // File reading 
         this.reader = new CGFXMLreader();
@@ -228,7 +228,7 @@ class MySceneGraph
         if(root == null)
             return "No root defined for scene\n";
         else
-            this.treeNodes[root] = root;
+            this.idRoot = root;
 
         this.referenceLength = this.reader.getFloat(sceneNode, "axis_length");
 
@@ -787,12 +787,18 @@ class MySceneGraph
             componentID = this.reader.getString(children[i], "id");
 
             if(this.nodes[componentID] != null)
-                return "ID must be unique for each transformation (conflict: ID = " + componentID+ ")";
+                return "ID must be unique for each transformation (conflict: ID = " + componentID + ")";
             else
                 this.nodes[componentID] = new MyNode(null, componentID);
         }
 
+        if(this.nodes[this.idRoot] == null)
+            return "Root element isn't present in components";
+        else
+            this.root = this.nodes[this.idRoot];
+
         //Second pass - parse children block for each component
+        /*
         for(let i = 0; i < children.length; i++)
         {
             componentID = this.reader.getString(children[i], "id");
@@ -810,18 +816,21 @@ class MySceneGraph
 
             if(typeof error == "string")
                 return error;
-        }
+        } */
 
         //Third pass - analyze & parse remaining details
         
         for(let i = 0; i < children.length; i++)
         {
-            
             let error = this.parseComponent(children[i]);
 
             if(error != null)
                 return error;
-            
+
+            /*
+            let nodeID = this.reader.getString(children[i], "id");
+
+            this.log(this.nodes[nodeID].transformations); */
         } 
 
         this.log("Parsed components");
@@ -835,7 +844,7 @@ class MySceneGraph
     {
         var children = componentBlock.children;
         var i, nodeNames = [], index;
-        var tranformationMatrix, materialList = [], textureSpecs = [];
+        var tranformationMatrix, materialList = [], textureSpecs = [], childrenList = [];
         var componentID = this.reader.getString(componentBlock, "id");
 
         for(i = 0; i < children.length; i++)
@@ -864,6 +873,14 @@ class MySceneGraph
 
         if(typeof (textureSpecs = this.parseComponentTexture(children[index], componentID)) == "string")
             return textureSpecs;
+
+        index = nodeNames.indexOf("children");
+
+        if(index == null)
+            return "No children tag present in component: " + componentID;
+
+        if(typeof (childrenList = this.parseComponentChildren(children[index], componentID)) == "string")
+            return childrenList;
     }
 
     /**
@@ -885,10 +902,9 @@ class MySceneGraph
             childrenID = this.reader.getString(children[i], "id");
 
             if(this.nodes[childrenID] == null)
-                return "Component " + componentID + ": Children " + childrenID +  "not previously declared";
+                return "Component " + componentID + ": Children " + childrenID +  " not previously declared";
             
-            this.nodes[childrenID].father = this.nodes[componentID];
-            childrenList.push(this.nodes[childrenID]);
+            childrenList.push(childrenID);
         }
 
         this.nodes[componentID].children = childrenList;
@@ -914,12 +930,9 @@ class MySceneGraph
                     if(this.transformations[transformationID] == null)
                         return "Component " + componentID + ": Transformation " + transformationID + 
                             " not defined previously";
-                  
-                    if(i == 0)
-                        transformationMatrix = this.transformations[transformationID];
                     else
-                        mat4.multiply(transformationMatrix, this.transformations[transformationID], transformationMatrix);
-
+                        transformationMatrix = this.transformations[transformationID];
+            
                     break;
 
                 case "translate":
@@ -966,9 +979,12 @@ class MySceneGraph
                     break;
         
             }
+            
         }
 
+        this.log(transformationMatrix);
         this.nodes[componentID].transformations = transformationMatrix;
+        this.log(this.nodes[componentID].transformations);
     }
 
     /**
@@ -991,21 +1007,11 @@ class MySceneGraph
 
             materialID = this.reader.getString(children[i], "id");
 
-            if(materialID == "inherit")
-            {
-                let fatherMaterials = this.nodes[componentID].father.materials;
-
-                for(let j = 0; j < fatherMaterials.length(); j++)
-                    materialList.push(fatherMaterials[j]);
-            }
+            if(materialID == "inherit" || this.materials[materialID] != null)
+                materialList.push(this.materials[materialID]);
             else
-            {
-                if(this.materials[materialID] == null)
-                    return "Component " + componentID + ": Material " + materialID + 
-                        " not defined previously";
-                else
-                    materialList.push(this.materials[materialID]);
-            }
+                return "Component " + componentID + ": Material " + materialID + 
+                    " not defined previously";
         }
 
         this.nodes[componentID].materials = materialList;
@@ -1019,15 +1025,16 @@ class MySceneGraph
     parseComponentTexture(componentTextureTag, componentID)
     {
         var textureID = this.reader.getString(componentTextureTag, "id");
+        var textureSpecs = [];
 
         switch(textureID)
         {
             case "inherit":
-                this.nodes[componentID].texture = this.nodes[componentID].father.texture;
+                textureSpecs.push(textureID);
                 break;
 
             case "none":
-                this.nodes[componentID].texture = null;
+                textureSpecs.push(textureID);
                 break;
 
             default:
@@ -1035,14 +1042,13 @@ class MySceneGraph
                 if(this.textures[textureID] == null)
                     return "Component " + componentID + ": Texture " + textureID + " not defined previously";
                     
-                    let textureSpecs = [];
+                    
                     textureSpecs.push(this.textures[textureID]);
                     textureSpecs.push(this.reader.getFloat(componentTextureTag, "length_s"));
                     textureSpecs.push(this.reader.getFloat(componentTextureTag, "length_t"));
-
-                this.nodes[componentID].texture = textureSpecs;
-                
         }
+
+        this.nodes[componentID].texture = textureSpecs;
     }
 
     /**
@@ -1106,17 +1112,6 @@ class MySceneGraph
         return colorArray;
     }
 
-    /**
-     * Parses the <NODES> block.
-     * @param {nodes block element} nodesNode
-     */
-    parseNodes(nodesNode) 
-    {
-        // TODO: Parse block
-        this.log("Parsed nodes");
-        return null;
-    }
-
     /*
      * Callback to be executed on any read error, showing an error on the console.
      * @param {string} message
@@ -1151,9 +1146,49 @@ class MySceneGraph
      */
     displayScene() 
     {
-        // entry point for graph rendering
-        //TODO: Render loop starting at root of graph
+        this.displayNode(this.idRoot);
+    }
 
+    /**
+     * Displays a node
+     * @param {The node's ID} nodeID
+     * @param {The texture associated} textureInit
+     * @param {The material associated} materialInit
+     */
+    displayNode(nodeID, textureInit, materialInit)
+    { 
+        var texture = textureInit, material = materialInit;
+        var node;
 
+        if(nodeID != null)
+            node = this.nodes[nodeID];
+        else
+            this.log("Error in node ID");
+
+        if(node.texture.length != 0)
+            texture = node.texture;
+
+        if(node.materials.length != 0)
+            material = node.materials;
+
+        this.scene.pushMatrix();
+
+        if(node.transformations != null)
+        {
+            this.scene.multMatrix(node.transformations);
+        }
+             
+        for(let i = 0; i < node.children.length; i++)
+        {
+            this.displayNode(node.children[i], texture, material);
+        }
+
+        if(node.build != null)
+        {
+            //Aplicar textura e material
+            node.build.display();
+        } 
+
+        this.scene.popMatrix();
     }
 }

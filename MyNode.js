@@ -6,7 +6,7 @@
      /**
       * Constructor
       */
-     constructor(build = null, id, children = [], transformations = null, texture = [], materials = [], father = null)
+     constructor(build = null, id, children = [], transformations = null, texture = [], materials = [])
      {
         this.id = id;
         this.build = build;
@@ -14,6 +14,16 @@
         this.texture = texture;
         this.materials = materials;
         this.transformations = transformations;
-        this.father = father;
+     }
+
+     /**
+      * Displays the node
+      */
+     display()
+     {
+        build.scene.pushMatrix();
+            build.scene.multMatrix(this.transformations);
+            build.display();
+        build.scene.popMatrix();
      }
  }
