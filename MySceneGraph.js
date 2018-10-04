@@ -904,8 +904,7 @@ class MySceneGraph
             if(this.nodes[childrenID] == null)
                 return "Component " + componentID + ": Children " + childrenID +  " not previously declared";
             
-            this.nodes[childrenID].father = this.nodes[componentID];
-            childrenList.push(this.nodes[childrenID]);
+            childrenList.push(childrenID);
         }
 
         this.nodes[componentID].children = childrenList;
@@ -983,7 +982,9 @@ class MySceneGraph
             
         }
 
+        this.log(transformationMatrix);
         this.nodes[componentID].transformations = transformationMatrix;
+        this.log(this.nodes[componentID].transformations);
     }
 
     /**
@@ -1170,20 +1171,24 @@ class MySceneGraph
         if(node.materials.length != 0)
             material = node.materials;
 
-        if(node.tranformations != null)
+        this.scene.pushMatrix();
+
+        if(node.transformations != null)
+        {
             this.scene.multMatrix(node.transformations);
-                    
+        }
+             
         for(let i = 0; i < node.children.length; i++)
         {
-            this.scene.pushMatrix();
-                this.displayNode(node.children[i].id, texture, material);
-            this.scene.popMatrix();
+            this.displayNode(node.children[i], texture, material);
         }
 
         if(node.build != null)
         {
             //Aplicar textura e material
             node.build.display();
-        }         
+        } 
+
+        this.scene.popMatrix();
     }
 }

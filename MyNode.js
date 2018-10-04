@@ -14,7 +14,6 @@
         this.texture = texture;
         this.materials = materials;
         this.transformations = transformations;
-        this.visited = false;
      }
 
      /**
