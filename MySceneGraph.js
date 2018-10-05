@@ -653,14 +653,36 @@ class MySceneGraph
 
                 case "rotate":
                     
-                    var axis = this.reader.getFloat(children[i], "axis"), 
+                    var axis = this.reader.getString(children[i], "axis"), 
                         angle = this.reader.getFloat(children[i], "angle");
+                    var vec = vec3.create();
+
+                    switch(axis)
+                    {
+                        case "x":
+                            vec3.set(vec, 1, 0, 0);
+                            break;
+
+                        case "y":
+                            vec3.set(vec, 0, 1, 0);
+                            break;
+
+                        case "z":
+                            vec3.set(vec, 0, 0, 1);
+                            break;
+
+                        default:
+                            this.log("Error in axis");
+                    }
 
                     if(axis == null || angle == null)
                         return transformationErrorTag + "Rotation not properly defined";
 
                     mat4.rotate(this.transformations[transformationID], this.transformations[transformationID], 
-                        angle * DEGREE_TO_RAD, axis);
+                        angle * DEGREE_TO_RAD, vec);
+
+                    this.log(transformationID);
+                    this.log(this.transformations[transformationID]);
 
                     break;
             }
@@ -719,7 +741,6 @@ class MySceneGraph
                     this.reader.getFloat(children[0], "y1"), this.reader.getFloat(children[0], "x2"), 
                     this.reader.getFloat(children[0], "y2"));
 
-                this.nodes[primitiveID] = new MyNode(build, primitiveID);
                 break;
 
             case "triangle":
@@ -971,6 +992,21 @@ class MySceneGraph
                     var axis = this.reader.getFloat(children[i], "axis"), 
                         angle = this.reader.getFloat(children[i], "angle");
 
+                    switch(axis)
+                    {
+                        case "x":
+                            axis = [1, 0, 0];
+                            break;
+
+                        case "y":
+                            axis = [0, 1, 0];
+                            break;
+
+                        case "z":
+                            axis = [0, 0, 1];
+                            break;
+                    }
+
                     if(axis == null || angle == null)
                         return transformationErrorTag + "Rotation not properly defined";
 
@@ -981,10 +1017,7 @@ class MySceneGraph
             }
             
         }
-
-        this.log(transformationMatrix);
         this.nodes[componentID].transformations = transformationMatrix;
-        this.log(this.nodes[componentID].transformations);
     }
 
     /**
