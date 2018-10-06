@@ -44,19 +44,19 @@
 
     <!-- Transformations -->
     <transformations>
-         <transformation id="null_transformation"> 
+         <transformation id="null_transformation">
             <translate x="0" y="0" z="0"/>
         </transformation>
 
-        <transformation id="rotation_x_90"> 
+        <transformation id="rotation_x_90">
             <rotate axis="x" angle="90"/>
         </transformation>
 
-        <transformation id="rotation_y_90"> 
+        <transformation id="rotation_y_90">
             <rotate axis="y" angle="90"/>
         </transformation>
 
-        <transformation id="scale_0.5_0.3_0.5"> 
+        <transformation id="scale_0.5_0.3_0.5">
             <scale x="0.5" y="0.3" z="0.5"/>
         </transformation>
 
@@ -65,19 +65,19 @@
         </transformation>
 
         <transformation id="transformation_02">
-          <translate x="-4" y="-4" z="5"/>
+          <translate x="-1.2" y="0" z="3.2"/>
         </transformation>
 
         <transformation id="transformation_03">
-          <translate x="-4" y="4" z="5"/>
+          <translate x="1.2" y="0" z="3.2"/>
         </transformation>
 
         <transformation id="transformation_04">
-          <translate x="4" y="-4" z="5"/>
+          <translate x="1.2" y="0" z="-3.2"/>
         </transformation>
 
         <transformation id="transformation_05">
-          <translate x="4" y="4" z="5"/>
+          <translate x="-1.2" y="0" z="-3.2"/>
         </transformation>
     </transformations>
 
@@ -88,7 +88,7 @@
         </primitive>
 
         <primitive id="cylinder">
-          <cylinder base="2" top="2" height="10" slices="10" stacks="10" />
+          <cylinder base="0.3" top="0.3" height="8" slices="40" stacks="40" />
         </primitive>
     </primitives>
 
@@ -254,7 +254,11 @@
 
         <children>
           <componentref id="table_countertop" />
-          
+          <componentref id="table_leg_1" />
+          <componentref id="table_leg_2" />
+          <componentref id="table_leg_3" />
+          <componentref id="table_leg_4" />
+
         </children>
       </component>
 
@@ -330,7 +334,7 @@
           <primitiveref id="plane" />
         </children>
       </component>
-      
+
       <component id="cube_left">
         <transformation>
             <translate x="0" y="0" z="0.5"/>
@@ -417,6 +421,7 @@
           <component id="table_leg_2">
             <transformation>
                 <transformationref id="transformation_03" />
+                <transformationref id="scale_0.5_0.3_0.5" />
               </transformation>
               <materials>
                 <material id="material_01" />
@@ -430,6 +435,7 @@
             <component id="table_leg_3">
               <transformation>
                   <transformationref id="transformation_04" />
+                  <transformationref id="scale_0.5_0.3_0.5" />
                 </transformation>
                 <materials>
                   <material id="material_01" />
@@ -443,6 +449,7 @@
               <component id="table_leg_4">
                 <transformation>
                     <transformationref id="transformation_05" />
+                    <transformationref id="scale_0.5_0.3_0.5" />
                   </transformation>
                   <materials>
                     <material id="material_01" />

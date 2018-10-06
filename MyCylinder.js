@@ -58,9 +58,9 @@ class MyCylinder extends CGFobject
             for(let j = 0; j < this.slices; j++)
             {
                 let index = j+i*(this.slices+1);
-                
-				this.indices.push(index, index+1, index + this.slices + 2);
-				this.indices.push(index, index + this.slices + 2 , index + this.slices + 1);
+
+				this.indices.push(index, index + this.slices + 2, index+1);
+				this.indices.push(index, index + this.slices + 1, index + this.slices + 2);
 
 			}
         }
