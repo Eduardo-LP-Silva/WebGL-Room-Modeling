@@ -681,9 +681,6 @@ class MySceneGraph
                     mat4.rotate(this.transformations[transformationID], this.transformations[transformationID], 
                         angle * DEGREE_TO_RAD, vec);
 
-                    this.log(transformationID);
-                    this.log(this.transformations[transformationID]);
-
                     break;
             }
         } 
@@ -818,28 +815,8 @@ class MySceneGraph
         else
             this.root = this.nodes[this.idRoot];
 
-        //Second pass - parse children block for each component
-        /*
-        for(let i = 0; i < children.length; i++)
-        {
-            componentID = this.reader.getString(children[i], "id");
-            let j;
 
-            for(j = 0; j < children[i].children.length; j++)
-                if(children[i].children[j].nodeName == "children")
-                    break;
-
-            if(j == null)
-                return "No children tag present in component " + componentID;
-
-            
-            error = this.parseComponentChildren(children[i].children[j], componentID);
-
-            if(typeof error == "string")
-                return error;
-        } */
-
-        //Third pass - analyze & parse remaining details
+        //Second pass - analyze & parse remaining details
         
         for(let i = 0; i < children.length; i++)
         {
@@ -847,11 +824,6 @@ class MySceneGraph
 
             if(error != null)
                 return error;
-
-            /*
-            let nodeID = this.reader.getString(children[i], "id");
-
-            this.log(this.nodes[nodeID].transformations); */
         } 
 
         this.log("Parsed components");
@@ -952,7 +924,10 @@ class MySceneGraph
                         return "Component " + componentID + ": Transformation " + transformationID + 
                             " not defined previously";
                     else
-                        transformationMatrix = this.transformations[transformationID];
+                        if(i == 0)
+                            transformationMatrix = this.transformations[transformationID];
+                        else
+                            mat4.mul(transformationMatrix, transformationMatrix, this.transformations[transformationID]);
             
                     break;
 
@@ -1013,7 +988,9 @@ class MySceneGraph
                     mat4.rotate(transformationMatrix, transformationMatrix, angle * DEGREE_TO_RAD, axis);
 
                     break;
-        
+
+                default:
+                    return "Component " + componentID + ": Transformation error"; 
             }
             
         }
@@ -1060,26 +1037,13 @@ class MySceneGraph
         var textureID = this.reader.getString(componentTextureTag, "id");
         var textureSpecs = [];
 
-        switch(textureID)
-        {
-            case "inherit":
-                textureSpecs.push(textureID);
-                break;
+        if(textureID == "inherit" || textureID == "none")
+            textureSpecs.push(textureID);
+        else
+            textureSpecs.push(this.textures[textureID]);
 
-            case "none":
-                textureSpecs.push(textureID);
-                break;
-
-            default:
-
-                if(this.textures[textureID] == null)
-                    return "Component " + componentID + ": Texture " + textureID + " not defined previously";
-                    
-                    
-                    textureSpecs.push(this.textures[textureID]);
-                    textureSpecs.push(this.reader.getFloat(componentTextureTag, "length_s"));
-                    textureSpecs.push(this.reader.getFloat(componentTextureTag, "length_t"));
-        }
+        textureSpecs.push(this.reader.getFloat(componentTextureTag, "length_s"));
+        textureSpecs.push(this.reader.getFloat(componentTextureTag, "length_t"));
 
         this.nodes[componentID].texture = textureSpecs;
     }

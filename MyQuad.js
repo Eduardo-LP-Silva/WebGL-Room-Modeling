@@ -31,8 +31,6 @@ class MyQuad extends CGFobject
 			2, 1, 0
 		];
 
-		
-
 		this.normals = [
 			0, 0, 1,
 			0, 0, 1,
