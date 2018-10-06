@@ -773,7 +773,6 @@ class MySceneGraph
                 build = new MyTorus(this.scene, this.reader.getFloat(children[0], "inner"), 
                     this.reader.getFloat(children[0], "outer"), this.reader.getFloat(children[0], "slices"), 
                     this.reader.getFloat(children[0], "loops"));
-
                 break;
 
             default:
@@ -924,10 +923,13 @@ class MySceneGraph
                         return "Component " + componentID + ": Transformation " + transformationID + 
                             " not defined previously";
                     else
+                    {
                         if(i == 0)
                             transformationMatrix = this.transformations[transformationID];
                         else
                             mat4.mul(transformationMatrix, transformationMatrix, this.transformations[transformationID]);
+                    }
+                        
             
                     break;
 
@@ -964,7 +966,7 @@ class MySceneGraph
                     if(i == 0)
                         transformationMatrix = mat4.create();
 
-                    var axis = this.reader.getFloat(children[i], "axis"), 
+                    var axis = this.reader.getString(children[i], "axis"), 
                         angle = this.reader.getFloat(children[i], "angle");
 
                     switch(axis)
@@ -980,12 +982,21 @@ class MySceneGraph
                         case "z":
                             axis = [0, 0, 1];
                             break;
+
+                        default:
+                            return "Component " + componentID + ": Axis not defined";
                     }
 
                     if(axis == null || angle == null)
                         return transformationErrorTag + "Rotation not properly defined";
 
+                    this.log(axis);
+                    this.log(angle);
+
                     mat4.rotate(transformationMatrix, transformationMatrix, angle * DEGREE_TO_RAD, axis);
+
+                    this.log(componentID);
+                    this.log(transformationMatrix);
 
                     break;
 
@@ -1040,8 +1051,13 @@ class MySceneGraph
         if(textureID == "inherit" || textureID == "none")
             textureSpecs.push(textureID);
         else
-            textureSpecs.push(this.textures[textureID]);
-
+        {
+            if(this.textures[textureID] == null)
+                return "Component " + componentID + ": Texture " + textureID + " not previously defined";
+            else
+                textureSpecs.push(this.textures[textureID]);
+        }
+            
         textureSpecs.push(this.reader.getFloat(componentTextureTag, "length_s"));
         textureSpecs.push(this.reader.getFloat(componentTextureTag, "length_t"));
 
@@ -1143,7 +1159,7 @@ class MySceneGraph
      */
     displayScene() 
     {
-        this.displayNode(this.idRoot, this.nodes[this.idRoot].texture, this.nodes[this.idRoot].materials);
+        this.displayNode(this.idRoot, this.nodes[this.idRoot].texture[0], this.nodes[this.idRoot].materials);
     }
 
     /**
@@ -1162,28 +1178,34 @@ class MySceneGraph
         else
             this.log("Error in node ID");
 
+        this.scene.pushMatrix();
+
         if(node.texture.length != 0)
         {
-            if(node.texture[0] == "inherit")
+            switch(node.texture[0])
             {
-                texture = textureInit;
-                //textureInit[0].apply();
+                case "inherit":
+                    texture = textureInit;
+                    texture.apply();
+                    break;
+
+                case "none":
+                    texture = textureInit;
+                    break;
+
+                default:
+                    texture = node.texture[0];
+                    texture.apply();
+                    break;
             }
-            else
+            
+           /* else
                 if(node.texture[0] == "none")
-                    texture = null;
-        }
-        else
-        {
-            texture = node.texture;
-            //node.texture[0].apply();
+                    texture = null; */
         }
             
-
         if(node.materials.length != 0)
             material = node.materials;
-
-        this.scene.pushMatrix();
 
         if(node.transformations != null)
         {

@@ -1,35 +1,43 @@
 <yas>
-    <!-- Scene -->
-    <scene root="scene" axis_length="5" />
+  <!-- Scene -->
+  <scene root="scene" axis_length="5" />
 
-    <!-- Views -->
-    <views default="perspective" >
-        <perspective id="perspective" near="1" far="5" angle="30">
-            <from x="10" y="10" z="10" />
-            <to x="0" y="0" z="0" />
-        </perspective>
-        <ortho id="ortho"  near="1" far="5" left="10" right="10" top="10" bottom="10" />
-    </views>
+  <!-- Views -->
+  <views default="perspective" >
+    <perspective id="perspective" near="1" far="5" angle="30">
+      <from x="10" y="10" z="10" />
+      <to x="0" y="0" z="0" />
+    </perspective>
+      <ortho id="ortho"  near="1" far="5" left="10" right="10" top="10" bottom="10" />
+  </views>
 
-    <!-- Ambient -->
-    <ambient>
-        <ambient r="0.2" g="0.2" b="0.2" a="1" />
-        <background r="0" g="0" b="0" a="1" />
-    </ambient>
+  <!-- Ambient -->
+  <ambient>
+    <ambient r="0.2" g="0.2" b="0.2" a="1" />
+    <background r="0" g="0" b="0" a="1" />
+  </ambient>
 
-    <!-- Lights -->
-    <lights>
-        <omni id="omni" enabled="1" >
-            <location  x="0" y="10" z="0" w="1" />
-            <ambient r="0.2" g="0.2" b="0.2" a="1.0" />
-            <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
-            <specular r="1.0" g="1.0" b="1.0" a="1.0" />
-        </omni>
-    </lights>
+  <!-- Lights -->
+  <lights>
+    <omni id="omni_1" enabled="1" >
+      <location  x="0" y="10" z="0" w="1" />
+      <ambient r="0.2" g="0.2" b="0.2" a="1.0" />
+      <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
+      <specular r="1.0" g="1.0" b="1.0" a="1.0" />
+    </omni>
+
+    <omni id="omni_2" enabled="1" >
+      <location  x="0" y="0" z="0" w="1" />
+      <ambient r="0.2" g="0.2" b="0.2" a="1.0" />
+      <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
+      <specular r="1.0" g="1.0" b="1.0" a="1.0" />
+    </omni>
+  </lights>
 
     <!-- Textures -->
     <textures>
         <texture id="wood_texture" file="scenes/images/wood-image.jpg" />
+        <texture id="metal" file="scenes/images/metal.png" />
     </textures>
 
     <!-- Materials -->
@@ -60,8 +68,8 @@
             <scale x="0.5" y="0.3" z="0.5"/>
         </transformation>
 
-        <transformation id="scale">
-            <scale x="0.3" y="2" z="0.3"/>
+        <transformation id="scale_0.3_1.4_0.3">
+            <scale x="0.3" y="1.4" z="0.3"/>
         </transformation>
 
         <transformation id="transformation_02">
@@ -107,11 +115,45 @@
 
         <children>
           <componentref id="table" />
+          <componentref id="chair_1" />
+          <componentref id="chair_2" />
+        </children>
+      </component>
+
+      <!-- Chairs -->
+      <component id="chair_1">
+        <transformation>
+            <translate x="0" y="0" z="-4"/>
+        </transformation>
+
+        <materials>
+          <material id="material_01" />
+        </materials>
+
+        <texture id="none" length_s="1" length_t="1" />
+
+        <children>
           <componentref id="chair" />
         </children>
       </component>
 
-      <!-- Chair -->
+      <component id="chair_2">
+        <transformation>
+            <translate x="0" y="0" z="4"/>
+            <rotate axis="y" angle="180"/>
+        </transformation>
+
+        <materials>
+          <material id="material_01" />
+        </materials>
+
+        <texture id="none" length_s="1" length_t="1" />
+
+        <children>
+          <componentref id="chair" />
+        </children>
+      </component>
+
       <component id="chair">
         <transformation>
             <transformationref id="null_transformation" />
@@ -127,9 +169,9 @@
           <componentref id="chair_seat" />
           <componentref id="chair_back" />
           <componentref id="chair_leg_1" />
-         <!-- <componentref id="chair_leg_2" />
-          <componentref id="chair_leg_3" />
-          <componentref id="chair_leg_4" /> -->
+          <componentref id="chair_leg_2" />
+         <componentref id="chair_leg_3" />
+          <componentref id="chair_leg_4"/>
         </children>
       </component>
 
@@ -144,7 +186,7 @@
           <material id="material_01" />
         </materials>
 
-        <texture id="wood_texture" length_s="1" length_t="1" />
+        <texture id="inherit" length_s="1" length_t="1" />
 
         <children>
           <componentref id="cube" />
@@ -162,7 +204,7 @@
           <material id="material_01" />
         </materials>
 
-        <texture id="wood_texture" length_s="1" length_t="1" />
+        <texture id="inherit" length_s="1" length_t="1" />
 
         <children>
           <componentref id="cube" />
@@ -172,8 +214,8 @@
       <!-- Chair Legs -->
       <component id="chair_leg_1">
         <transformation>
-            <translate x="0" y="0.7" z="0" />
-            <scale x="0.3" y="1.4" z="0.3"/>
+            <translate x="0.6" y="0.7" z="0.6" />
+            <transformationref id="scale_0.3_1.4_0.3"/>
         </transformation>
 
         <materials>
@@ -189,15 +231,15 @@
 
       <component id="chair_leg_2">
         <transformation>
-            <translate x="0" y="3" z="0" />
-            <scale x="3" y="0.3" z="0.3"/>
+            <translate x="0.6" y="0.7" z="-0.6" />
+            <transformationref id="scale_0.3_1.4_0.3"/>
         </transformation>
 
         <materials>
           <material id="material_01" />
         </materials>
 
-        <texture id="wood_texture" length_s="1" length_t="1" />
+        <texture id="inherit" length_s="1" length_t="1" />
 
         <children>
           <componentref id="cube" />
@@ -206,15 +248,15 @@
 
       <component id="chair_leg_3">
         <transformation>
-            <translate x="0" y="3" z="0" />
-            <scale x="3" y="0.3" z="0.3"/>
+            <translate x="-0.6" y="0.7" z="0.6" />
+            <transformationref id="scale_0.3_1.4_0.3"/>
         </transformation>
 
         <materials>
           <material id="material_01" />
         </materials>
 
-        <texture id="wood_texture" length_s="1" length_t="1" />
+        <texture id="inherit" length_s="1" length_t="1" />
 
         <children>
           <componentref id="cube" />
@@ -223,22 +265,20 @@
 
       <component id="chair_leg_4">
         <transformation>
-            <translate x="0" y="3" z="0" />
-            <scale x="3" y="0.3" z="0.3"/>
+            <translate x="-0.6" y="0.7" z="-0.6" />
+            <transformationref id="scale_0.3_1.4_0.3"/>
         </transformation>
 
         <materials>
           <material id="material_01" />
         </materials>
 
-        <texture id="wood_texture" length_s="1" length_t="1" />
+        <texture id="inherit" length_s="1" length_t="1" />
 
         <children>
           <componentref id="cube" />
         </children>
       </component>
-
-
 
       <!-- Table -->
       <component id="table">
@@ -250,7 +290,7 @@
           <material id="material_01" />
         </materials>
 
-        <texture id="wood_texture" length_s="1" length_t="1" />
+        <texture id="none" length_s="1" length_t="1" />
 
         <children>
           <componentref id="table_countertop" />
@@ -279,6 +319,66 @@
           <componentref id="cube" />
         </children>
       </component>
+
+      <!-- Table Legs -->
+      <component id="table_leg_1">
+        <transformation>
+          <transformationref id="transformation_02" />
+          <transformationref id="scale_0.5_0.3_0.5" />
+        </transformation>
+
+        <materials>
+          <material id="material_01" />
+        </materials>
+
+        <texture id="metal" length_s="1" length_t="1" />
+
+        <children>
+          <primitiveref id="cylinder" />
+        </children>
+      </component>
+
+          <component id="table_leg_2">
+            <transformation>
+                <transformationref id="transformation_03" />
+                <transformationref id="scale_0.5_0.3_0.5" />
+              </transformation>
+              <materials>
+                <material id="material_01" />
+              </materials>
+              <texture id="metal" length_s="1" length_t="1" />
+              <children>
+                <primitiveref id="cylinder" />
+              </children>
+            </component>
+
+            <component id="table_leg_3">
+              <transformation>
+                <transformationref id="transformation_04" />
+                <transformationref id="scale_0.5_0.3_0.5" />
+              </transformation>
+                <materials>
+                  <material id="material_01" />
+                </materials>
+                <texture id="metal" length_s="1" length_t="1" />
+                <children>
+                  <primitiveref id="cylinder" />
+                </children>
+              </component>
+
+              <component id="table_leg_4">
+                <transformation>
+                    <transformationref id="transformation_05" />
+                    <transformationref id="scale_0.5_0.3_0.5" />
+                  </transformation>
+                  <materials>
+                    <material id="material_01" />
+                  </materials>
+                  <texture id="metal" length_s="1" length_t="1" />
+                  <children>
+                    <primitiveref id="cylinder" />
+                  </children>
+                </component>
 
       <component id="cube">
         <transformation>
@@ -400,65 +500,6 @@
           <primitiveref id="plane" />
         </children>
       </component>
-
-        <component id="table_leg_1">
-          <transformation>
-              <transformationref id="transformation_02" />
-              <transformationref id="scale_0.5_0.3_0.5" />
-            </transformation>
-
-            <materials>
-              <material id="material_01" />
-            </materials>
-
-            <texture id="wood_texture" length_s="1" length_t="1" />
-
-            <children>
-              <primitiveref id="cylinder" />
-            </children>
-          </component>
-
-          <component id="table_leg_2">
-            <transformation>
-                <transformationref id="transformation_03" />
-                <transformationref id="scale_0.5_0.3_0.5" />
-              </transformation>
-              <materials>
-                <material id="material_01" />
-              </materials>
-              <texture id="wood_texture" length_s="1" length_t="1" />
-              <children>
-                <primitiveref id="cylinder" />
-              </children>
-            </component>
-
-            <component id="table_leg_3">
-              <transformation>
-                  <transformationref id="transformation_04" />
-                  <transformationref id="scale_0.5_0.3_0.5" />
-                </transformation>
-                <materials>
-                  <material id="material_01" />
-                </materials>
-                <texture id="wood_texture" length_s="1" length_t="1" />
-                <children>
-                  <primitiveref id="cylinder" />
-                </children>
-              </component>
-
-              <component id="table_leg_4">
-                <transformation>
-                    <transformationref id="transformation_05" />
-                    <transformationref id="scale_0.5_0.3_0.5" />
-                  </transformation>
-                  <materials>
-                    <material id="material_01" />
-                  </materials>
-                  <texture id="wood_texture" length_s="1" length_t="1" />
-                  <children>
-                    <primitiveref id="cylinder" />
-                  </children>
-                </component>
       </components>
 
 </yas>
