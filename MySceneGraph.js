@@ -92,9 +92,6 @@ class MySceneGraph
 
         for (var i = 0; i < nodes.length; i++)
             nodeNames.push(nodes[i].nodeName);
-           
-        
-            
         
         var error, index;
 
@@ -493,7 +490,10 @@ class MySceneGraph
             if(textureFile == null)
                 return "No file defined for texture\n";
 
-            this.textures[textureID] = [textureFile];
+            var appr = new CGFappearance(this.scene);
+            appr.loadTexture(textureFile);
+
+            this.textures[textureID] = appr;
         }
 
         this.log("Parsed textures");
@@ -1143,7 +1143,7 @@ class MySceneGraph
      */
     displayScene() 
     {
-        this.displayNode(this.idRoot);
+        this.displayNode(this.idRoot, this.nodes[this.idRoot].texture, this.nodes[this.idRoot].materials);
     }
 
     /**
@@ -1154,7 +1154,7 @@ class MySceneGraph
      */
     displayNode(nodeID, textureInit, materialInit)
     { 
-        var texture = textureInit, material = materialInit;
+        var texture, material = materialInit;
         var node;
 
         if(nodeID != null)
@@ -1163,7 +1163,22 @@ class MySceneGraph
             this.log("Error in node ID");
 
         if(node.texture.length != 0)
+        {
+            if(node.texture[0] == "inherit")
+            {
+                texture = textureInit;
+                //textureInit[0].apply();
+            }
+            else
+                if(node.texture[0] == "none")
+                    texture = null;
+        }
+        else
+        {
             texture = node.texture;
+            //node.texture[0].apply();
+        }
+            
 
         if(node.materials.length != 0)
             material = node.materials;
@@ -1182,7 +1197,6 @@ class MySceneGraph
 
         if(node.build != null)
         {
-            //Aplicar textura e material
             node.build.display();
         } 
 

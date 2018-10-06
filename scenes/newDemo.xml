@@ -1,7 +1,8 @@
 <yas>
+    <!-- Scene -->
+    <scene root="scene" axis_length="5" />
 
-    <scene root="table" axis_length="5" />
-
+    <!-- Views -->
     <views default="perspective" >
         <perspective id="perspective" near="1" far="5" angle="30">
             <from x="10" y="10" z="10" />
@@ -10,11 +11,13 @@
         <ortho id="ortho"  near="1" far="5" left="10" right="10" top="10" bottom="10" />
     </views>
 
+    <!-- Ambient -->
     <ambient>
         <ambient r="0.2" g="0.2" b="0.2" a="1" />
         <background r="0" g="0" b="0" a="1" />
     </ambient>
 
+    <!-- Lights -->
     <lights>
         <omni id="omni" enabled="1" >
             <location  x="0" y="10" z="0" w="1" />
@@ -22,13 +25,14 @@
             <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
         </omni>
-        <!--TODO: voltar a por o spot -->
     </lights>
 
+    <!-- Textures -->
     <textures>
-        <texture id="wood_texture" file="images/wood-image.jpg" />
+        <texture id="wood_texture" file="scenes/images/wood-image.jpg" />
     </textures>
 
+    <!-- Materials -->
     <materials>
         <material id="material_01" shininess = "0.3" >
             <emission r="0.3" g="0.3" b="0.3" a="1" />
@@ -38,6 +42,7 @@
         </material>
     </materials>
 
+    <!-- Transformations -->
     <transformations>
          <transformation id="null_transformation"> 
             <translate x="0" y="0" z="0"/>
@@ -55,7 +60,11 @@
             <scale x="0.5" y="0.3" z="0.5"/>
         </transformation>
 
-        <transformation id="transformation_02"> <!-- pernas -->
+        <transformation id="scale">
+            <scale x="0.3" y="2" z="0.3"/>
+        </transformation>
+
+        <transformation id="transformation_02">
           <translate x="-4" y="-4" z="5"/>
         </transformation>
 
@@ -72,6 +81,7 @@
         </transformation>
     </transformations>
 
+    <!-- Primitives -->
     <primitives>
         <primitive id="plane">
           <rectangle x1="-0.5" y1="-0.5" x2="0.5" y2="0.5" />
@@ -82,8 +92,155 @@
         </primitive>
     </primitives>
 
+    <!-- Components -->
     <components>
+      <component id="scene">
+        <transformation>
+            <transformationref id="null_transformation" />
+        </transformation>
 
+        <materials>
+          <material id="material_01" />
+        </materials>
+
+        <texture id="none" length_s="1" length_t="1" />
+
+        <children>
+          <componentref id="table" />
+          <componentref id="chair" />
+        </children>
+      </component>
+
+      <!-- Chair -->
+      <component id="chair">
+        <transformation>
+            <transformationref id="null_transformation" />
+        </transformation>
+
+        <materials>
+          <material id="material_01" />
+        </materials>
+
+        <texture id="wood_texture" length_s="1" length_t="1" />
+
+        <children>
+          <componentref id="chair_seat" />
+          <componentref id="chair_back" />
+          <componentref id="chair_leg_1" />
+         <!-- <componentref id="chair_leg_2" />
+          <componentref id="chair_leg_3" />
+          <componentref id="chair_leg_4" /> -->
+        </children>
+      </component>
+
+      <!-- Chair Seat -->
+      <component id="chair_seat">
+        <transformation>
+            <translate x="0" y="1.5" z="0" />
+            <scale x="1.5" y="0.3" z="1.5"/>
+        </transformation>
+
+        <materials>
+          <material id="material_01" />
+        </materials>
+
+        <texture id="wood_texture" length_s="1" length_t="1" />
+
+        <children>
+          <componentref id="cube" />
+        </children>
+      </component>
+
+      <!-- Chair Back -->
+      <component id="chair_back">
+        <transformation>
+            <translate x="0" y="2.5" z="-0.6" />
+            <scale x="1.5" y="2" z="0.3"/>
+        </transformation>
+
+        <materials>
+          <material id="material_01" />
+        </materials>
+
+        <texture id="wood_texture" length_s="1" length_t="1" />
+
+        <children>
+          <componentref id="cube" />
+        </children>
+      </component>
+
+      <!-- Chair Legs -->
+      <component id="chair_leg_1">
+        <transformation>
+            <translate x="0" y="0.7" z="0" />
+            <scale x="0.3" y="1.4" z="0.3"/>
+        </transformation>
+
+        <materials>
+          <material id="material_01" />
+        </materials>
+
+        <texture id="wood_texture" length_s="1" length_t="1" />
+
+        <children>
+          <componentref id="cube" />
+        </children>
+      </component>
+
+      <component id="chair_leg_2">
+        <transformation>
+            <translate x="0" y="3" z="0" />
+            <scale x="3" y="0.3" z="0.3"/>
+        </transformation>
+
+        <materials>
+          <material id="material_01" />
+        </materials>
+
+        <texture id="wood_texture" length_s="1" length_t="1" />
+
+        <children>
+          <componentref id="cube" />
+        </children>
+      </component>
+
+      <component id="chair_leg_3">
+        <transformation>
+            <translate x="0" y="3" z="0" />
+            <scale x="3" y="0.3" z="0.3"/>
+        </transformation>
+
+        <materials>
+          <material id="material_01" />
+        </materials>
+
+        <texture id="wood_texture" length_s="1" length_t="1" />
+
+        <children>
+          <componentref id="cube" />
+        </children>
+      </component>
+
+      <component id="chair_leg_4">
+        <transformation>
+            <translate x="0" y="3" z="0" />
+            <scale x="3" y="0.3" z="0.3"/>
+        </transformation>
+
+        <materials>
+          <material id="material_01" />
+        </materials>
+
+        <texture id="wood_texture" length_s="1" length_t="1" />
+
+        <children>
+          <componentref id="cube" />
+        </children>
+      </component>
+
+
+
+      <!-- Table -->
       <component id="table">
         <transformation>
             <transformationref id="null_transformation" />
@@ -97,16 +254,14 @@
 
         <children>
           <componentref id="table_countertop" />
-          <componentref id="table_leg_1" />
-          <componentref id="table_leg_2" />
-          <componentref id="table_leg_3" />
-          <componentref id="table_leg_4" />
+          
         </children>
       </component>
 
+      <!-- Table Countertop -->
       <component id="table_countertop">
         <transformation>
-            <translate x="0" y="3" z="0"/>
+            <translate x="0" y="2.3" z="0"/>
             <scale x="3" y="0.3" z="7"/>
         </transformation>
 
