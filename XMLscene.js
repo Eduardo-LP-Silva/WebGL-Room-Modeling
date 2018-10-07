@@ -14,6 +14,7 @@ class XMLscene extends CGFscene
 
         this.interface = myinterface;
         this.lightValues = {};
+        this.viewIndex = 0;
     }
 
     /**
@@ -42,6 +43,7 @@ class XMLscene extends CGFscene
      */
     initCameras() {
        this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
+
     }
     /**
      * Initializes the scene lights with the values read from the XML file.
@@ -83,9 +85,6 @@ class XMLscene extends CGFscene
      */
     onGraphLoaded() 
     {
-        //this.camera.near = this.graph.near;
-        //this.camera.far = this.graph.far;
-
         this.axis = new CGFaxis(this, this.graph.referenceLength);
 
         this.gl.clearColor(this.graph.background[0], this.graph.background[1], this.graph.background[2], this.graph.background[3]);
@@ -95,8 +94,10 @@ class XMLscene extends CGFscene
 
         this.initLights();
 
+        
         // Adds lights group.
         this.interface.addLightsGroup(this.graph.lights);
+        this.interface.addViewsGroup(this.graph.views);
         
         this.sceneInited = true;
     }
@@ -112,6 +113,8 @@ class XMLscene extends CGFscene
         // Clear image and depth buffer everytime we update the scene
         this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+
+        //this.camera = this.graph.views[this.viewIndex];
 
         // Initialize Model-View matrix as identity (no transformation
         this.updateProjectionMatrix();

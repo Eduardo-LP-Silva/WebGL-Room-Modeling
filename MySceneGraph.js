@@ -34,6 +34,7 @@ class MySceneGraph
         this.axisCoords['y'] = [0, 1, 0];
         this.axisCoords['z'] = [0, 0, 1];
         this.referenceLength = 0;
+        this.views = [];
         this.ambientIllumination = [];
         this.background = [];
         this.textures = [];
@@ -242,14 +243,74 @@ class MySceneGraph
     parseViews(viewNode)
     {
         var children = viewNode.children;
-        var nodeNames = [];
+        var error;
 
         for (var i = 0; i < children.length; i++)
-            nodeNames.push(children[i].nodeName);
+            if(children[i].nodeName == "perspective")
+                error = this.parsePerspectiveView(children[i]);
+            else
+                if(children[i].nodeName == "ortho")
+                    error = this.parseOrthoView(children[i]);
+                else
+                {
+                    this.onXMLMinorError("unknown tag <" + children[i].nodeName + ">");
+                    continue;
+                }
 
-        //TODO Do smt with this information
+        if(error != null)
+            return error;
+        
 
         this.log("Parsed views");
+    }
+
+    /**
+     * 
+     * @param {The block containing the ortho view } orthoBlock
+     */
+    parseOrthoView(orthoBlock)
+    {
+        var viewID = this.reader.getString(orthoBlock, "id");
+
+        if(this.views[viewID] != null)
+            return "View " + viewID + " already declared";
+
+            var near = this.reader.getFloat(orthoBlock, "near");
+            var far =  this.reader.getFloat(orthoBlock, "far");
+            var left = this.reader.getFloat(orthoBlock, "left");
+            var right = this.reader.getFloat(orthoBlock, "right");
+            var top = this.reader.getFloat(orthoBlock, "top");
+            var bottom = this.reader.getFloat(orthoBlock, "bottom");
+
+            //TODO Complete
+    }
+
+    /**
+     * 
+     * @param {The block containing the perspective view} perspBlock 
+     */
+    parsePerspectiveView(perspBlock)
+    {
+        var viewID = this.reader.getString(perspBlock, "id");
+
+        if(this.views[viewID] != null)
+            return "View " + viewID + " already declared";
+        
+        var near = this.reader.getFloat(perspBlock, "near");
+        var far =  this.reader.getFloat(perspBlock, "far");
+        var angle =  this.reader.getFloat(perspBlock, "angle");
+        var children = perspBlock.children, nodeNames = [];
+
+        for(let i = 0; i < children.length; i++)
+            nodeNames.push(children[i].nodeName);
+
+        let index = nodeNames.indexOf("from");
+        var from = this.getXYZ(children[index]);
+
+        index = nodeNames.indexOf("to");
+        var to = this.getXYZ(children[index]);
+
+        this.views.push(new CGFcamera(angle, near, far, from, to));
     }
 
     /**
@@ -301,9 +362,6 @@ class MySceneGraph
 
         var grandChildren = [];
         var nodeNames = [];
-
-        var angle = 0;
-        var exponent = 0;
 
         // Any number of lights.
         for (var i = 0; i < children.length; i++)
@@ -490,10 +548,9 @@ class MySceneGraph
             if(textureFile == null)
                 return "No file defined for texture\n";
 
-            var appr = new CGFappearance(this.scene);
-            appr.loadTexture(textureFile);
+            var tex = new CGFtexture(this.scene, textureFile);
 
-            this.textures[textureID] = appr;
+            this.textures[textureID] = tex;
         }
 
         this.log("Parsed textures");
@@ -508,7 +565,7 @@ class MySceneGraph
         var children = materialsNode.children;
         var nodeNames = [], nodeNames = [];
         var grandChildren = [];
-        var shininess, shininessIndex;
+        var shininess;
         var emission = [], emissionIndex;
         var ambient = [], ambientIndex;
         var diffuse = [], diffuseIndex;
@@ -577,7 +634,15 @@ class MySceneGraph
             if(typeof specular == "string")
                 return specular;
 
-            this.materials[materialID] = [shininess, emission, ambient, diffuse, specular];
+            var material = new CGFappearance(this.scene);
+
+            material.setShininess(shininess);
+            material.setEmission(emission[0], emission[1], emission[2], emission[3]);
+            material.setAmbient(ambient[0], ambient[1], ambient[2], ambient[3]);
+            material.setDiffuse(diffuse[0], diffuse[1], diffuse[2], diffuse[3]);
+            material.setSpecular(specular[0], specular[1], specular[2], specular[3]);
+
+            this.materials[materialID] = material;
         }
 
         this.log("Parsed materials");
@@ -990,14 +1055,7 @@ class MySceneGraph
                     if(axis == null || angle == null)
                         return transformationErrorTag + "Rotation not properly defined";
 
-                    this.log(axis);
-                    this.log(angle);
-
                     mat4.rotate(transformationMatrix, transformationMatrix, angle * DEGREE_TO_RAD, axis);
-
-                    this.log(componentID);
-                    this.log(transformationMatrix);
-
                     break;
 
                 default:
@@ -1028,11 +1086,15 @@ class MySceneGraph
 
             materialID = this.reader.getString(children[i], "id");
 
-            if(materialID == "inherit" || this.materials[materialID] != null)
-                materialList.push(this.materials[materialID]);
+            if(materialID == "inherit")
+                materialList.push(materialID);
             else
-                return "Component " + componentID + ": Material " + materialID +
-                    " not defined previously";
+            {
+                if(this.materials[materialID] == null)
+                    return "Component " + componentID + ": Material " + materialID + " not defined previously";
+                else
+                    materialList.push(this.materials[materialID]);
+            }
         }
 
         this.nodes[componentID].materials = materialList;
@@ -1159,7 +1221,8 @@ class MySceneGraph
      */
     displayScene()
     {
-        this.displayNode(this.idRoot, this.nodes[this.idRoot].texture[0], this.nodes[this.idRoot].materials);
+        this.displayNode(this.idRoot, this.nodes[this.idRoot].texture[0], 
+            this.nodes[this.idRoot].materials[this.nodes[this.idRoot].materialIndex]);
     }
 
     /**
@@ -1179,6 +1242,20 @@ class MySceneGraph
             this.log("Error in node ID");
 
         this.scene.pushMatrix();
+    
+        if(node.materials.length != 0)
+        {
+            switch(node.materials[node.materialIndex])
+            {
+                case "inherit":
+                    material = materialInit;
+                    break;
+
+                default:
+                    material = node.materials[node.materialIndex];
+            }
+
+        }
 
         if(node.texture.length != 0)
         {
@@ -1186,7 +1263,7 @@ class MySceneGraph
             {
                 case "inherit":
                     texture = textureInit;
-                    texture.apply();
+                    material.setTexture(texture);
                     break;
 
                 case "none":
@@ -1195,18 +1272,12 @@ class MySceneGraph
 
                 default:
                     texture = node.texture[0];
-                    texture.apply();
-                    break;
+                    material.setTexture(texture);
             }
-            
-           /* else
-                if(node.texture[0] == "none")
-                    texture = null; */
         }
-            
-        if(node.materials.length != 0)
-            material = node.materials;
 
+        material.apply();
+            
         if(node.transformations != null)
         {
             this.scene.multMatrix(node.transformations);
