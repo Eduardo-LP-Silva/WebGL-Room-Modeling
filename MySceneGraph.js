@@ -1,3 +1,4 @@
+//Constant to convert from Degrees to Radians
 var DEGREE_TO_RAD = Math.PI / 180;
 
 // Order of the groups in the XML document.
@@ -27,14 +28,14 @@ class MySceneGraph
         this.scene = scene;
         scene.graph = this;
 
-        this.nodes = [];
+        this.nodes = []; //The associative array containing the nodes(components + primitives)
         this.idRoot = null; // The id of the root element.
-        this.axisCoords = [];
+        this.axisCoords = []; //The axis coords
         this.axisCoords['x'] = [1, 0, 0];
         this.axisCoords['y'] = [0, 1, 0];
         this.axisCoords['z'] = [0, 0, 1];
-        this.referenceLength = 0;
-        this.views = [];
+        this.referenceLength = 0; //Axis length
+        this.views = []; //Associative 2D array containing all the view/camera data
         this.ambientIllumination = [];
         this.background = [];
         this.textures = [];
@@ -74,7 +75,8 @@ class MySceneGraph
 
         this.loadedOk = true;
 
-        // As the graph loaded ok, signal the scene so that any additional initialization depending on the graph can take place
+        /* As the graph loaded ok, signal the scene so that any additional initialization depending on the graph can 
+        take place */
         this.scene.onGraphLoaded();
     }
 
@@ -107,7 +109,7 @@ class MySceneGraph
             if (index != SCENE_INDEX)
                 this.onXMLMinorError("tag <scene> out of order");
 
-            //Parse scene block
+            //Parses scene node
             if ((error = this.parseScene(nodes[index])) != null)
                 return error;
         }
@@ -120,6 +122,7 @@ class MySceneGraph
             if (index != VIEWS_INDEX)
                 this.onXMLMinorError("tag <views> out of order");
 
+             //Parses views node
             if((error = this.parseViews(nodes[index])) != null)
                 return error;
         }
@@ -132,6 +135,7 @@ class MySceneGraph
             if (index != AMBIENT_INDEX)
                 this.onXMLMinorError("tag <ambient> out of order");
 
+             //Parses ambient node
             if((error = this.parseAmbient(nodes[index])) != null)
                 return error;
         }
@@ -144,7 +148,7 @@ class MySceneGraph
             if (index != LIGHTS_INDEX)
                 this.onXMLMinorError("tag <lights> out of order");
 
-            //Parse lights block
+            //Parse lights node
             if ((error = this.parseLights(nodes[index])) != null)
                 return error;
         }
@@ -157,7 +161,7 @@ class MySceneGraph
             if (index != TEXTURES_INDEX)
                 this.onXMLMinorError("tag <TEXTURES> out of order");
 
-            //Parse textures block
+            //Parse textures node
             if ((error = this.parseTextures(nodes[index])) != null)
                 return error;
         }
@@ -170,7 +174,7 @@ class MySceneGraph
             if (index != MATERIALS_INDEX)
                 this.onXMLMinorError("tag <materials> out of order");
 
-            //Parse materials block
+            //Parse materials node
             if ((error = this.parseMaterials(nodes[index])) != null)
                 return error;
         }
@@ -183,7 +187,7 @@ class MySceneGraph
             if (index != TRANSFORMATIONS_INDEX)
                 this.onXMLMinorError("tag <transformations> out of order");
 
-            //Parse transformations block
+            //Parse transformations node
             if ((error = this.parseTransformations(nodes[index])) != null)
                 return error;
         }
@@ -196,13 +200,12 @@ class MySceneGraph
             if (index != PRIMITIVES_INDEX)
                 this.onXMLMinorError("tag <primitives> out of order");
 
-            //Parse transformations block
+            //Parse transformations node
             if ((error = this.parsePrimitives(nodes[index])) != null)
                 return error;
         }
 
         // <components>
-
         if ((index = nodeNames.indexOf("components")) == -1)
             return "tag <components> missing";
         else
@@ -210,7 +213,7 @@ class MySceneGraph
             if (index != COMPONENTS_INDEX)
                 this.onXMLMinorError("tag <components> out of order");
 
-            //Parse transformations block
+            //Parse components node
             if ((error = this.parseComponents(nodes[index])) != null)
                 return error;
         }
@@ -245,7 +248,7 @@ class MySceneGraph
     {
         var children = viewNode.children;
         var error;
-        var defaultID = this.reader.getString(viewNode, "default");
+        var defaultID = this.reader.getString(viewNode, "default"); 
 
         for (var i = 0; i < children.length; i++)
             if(children[i].nodeName == "perspective")
@@ -259,15 +262,60 @@ class MySceneGraph
                     continue;
                 }
 
-        if(error != null)
-            return error;
-        
         if(this.views[defaultID] == null)
             return "Default view " + defaultID + " not defined"; 
         else
-            this.defaultViewID = defaultID;           
-
+            this.defaultViewID = defaultID; 
+            
+        if(error != null)
+            return error;
+        
         this.log("Parsed views");
+    }
+
+    /**
+     * Parses a single view block
+     * @param {The view block} viewBlock 
+     */
+    parseViewBlock(viewBlock)
+    {
+        var viewID = this.reader.getString(viewBlock, "id");
+
+        if(viewID == null)
+            return "View ID not defined";
+
+        if(this.views[viewID] != null)
+            return "View " + viewID + " already declared";
+        
+        var near = this.reader.getFloat(viewBlock, "near");
+        var far =  this.reader.getFloat(viewBlock, "far");
+        var children = viewBlock.children, nodeNames = [];
+
+        for(let i = 0; i < children.length; i++)
+            nodeNames.push(children[i].nodeName);
+
+        let index = nodeNames.indexOf("from");
+        var from = this.getXYZ(children[index]);
+
+        index = nodeNames.indexOf("to");
+        var to = this.getXYZ(children[index]);
+
+        if(viewBlock.nodeName == "perspective")
+        {
+            var angle =  this.reader.getFloat(viewBlock, "angle");
+            this.views[viewID] = ['P', angle, near, far, from, to];
+        }
+        else
+            if(viewBlock.nodeName == "ortho")
+            {
+                var left = this.reader.getFloat(viewBlock, "left");
+                var right = this.reader.getFloat(viewBlock, "right");
+                var top = this.reader.getFloat(viewBlock, "top");
+                var bottom = this.reader.getFloat(viewBlock, "bottom");
+                //var up = this.reader.getFloat(viewBlock, "up");
+
+                //this.views[viewID] = ['O', left, right, bottom, top, near, far, from, to, up];
+            }
     }
 
     /**
@@ -283,10 +331,7 @@ class MySceneGraph
 
         var near = this.reader.getFloat(orthoBlock, "near");
         var far =  this.reader.getFloat(orthoBlock, "far");
-        var left = this.reader.getFloat(orthoBlock, "left");
-        var right = this.reader.getFloat(orthoBlock, "right");
-        var top = this.reader.getFloat(orthoBlock, "top");
-        var bottom = this.reader.getFloat(orthoBlock, "bottom");
+        
 
         this.views[viewID] = ['O', left, right, bottom, top, near, far];
     }
@@ -1143,7 +1188,7 @@ class MySceneGraph
         xyz.push(this.reader.getFloat(tag, "y"));
         xyz.push(this.reader.getFloat(tag, "z"));
 
-        if(xyz[0] == null || xyz[1] == null || xyz[2] == null)
+        if(xyz[0] == null || isNaN(xyz[0]) || xyz[1] == null || isNaN(xyz[1]) || xyz[2] == null || isNaN(xyz[2]))
             return "XYZ values not properly defined";
         else
             return xyz;
