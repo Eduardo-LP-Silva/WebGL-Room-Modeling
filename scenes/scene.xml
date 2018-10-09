@@ -3,15 +3,20 @@
   <scene root="scene" axis_length="2" />
 
   <!-- Views -->
-  <views default="perspective" >
-    <perspective id="perspective_1" near="0.1" far="50" angle="70">
+  <views default="Default Perspective" >
+    <perspective id="Default Perspective" near="0.1" far="50" angle="70">
       <from x="10" y="10" z="0" />
       <to x="0" y="0" z="0" />
     </perspective>
 
-    <perspective id="perspective_2" near="0.1" far="50" angle="70">
-      <from x="10" y="10" z="0" />
-      <to x="0" y="0" z="0" />
+    <perspective id="Person 1 Perspective" near="0.1" far="50" angle="70">
+      <from x="0" y="3" z="-2" />
+      <to x="0" y="3" z="2" />
+    </perspective>
+
+    <perspective id="Person 2 Perspective" near="0.1" far="50" angle="70">
+      <from x="0" y="3" z="2" />
+      <to x="0" y="3" z="-2" />
     </perspective>
   </views>
 
@@ -25,9 +30,9 @@
   <lights>
     <omni id="candle_light" enabled="1" >
       <location  x="0" y="3.4" z="0" w="1" />
-      <ambient r="0.5" g="0.5" b="0.5" a="1.0" />
-      <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
-      <specular r="1.0" g="1.0" b="1.0" a="1.0" />
+      <ambient r="1.0" g="0.6" b="0.2" a="1.0" />
+      <diffuse r="1.0" g="0.6" b="0.2" a="1.0" />
+      <specular r="1.0" g="0.6" b="0.2" a="1.0" />
     </omni>
   </lights>
 

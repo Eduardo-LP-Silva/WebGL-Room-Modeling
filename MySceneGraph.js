@@ -41,6 +41,7 @@ class MySceneGraph
         this.materials = [];
         this.transformations = [];
         this.root = null;
+        this.defaultViewID = null;
 
         // File reading
         this.reader = new CGFXMLreader();
@@ -244,6 +245,7 @@ class MySceneGraph
     {
         var children = viewNode.children;
         var error;
+        var defaultID = this.reader.getString(viewNode, "default");
 
         for (var i = 0; i < children.length; i++)
             if(children[i].nodeName == "perspective")
@@ -260,6 +262,10 @@ class MySceneGraph
         if(error != null)
             return error;
         
+        if(this.views[defaultID] == null)
+            return "Default view " + defaultID + " not defined"; 
+        else
+            this.defaultViewID = defaultID;           
 
         this.log("Parsed views");
     }
@@ -275,14 +281,14 @@ class MySceneGraph
         if(this.views[viewID] != null)
             return "View " + viewID + " already declared";
 
-            var near = this.reader.getFloat(orthoBlock, "near");
-            var far =  this.reader.getFloat(orthoBlock, "far");
-            var left = this.reader.getFloat(orthoBlock, "left");
-            var right = this.reader.getFloat(orthoBlock, "right");
-            var top = this.reader.getFloat(orthoBlock, "top");
-            var bottom = this.reader.getFloat(orthoBlock, "bottom");
+        var near = this.reader.getFloat(orthoBlock, "near");
+        var far =  this.reader.getFloat(orthoBlock, "far");
+        var left = this.reader.getFloat(orthoBlock, "left");
+        var right = this.reader.getFloat(orthoBlock, "right");
+        var top = this.reader.getFloat(orthoBlock, "top");
+        var bottom = this.reader.getFloat(orthoBlock, "bottom");
 
-            //TODO Complete
+        this.views[viewID] = ['O', left, right, bottom, top, near, far];
     }
 
     /**
@@ -310,7 +316,7 @@ class MySceneGraph
         index = nodeNames.indexOf("to");
         var to = this.getXYZ(children[index]);
 
-        this.views.push(new CGFcamera(angle, near, far, from, to));
+        this.views[viewID] = ['P', angle, near, far, from, to];
     }
 
     /**
@@ -366,7 +372,6 @@ class MySceneGraph
         // Any number of lights.
         for (var i = 0; i < children.length; i++)
         {
-
             if (children[i].nodeName != "omni")
                 if(children[i].nodeName != "spot")
                 {

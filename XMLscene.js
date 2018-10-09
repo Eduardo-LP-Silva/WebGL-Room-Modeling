@@ -9,19 +9,21 @@ class XMLscene extends CGFscene
      * @constructor
      * @param {MyInterface} myinterface 
      */
-    constructor(myinterface) {
+    constructor(myinterface) 
+    {
         super();
 
         this.interface = myinterface;
-        this.lightValues = {};
         this.viewIndex = 0;
+        this.oldViewIndex = this.viewIndex;
     }
 
     /**
      * Initializes the scene, setting some WebGL defaults, initializing the camera and the axis.
      * @param {CGFApplication} application
      */
-    init(application) {
+    init(application) 
+    {
         super.init(application);
 
         this.sceneInited = false;
@@ -43,21 +45,23 @@ class XMLscene extends CGFscene
      */
     initCameras() {
        this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
-
     }
     /**
      * Initializes the scene lights with the values read from the XML file.
      */
-    initLights() {
+    initLights() 
+    {
         var i = 0;
         // Lights index.
 
         // Reads the lights from the scene graph.
-        for (var key in this.graph.lights) {
+        for (var key in this.graph.lights) 
+        {
             if (i >= 8)
                 break;              // Only eight lights allowed by WebGL.
 
-            if (this.graph.lights.hasOwnProperty(key)) {
+            if (this.graph.lights.hasOwnProperty(key)) 
+            {
                 var light = this.graph.lights[key];
 
                 //lights are predefined in cgfscene
@@ -67,6 +71,7 @@ class XMLscene extends CGFscene
                 this.lights[i].setSpecular(light[4][0], light[4][1], light[4][2], light[4][3]);
 
                 this.lights[i].setVisible(true);
+
                 if (light[0])
                     this.lights[i].enable();
                 else
@@ -76,6 +81,8 @@ class XMLscene extends CGFscene
 
                 i++;
             }
+
+            
         }
     }
 
@@ -94,11 +101,21 @@ class XMLscene extends CGFscene
 
         this.initLights();
 
-        
         // Adds lights group.
-        this.interface.addLightsGroup(this.graph.lights);
-        //this.interface.addViewsGroup(this.graph.views);
+        this.interface.addLightsGroup(this.lights);
         
+        var cameraSpecs = this.graph.views[this.graph.defaultViewID];
+
+        this.camera.fov = cameraSpecs[1];
+        this.camera.near = cameraSpecs[2];
+        this.camera.far = cameraSpecs[3];
+        this.camera.setPosition(cameraSpecs[4]);
+        this.camera.setTarget(cameraSpecs[5]);
+        this.viewIndex = this.graph.defaultViewID;
+        this.oldViewIndex = this.viewIndex;
+
+        this.interface.addViewsGroup(this.graph.views);
+
         this.sceneInited = true;
     }
 
@@ -114,8 +131,18 @@ class XMLscene extends CGFscene
         this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
-        //this.camera = this.graph.views[this.viewIndex];
+        if(this.viewIndex != this.oldViewIndex)
+        {
+            var cameraSpecs = this.graph.views[this.viewIndex];
 
+            this.camera.fov = cameraSpecs[1];
+            this.camera.near = cameraSpecs[2];
+            this.camera.far = cameraSpecs[3];
+            this.camera.setPosition(cameraSpecs[4]);
+            this.camera.setTarget(cameraSpecs[5]);
+            this.oldViewIndex = this.viewIndex;
+        }
+        
         // Initialize Model-View matrix as identity (no transformation
         this.updateProjectionMatrix();
         this.loadIdentity();
@@ -130,21 +157,8 @@ class XMLscene extends CGFscene
             // Draw axis
             this.axis.display();
 
-            var i = 0;
-            for (var key in this.lightValues) {
-                if (this.lightValues.hasOwnProperty(key)) {
-                    if (this.lightValues[key]) {
-                        this.lights[i].setVisible(true);
-                        this.lights[i].enable();
-                    }
-                    else {
-                        this.lights[i].setVisible(false);
-                        this.lights[i].disable();
-                    }
-                    this.lights[i].update();
-                    i++;
-                }
-            }
+            for (var i = 0; i < this.lights.length; i++)
+                this.lights[i].update();
 
             // Displays the scene (MySceneGraph function).
             this.graph.displayScene();

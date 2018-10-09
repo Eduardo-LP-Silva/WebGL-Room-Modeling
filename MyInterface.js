@@ -1,7 +1,8 @@
 /**
 * MyInterface class, creating a GUI interface.
 */
-class MyInterface extends CGFinterface {
+class MyInterface extends CGFinterface 
+{
     /**
      * @constructor
      */
@@ -37,21 +38,33 @@ class MyInterface extends CGFinterface {
         // add two check boxes to the group. The identifiers must be members variables of the scene initialized in scene.init as boolean
         // e.g. this.option1=true; this.option2=false;
 
-        for (var key in lights) 
+        var i = 0;
+
+        for (var key in this.scene.graph.lights) 
         {
-            if (lights.hasOwnProperty(key)) 
+            if (this.scene.graph.lights.hasOwnProperty(key)) 
             {
-                this.scene.lightValues[key] = lights[key][0];
-                group.add(this.scene.lightValues, key);
+                group.add(lights[i], 'enabled').name('Light ' + i);
             }
+
+            i++;
         }
+            
     }
 
     addViewsGroup(views)
     {
         var group = this.gui.addFolder("Views");
-        group.open();
+        var viewIDs = [];
 
-        group.add(this.scene, "viewIndex", 0, views.length - 1).step(1).name("Camera");
+        for (var key in views) 
+        {
+            if (views.hasOwnProperty(key)) 
+            {
+                viewIDs.push(key);
+            }
+        }
+
+        group.add(this.scene, "viewIndex", viewIDs);
     }
 }
