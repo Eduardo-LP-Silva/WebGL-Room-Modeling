@@ -1,4 +1,4 @@
-var DEGREE_TO_RAD = Math.PI / 180;
+var DEGREE_TO_RAD = Math.PI / 180; //Formula to convert from degrees to radians 
 
 /**
  * XMLscene class, representing the scene that is to be rendered.
@@ -163,7 +163,8 @@ class XMLscene extends CGFscene
             // Displays the scene (MySceneGraph function).
             this.graph.displayScene();
         }
-        else {
+        else 
+        {
             // Draw axis
             this.axis.display();
         }

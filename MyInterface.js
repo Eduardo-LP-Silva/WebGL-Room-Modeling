@@ -6,7 +6,8 @@ class MyInterface extends CGFinterface
     /**
      * @constructor
      */
-    constructor() {
+    constructor() 
+    {
         super();
     }
 
@@ -14,7 +15,8 @@ class MyInterface extends CGFinterface
      * Initializes the interface.
      * @param {CGFapplication} application
      */
-    init(application) {
+    init(application) 
+    {
         super.init(application);
         // init GUI. For more information on the methods, check:
         //  http://workshop.chromeexperiments.com/examples/gui
@@ -32,7 +34,6 @@ class MyInterface extends CGFinterface
      */
     addLightsGroup(lights) 
     {
-
         var group = this.gui.addFolder("Lights");
 
         // add two check boxes to the group. The identifiers must be members variables of the scene initialized in scene.init as boolean
@@ -52,6 +53,10 @@ class MyInterface extends CGFinterface
             
     }
 
+    /**
+     * Adds a new Views folder to the GUI
+     * @param {The associative array containing all the information regarding the scene's views} views 
+     */
     addViewsGroup(views)
     {
         var group = this.gui.addFolder("Views");

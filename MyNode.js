@@ -18,7 +18,7 @@
      }
 
      /**
-      * Displays the node
+      * Applies its transformation matrix and displays the primitive if present
       */
      display()
      {

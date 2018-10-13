@@ -251,16 +251,12 @@ class MySceneGraph
         var defaultID = this.reader.getString(viewNode, "default"); 
 
         for (var i = 0; i < children.length; i++)
-            if(children[i].nodeName == "perspective")
-                error = this.parsePerspectiveView(children[i]);
-            else
-                if(children[i].nodeName == "ortho")
-                    error = this.parseOrthoView(children[i]);
-                else
-                {
-                    this.onXMLMinorError("unknown tag <" + children[i].nodeName + ">");
-                    continue;
-                }
+        {
+            error = this.parseViewBlock(children[i]);
+
+            if(error != null)
+                return error;
+        }
 
         if(this.views[defaultID] == null)
             return "Default view " + defaultID + " not defined"; 
@@ -316,52 +312,6 @@ class MySceneGraph
 
                 //this.views[viewID] = ['O', left, right, bottom, top, near, far, from, to, up];
             }
-    }
-
-    /**
-     * 
-     * @param {The block containing the ortho view } orthoBlock
-     */
-    parseOrthoView(orthoBlock)
-    {
-        var viewID = this.reader.getString(orthoBlock, "id");
-
-        if(this.views[viewID] != null)
-            return "View " + viewID + " already declared";
-
-        var near = this.reader.getFloat(orthoBlock, "near");
-        var far =  this.reader.getFloat(orthoBlock, "far");
-        
-
-        this.views[viewID] = ['O', left, right, bottom, top, near, far];
-    }
-
-    /**
-     * 
-     * @param {The block containing the perspective view} perspBlock 
-     */
-    parsePerspectiveView(perspBlock)
-    {
-        var viewID = this.reader.getString(perspBlock, "id");
-
-        if(this.views[viewID] != null)
-            return "View " + viewID + " already declared";
-        
-        var near = this.reader.getFloat(perspBlock, "near");
-        var far =  this.reader.getFloat(perspBlock, "far");
-        var angle =  this.reader.getFloat(perspBlock, "angle");
-        var children = perspBlock.children, nodeNames = [];
-
-        for(let i = 0; i < children.length; i++)
-            nodeNames.push(children[i].nodeName);
-
-        let index = nodeNames.indexOf("from");
-        var from = this.getXYZ(children[index]);
-
-        index = nodeNames.indexOf("to");
-        var to = this.getXYZ(children[index]);
-
-        this.views[viewID] = ['P', angle, near, far, from, to];
     }
 
     /**
@@ -1314,6 +1264,7 @@ class MySceneGraph
                 case "inherit":
                     texture = textureInit;
                     material.setTexture(texture);
+                    //material.setTextureWrap('REPEAT', 'REPEAT');
                     break;
 
                 case "none":
@@ -1323,6 +1274,7 @@ class MySceneGraph
                 default:
                     texture = node.texture[0];
                     material.setTexture(texture);
+                    //material.setTextureWrap('REPEAT', 'REPEAT');
             }
         }
 
