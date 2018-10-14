@@ -8,4 +8,17 @@ class MyTorus
         this.slices = slices;
         this.loops = loops;
     }
+
+    initBuffers(){
+
+      this.vertices = [];
+   		this.normals = [];
+   		this.indices = [];
+		  this.texCoords = [];
+
+
+      
+
+
+    }
 }

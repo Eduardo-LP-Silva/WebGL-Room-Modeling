@@ -18,8 +18,8 @@ class MyCylinderBody extends CGFobject
 
 	initBuffers()
 	{
-        this.vertices = [];
-        this.indices = [];
+    this.vertices = [];
+    this.indices = [];
 		this.normals = [];
 		this.texCoords = [];
 
@@ -44,8 +44,8 @@ class MyCylinderBody extends CGFobject
 				let X = (1 - (i/this.stacks)) * x * this.baseRadius + this.topRadius * x * i/this.stacks;
 				let Z = (1 - (i/this.stacks)) * z * this.baseRadius + this.topRadius * z * i/this.stacks;
 
-                this.vertices.push(X, y, Z);
-                this.normals.push(x* normalX, normalY, z*normalX);
+                this.vertices.push(X, Z, y);
+                this.normals.push(x* normalX, z*normalX, normalY);
                 this.texCoords.push(this.minS + j * (this.maxS - this.minS) / this.slices,
                 this.minT + i * (this.maxT - this.minT) / this.stacks);
             }
@@ -59,8 +59,8 @@ class MyCylinderBody extends CGFobject
             {
                 let index = j+i*(this.slices+1);
 
-				this.indices.push(index, index + this.slices + 2, index+1);
-				this.indices.push(index, index + this.slices + 1, index + this.slices + 2);
+				this.indices.push(index, index+1, index + this.slices + 2);
+				this.indices.push(index, index + this.slices + 2, index + this.slices + 1);
 
 			}
         }
