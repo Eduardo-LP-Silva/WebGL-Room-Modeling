@@ -95,8 +95,8 @@
       <rotate axis="y" angle="90"/>
     </transformation>
 
-    <transformation id="scale_0.5_0.3_0.5">
-      <scale x="0.5" y="0.3" z="0.5"/>
+    <transformation id="scale_0.5_0.5_0.3">
+      <scale x="0.5" y="0.5" z="0.3"/>
     </transformation>
 
     <transformation id="scale_0.3_1.4_0.3">
@@ -407,7 +407,9 @@
 
     <component id="candle">
       <transformation>
+
         <translate x="0" y="2.46" z="0"/>
+        <rotate axis="x" angle="-90"/>
       </transformation>
 
       <materials>
@@ -744,7 +746,9 @@
     <component id="plate">
       <transformation>
 
-        <scale x="1.5" y="0.005" z="1.5"/>
+        <rotate axis="x" angle="-90"/>
+        <scale x="1.5" y="1.5" z="0.005"/>
+
       </transformation>
 
       <materials>
@@ -961,8 +965,9 @@
     <!-- Table Legs -->
     <component id="table_leg_1">
       <transformation>
-        <translate x="-1.2" y="0" z="3.2"/>
-        <transformationref id="scale_0.5_0.3_0.5" />
+        <rotate axis="x" angle="-90"/>
+        <translate x="-1.2" y="3.2" z="0"/>
+        <transformationref id="scale_0.5_0.5_0.3" />
       </transformation>
 
       <materials>
@@ -978,8 +983,9 @@
 
     <component id="table_leg_2">
       <transformation>
-        <translate x="1.2" y="0" z="3.2"/>
-        <transformationref id="scale_0.5_0.3_0.5" />
+        <rotate axis="x" angle="-90"/>
+        <translate x="1.2" y="3.2" z="0"/>
+        <transformationref id="scale_0.5_0.5_0.3" />
       </transformation>
 
       <materials>
@@ -995,8 +1001,9 @@
 
     <component id="table_leg_3">
       <transformation>
-        <translate x="1.2" y="0" z="-3.2"/>
-        <transformationref id="scale_0.5_0.3_0.5" />
+        <rotate axis="x" angle="-90"/>
+        <translate x="1.2" y="-3.2" z="0"/>
+        <transformationref id="scale_0.5_0.5_0.3" />
       </transformation>
       <materials>
         <material id="metal_mat" />
@@ -1009,8 +1016,9 @@
 
     <component id="table_leg_4">
       <transformation>
-        <translate x="-1.2" y="0" z="-3.2"/>
-        <transformationref id="scale_0.5_0.3_0.5" />
+        <rotate axis="x" angle="-90"/>
+        <translate x="-1.2" y="-3.2" z="0"/>
+        <transformationref id="scale_0.5_0.5_0.3" />
       </transformation>
       <materials>
         <material id="metal_mat" />
