@@ -28,11 +28,18 @@
 
   <!-- Lights -->
   <lights>
-    <omni id="candle_light" enabled="1">
+    <omni id="Candle" enabled="1">
       <location x="0" y="3.4" z="0" w="1" />
       <ambient r="1.0" g="0.6" b="0.2" a="1.0" />
       <diffuse r="1.0" g="0.6" b="0.2" a="1.0" />
       <specular r="1.0" g="0.6" b="0.2" a="1.0" />
+    </omni>
+
+    <omni id="Mirror Ball" enabled="1">
+      <location x="-20" y="8" z="20" w="1" />
+      <ambient r="0.5" g="0.5" b="0.5" a="1.0" />
+      <diffuse r="0.2" g="0.2" b="0.2" a="1.0" />
+      <specular r="1.0" g="1.0" b="1.0" a="1.0" />
     </omni>
   </lights>
 
@@ -78,6 +85,13 @@
       <ambient r="0.3" g="0.3" b="0.3" a="1" />
       <diffuse r="0.5" g="0.5" b="0.5" a="1" />
       <specular r="0.2" g="0.2" b="0.2" a="1" />
+    </material>
+
+    <material id="mirror_mat" shininess = "1">
+      <emission r="0.3" g="0.3" b="0.3" a="1" />
+      <ambient r="1" g="1" b="1" a="1" />
+      <diffuse r="0.2" g="0.2" b="0.2" a="1" />
+      <specular r="1" g="1" b="1" a="1" />
     </material>
   </materials>
 
@@ -164,19 +178,73 @@
         <componentref id="bed"/>
         <componentref id="wall_1"/>
         <componentref id="wall_2"/>
-      <!--  <componentref id="mirror_ball"/> -->
+        <componentref id="mirror_ball_lamp"/>
       </children>
     </component>
 
-    <!-- Mirror Ball -->
+    <!-- Mirror Ball Lamp -->
 
-    <component id="mirror_ball">
+    <component id="mirror_ball_lamp">
       <transformation>
-        <translate x="0" y="5" z="0"/>
+        <translate x="-20" y="0" z="20"/>
       </transformation>
 
       <materials>
-        <material id="default_mat" />
+        <material id="matte_mat" />
+      </materials>
+
+      <texture id="black" length_s="1" length_t="1" />
+
+      <children>
+        <componentref id="lamp_base"/>
+        <componentref id="mirror_ball"/>
+        <componentref id="lamp_support"/>
+      </children>
+    </component>
+
+    <component id="lamp_support">
+      <transformation>
+        <scale x="0.5" y="1" z="0.5"/>
+        <rotate axis="x" angle="-90"/>
+      </transformation>
+
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+
+      <texture id="black" length_s="1" length_t="1" />
+
+      <children>
+        <primitiveref id="cylinder"/>
+      </children>
+    </component>
+
+    <component id="lamp_base">
+      <transformation>
+        <scale x="1.5" y="0.1" z="1.5"/>
+        <rotate axis="x" angle="-90"/>
+      </transformation>
+
+      <materials>
+        <material id="metal_mat" />
+      </materials>
+
+      <texture id="shiny_metal" length_s="1" length_t="1" />
+
+      <children>
+        <primitiveref id="cylinder_bigger_base"/>
+      </children>
+    </component>
+
+    <component id="mirror_ball">
+      <transformation>
+        <translate x="0" y="8" z="0"/>
+        <scale x="0.2" y="0.2" z="0.2"/>
+        <rotate axis="x" angle="90"/>
+      </transformation>
+
+      <materials>
+        <material id="mirror_mat" />
       </materials>
 
       <texture id="mirror_ball" length_s="1" length_t="1" />
@@ -745,10 +813,8 @@
 
     <component id="plate">
       <transformation>
-
         <rotate axis="x" angle="-90"/>
         <scale x="1.5" y="1.5" z="0.005"/>
-
       </transformation>
 
       <materials>

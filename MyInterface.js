@@ -45,7 +45,7 @@ class MyInterface extends CGFinterface
         {
             if (this.scene.graph.lights.hasOwnProperty(key)) 
             {
-                group.add(lights[i], 'enabled').name('Light ' + i);
+                group.add(lights[i], 'enabled').name(key);
             }
 
             i++;

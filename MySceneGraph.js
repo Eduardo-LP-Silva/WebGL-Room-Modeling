@@ -641,6 +641,7 @@ class MySceneGraph
             material.setAmbient(ambient[0], ambient[1], ambient[2], ambient[3]);
             material.setDiffuse(diffuse[0], diffuse[1], diffuse[2], diffuse[3]);
             material.setSpecular(specular[0], specular[1], specular[2], specular[3]);
+            //material.setTextureWrap("REPEAT", "REPEAT");
 
             this.materials[materialID] = material;
         }
@@ -1264,7 +1265,6 @@ class MySceneGraph
                 case "inherit":
                     texture = textureInit;
                     material.setTexture(texture);
-                    //material.setTextureWrap('REPEAT', 'REPEAT');
                     break;
 
                 case "none":
@@ -1274,7 +1274,6 @@ class MySceneGraph
                 default:
                     texture = node.texture[0];
                     material.setTexture(texture);
-                    //material.setTextureWrap('REPEAT', 'REPEAT');
             }
         }
 

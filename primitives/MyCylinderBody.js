@@ -5,7 +5,7 @@ class MyCylinderBody extends CGFobject
         super(scene);
         this.slices = slices;
         this.stacks = stacks;
-				this.minS = minS;
+		this.minS = minS;
         this.maxS = maxS;
         this.minT = minT;
         this.maxT = maxT;
