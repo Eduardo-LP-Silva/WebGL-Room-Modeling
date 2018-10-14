@@ -4,17 +4,17 @@
 
   <!-- Views -->
   <views default="Default Perspective">
-    <perspective id="Default Perspective" near="0.1" far="500" angle="70">
+    <perspective id="Default Perspective" near="0.01" far="500" angle="70">
       <from x="10" y="10" z="0" />
       <to x="0" y="0" z="0" />
     </perspective>
 
-    <perspective id="Person 1 Perspective" near="0.1" far="500" angle="70">
+    <perspective id="Person 1 Perspective" near="0.01" far="500" angle="70">
       <from x="0" y="3" z="-2" />
       <to x="0" y="3" z="2" />
     </perspective>
 
-    <perspective id="Person 2 Perspective" near="0.1" far="500" angle="70">
+    <perspective id="Person 2 Perspective" near="0.01" far="500" angle="70">
       <from x="0" y="3" z="2" />
       <to x="0" y="3" z="-2" />
     </perspective>
