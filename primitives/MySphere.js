@@ -6,7 +6,7 @@ class MySemiSphere extends CGFobject
         this.slices = slices; //longitude slices
         this.stacks = stacks; //Latitude stacks
         this.radius = radius;
-		this.minS = minS;
+				this.minS = minS;
         this.maxS = maxS;
         this.minT = minT;
         this.maxT = maxT;
@@ -19,49 +19,39 @@ class MySemiSphere extends CGFobject
    		this.vertices = [];
    		this.normals = [];
    		this.indices = [];
-		this.texCoords = [];
+			this.texCoords = [];
 
-   		this.theta = (Math.PI/2) / this.slices; //i
-   		this.alpha = 2*Math.PI / this.stacks; //j
+		for (var stack = 0; stack <= this.stacks; stack++) {
+			 var theta = stack * Math.PI / this.stacks;
+			 var sinTheta = Math.sin(theta);
+			 var cosTheta = Math.cos(theta);
 
+			 for (var slice = 0; slice <= this.slices; slice++) {
+					 var phi = slice * 2*Math.PI/ this.slices;
+					 var sinPhi = Math.sin(phi);
+					 var cosPhi = Math.cos(phi);
 
-   		for(var j = 0; j <= this.stacks; j++)
-   		{
-    		for(var i = 0; i < this.slices; i++)
-     		{
+					 var x = this.radius * cosPhi * sinTheta;
+					 var y = this.radius * cosTheta;
+					 var z = this.radius * sinPhi * sinTheta;
+					 var t = 1 - (stack / this.stacks);
+					 var s = 1 - (slice / this.slices);
 
-        		// x = r sinθ cosα
-        		// y = r cosθ
-        		// z = r sinθ sinα
+					 this.vertices.push(x, y, z);
+					 this.normals.push(x, y, z);
+					 this.texCoords.push(s, t);
+			 }
+	 }
 
-				this.vertices.push( this.radius*Math.cos(this.alpha*j)*Math.sin(this.theta*i),
-					this.radius*Math.sin(this.alpha*j)*Math.sin(this.theta*i), this.radius*Math.cos(this.theta*i));
+	 for (var stack = 0; stack < this.stacks; stack++) {
+			 for (var slice = 0; slice < this.slices; slice++) {
+					 var first = (stack * (this.slices + 1)) + slice;
+					 var second = first + this.slices + 1;
 
-				this.normals.push( this.radius*Math.cos(this.alpha*j)*Math.sin(this.theta*i),
-					this.radius*Math.sin(this.alpha*j)*Math.sin(this.theta*i), this.radius*Math.cos(this.theta*i));
-
-				this.texCoords.push(this.minS + i * (this.maxS - this.minS) / this.slices,
-					this.minT + j * (this.maxT - this.minT) / this.stacks);
-		 	}
-   		}
-
-		 // Draw triangles
-
-	   	for(j = 0; j < this.stacks; j++)
-		{
-	    	for(i = 0; i < this.slices; i++)
-			{
-	       		//First
-	       		this.indices.push(this.slices*j+i);
-	       		this.indices.push(this.slices*j+i+1-(i < this.slices-1 ? 0 : this.slices));
-						this.indices.push(this.slices*(j+1)+i+1-(i < this.slices-1 ? 0 : this.slices));
-
-	       		//Second
-	       		this.indices.push(this.slices*(j+1)+i+1-(i < this.slices-1 ? 0 : this.slices));
-	       		this.indices.push(this.slices*(j+1)+i);
-	       		this.indices.push(this.slices*j+i);
-	     	}
-	   }
+					 this.indices.push(first, second + 1, second);
+					 this.indices.push(first, first + 1, second + 1);
+			 }
+	 }
 
  	this.primitiveType = this.scene.gl.TRIANGLES;
  	this.initGLBuffers();
@@ -88,9 +78,9 @@ class MySphere extends CGFobject
 	display(){
 		this.scene.pushMatrix();
 		this.semiSphere.display();
-		this.scene.rotate(Math.PI, 0, 1, 0);
-		this.scene.translate(0, 0, -0.5);
-		this.semiSphere.display();
+		/*this.scene.rotate(Math.PI, 0, 1, 0);
+		this.scene.translate(0, 0, -0.2);
+		this.semiSphere.display();*/
 		this.scene.popMatrix();
 	}
 }
