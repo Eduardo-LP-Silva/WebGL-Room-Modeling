@@ -21,17 +21,27 @@ class MyQuad extends CGFobject
 			this.x1, this.y1, 0,
 			this.x2, this.y1, 0,
 			this.x2, this.y2, 0,
+			this.x1, this.y2, 0,
+
+			this.x1, this.y1, 0,
+			this.x2, this.y1, 0,
+			this.x2, this.y2, 0,
 			this.x1, this.y2, 0
 		];
 
 		this.indices = [
 			0, 1, 2,
 			3, 2, 0,
-			0, 2, 3,
-			2, 1, 0
+			4, 6, 7,
+			6, 5, 4
 		];
 
 		this.normals = [
+			0, 0, 1,
+			0, 0, 1,
+			0, 0, 1,
+			0, 0, 1,
+
 			0, 0, 1,
 			0, 0, 1,
 			0, 0, 1,
@@ -42,7 +52,13 @@ class MyQuad extends CGFobject
 			0, 1,
 			1, 1,
 			1, 0,
+			0, 0,
+			0, 1,
+			1, 1,
+			1, 0,
 			0, 0
+
+			//this.
 		];
 
 		this.primitiveType=this.scene.gl.TRIANGLES;
