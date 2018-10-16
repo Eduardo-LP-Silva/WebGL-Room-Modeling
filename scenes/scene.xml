@@ -23,6 +23,11 @@
       <from x="-17" y="10" z="2" />
       <to x="-17" y="0" z="0" />
     </perspective>
+
+    <ortho id="Ortho View" near="0.01" far="500" left="-10" right="10" top="8" bottom="0">
+      <from x="-17" y="10" z="2" />
+      <to x="-17" y="10" z="0" />
+    </ortho>
   </views>
 
   <!-- Ambient -->

@@ -355,9 +355,9 @@ class MySceneGraph
                 if(bottom == null || isNaN(bottom))
                     return viewErrorTag + "Error in bottom component";
 
-                //var up = this.reader.getFloat(viewBlock, "up");
+                var up = [0,1,0];
 
-                //this.views[viewID] = ['O', left, right, bottom, top, near, far, from, to, up];
+                this.views[viewID] = ['O', left, right, bottom, top, near, far, from, to, up];
             }
             else
                 return viewBlock.nodeName + ": Unkown view tag";
