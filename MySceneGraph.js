@@ -253,6 +253,9 @@ class MySceneGraph
         if(defaultID == null)
             return "Default view is missing";
 
+        if(children.length == 0)
+            return "At least one view must be defined";
+
         for (var i = 0; i < children.length; i++)
         {
             error = this.parseViewBlock(children[i]);
@@ -548,6 +551,9 @@ class MySceneGraph
     parseTextures(texturesNode)
     {
         var children = texturesNode.children;
+
+        if(children.length == 0)
+            return "At least one texture must be defined";
     
         for(var i = 0; i < children.length; i++)
         {
@@ -587,7 +593,7 @@ class MySceneGraph
     parseMaterials(materialsNode)
     {
         var children = materialsNode.children;
-        var nodeNames = [], nodeNames = [];
+        var nodeNames = [];
         var grandChildren = [];
         var shininess;
         var emission = [], emissionIndex;
@@ -595,8 +601,8 @@ class MySceneGraph
         var diffuse = [], diffuseIndex;
         var specular = [], specularIndex;
 
-        for (var i = 0; i < children.length; i++)
-            nodeNames.push(children[i].nodeName);
+        if(children.length == 0)
+            return "At least one material must be defined";
 
         for(var i = 0; i < children.length; i++)
         {
@@ -609,15 +615,17 @@ class MySceneGraph
             var materialID = this.reader.getString(children[i], "id");
 
             if (materialID == null)
-                return "no ID defined for texture";
+                return "no ID defined for material";
 
             if(this.materials[materialID] != null)
                 return "ID must be unique for each material (conflict: ID = " + materialID + ")";
 
+            var materialErrorMessage = "Material " + materialID + ": ";
+
             shininess = this.reader.getFloat(children[i], "shininess");
 
-            if (shininess == null)
-                return "no shininess defined for material";
+            if (shininess == null || isNaN(shininess))
+                return materialErrorMessage + "Error in shininess compononent";
 
             nodeNames = [];
             grandChildren = children[i].children;
@@ -626,37 +634,52 @@ class MySceneGraph
                 nodeNames.push(grandChildren[j].nodeName);
 
             emissionIndex = nodeNames.indexOf("emission");
+
+            if(emissionIndex == null)
+                return materialErrorMessage + "<emission> tag missing";
+
             ambientIndex = nodeNames.indexOf("ambient");
+
+            if(ambientIndex == null)
+                return materialErrorMessage + "<ambient> tag missing";
+
             diffuseIndex = nodeNames.indexOf("diffuse");
+
+            if(diffuseIndex == null)
+                return materialErrorMessage + "<diffuse> tag missing";
+
             specularIndex = nodeNames.indexOf("specular");
+
+            if(specularIndex == null)
+                return materialErrorMessage + "<specular> tag missing";
 
             //Gets emission component
 
             emission = this.retrieveColor(grandChildren[emissionIndex], materialID);
 
             if(typeof emission == "string")
-                return emission;
+                return materialErrorMessage + emission;
 
             //Gets ambient component
 
             ambient = this.retrieveColor(grandChildren[ambientIndex], materialID);
 
             if(typeof ambient == "string")
-                return emission;
+                return materialErrorMessage + emission;
 
             //Gets diffuse component
 
             diffuse = this.retrieveColor(grandChildren[diffuseIndex], materialID);
 
             if(typeof diffuse == "string")
-                return diffuse;
+                return materialErrorMessage + diffuse;
 
             //Gets specular component
 
             specular = this.retrieveColor(grandChildren[specularIndex], materialID);
 
             if(typeof specular == "string")
-                return specular;
+                return materialErrorMessage + specular;
 
             var material = new CGFappearance(this.scene);
 
@@ -665,7 +688,7 @@ class MySceneGraph
             material.setAmbient(ambient[0], ambient[1], ambient[2], ambient[3]);
             material.setDiffuse(diffuse[0], diffuse[1], diffuse[2], diffuse[3]);
             material.setSpecular(specular[0], specular[1], specular[2], specular[3]);
-            //material.setTextureWrap("REPEAT", "REPEAT");
+            material.setTextureWrap("REPEAT", "REPEAT");
 
             this.materials[materialID] = material;
         }
@@ -680,6 +703,10 @@ class MySceneGraph
     parseTransformations(transformationsNode)
     {
         var children = transformationsNode.children;
+        var error;
+
+        if(children.length == 0)
+            return "At least one transformation must be defined";
 
         for(var i = 0; i < children.length; i++)
         {
@@ -689,7 +716,10 @@ class MySceneGraph
                 continue;
             }
 
-            this.parseTransformation(children[i]);
+            error = this.parseTransformation(children[i]);
+
+            if(error != null)
+                return error;
         }
 
         this.log("Parsed transformations");
@@ -745,6 +775,10 @@ class MySceneGraph
 
                     var axis = this.reader.getString(children[i], "axis"),
                         angle = this.reader.getFloat(children[i], "angle");
+
+                    if(angle == null || isNaN(angle))
+                        return transformationErrorTag + "Error in angle component";
+
                     var vec = vec3.create();
 
                     switch(axis)
@@ -762,11 +796,8 @@ class MySceneGraph
                             break;
 
                         default:
-                            this.log("Error in axis");
+                            return transformationErrorTag + "Error in axis component";
                     }
-
-                    if(axis == null || angle == null)
-                        return transformationErrorTag + "Rotation not properly defined";
 
                     mat4.rotate(this.transformations[transformationID], this.transformations[transformationID],
                         angle * DEGREE_TO_RAD, vec);
@@ -783,6 +814,9 @@ class MySceneGraph
     parsePrimitives(primitivesNode)
     {
         var children = primitivesNode.children;
+
+        if(children.length == 0)
+            return "At least one primitive must be defined";
 
         for(var i = 0; i < children.length; i++)
         {
@@ -813,13 +847,13 @@ class MySceneGraph
         var primitiveID = this.reader.getString(primitiveBlock, "id");
         var build;
 
+        if(primitiveID == null)
+            return "No ID defined for primitive";
+
         if(this.nodes[primitiveID] != null)
             return "ID must be unique for each primitive (conflict: ID = " + primitiveID + ")";
 
         var children = primitiveBlock.children;
-
-        if(children.length == 0)
-            return "At least one primitive object must be declared";
 
         switch(children[0].nodeName)
         {
@@ -880,7 +914,6 @@ class MySceneGraph
     {
         var children = componentsNode.children;
         var componentID;
-        var error;
 
         //First pass - Merely add them to the list
         for(let i = 0; i < children.length; i++)
@@ -892,6 +925,9 @@ class MySceneGraph
             }
 
             componentID = this.reader.getString(children[i], "id");
+
+            if(componentID == null)
+                return "No ID defined for component";
 
             if(this.nodes[componentID] != null)
                 return "ID must be unique for each transformation (conflict: ID = " + componentID + ")";
@@ -935,7 +971,7 @@ class MySceneGraph
         index = nodeNames.indexOf("transformation");
 
         if(index == null)
-            return "No transformation tag present in component " + componentID;
+            return "No <transformation> tag present in component " + componentID;
 
         if(typeof (tranformationMatrix = this.parseComponentTransformation(children[index], componentID)) == "string")
             return tranformationMatrix;
@@ -943,7 +979,7 @@ class MySceneGraph
         index = nodeNames.indexOf("materials");
 
         if(index == null)
-            return "No materials tag present in component " + componentID;
+            return "No <materials> tag present in component " + componentID;
 
         if(typeof (materialList = this.parseComponentMaterials(children[index], componentID)) == "string")
             return materialList;
@@ -951,7 +987,7 @@ class MySceneGraph
         index = nodeNames.indexOf("texture");
 
         if(index == null)
-            return "No texture tag present in component: " + componentID;
+            return "No <texture> tag present in component: " + componentID;
 
         if(typeof (textureSpecs = this.parseComponentTexture(children[index], componentID)) == "string")
             return textureSpecs;
@@ -959,7 +995,7 @@ class MySceneGraph
         index = nodeNames.indexOf("children");
 
         if(index == null)
-            return "No children tag present in component: " + componentID;
+            return "No <children> tag present in component: " + componentID;
 
         if(typeof (childrenList = this.parseComponentChildren(children[index], componentID)) == "string")
             return childrenList;
@@ -973,9 +1009,10 @@ class MySceneGraph
     parseComponentChildren(componentChildrenBlock, componentID)
     {
         var children = componentChildrenBlock.children;
+        var componentChildrenErrorTag = "Component " + componentID + ": " + "Children: ";
 
         if(children.length == 0)
-            return "Component " + componentID + ": At least one child must be declared";
+            return componentChildrenErrorTag + "At least one child must be declared";
 
         var childrenID, childrenList = [];
 
@@ -983,8 +1020,11 @@ class MySceneGraph
         {
             childrenID = this.reader.getString(children[i], "id");
 
+            if(childrenID == null)
+                return componentChildrenErrorTag + "Children ID not referenced";
+
             if(this.nodes[childrenID] == null)
-                return "Component " + componentID + ": Children " + childrenID +  " not previously declared";
+                return componentChildrenErrorTag + childrenID +  " not previously declared";
 
             childrenList.push(childrenID);
         }
@@ -1001,6 +1041,10 @@ class MySceneGraph
     {
         var children = componentTransformationBlock.children;
         var transformationMatrix, xyz;
+        var componentErrorTag = "Component " + componentID + ": ";
+
+        if(children.length == 0)
+            return componentErrorTag + "At least one transformation must be referenced or declared";
 
         for(let i = 0; i < children.length; i++)
         {
@@ -1009,9 +1053,11 @@ class MySceneGraph
                 case "transformationref":
                     let transformationID = this.reader.getString(children[i], "id");
 
+                    if(transformationID == null)
+                        return componentErrorTag + "No ID defined for transformation";
+
                     if(this.transformations[transformationID] == null)
-                        return "Component " + componentID + ": Transformation " + transformationID +
-                            " not defined previously";
+                        return componentErrorTag + "Transformation " + transformationID + " not defined previously";
                     else
                     {
                         if(i == 0)
@@ -1020,7 +1066,6 @@ class MySceneGraph
                             mat4.mul(transformationMatrix, transformationMatrix, this.transformations[transformationID]);
                     }
                         
-            
                     break;
 
                 case "translate":
@@ -1031,7 +1076,7 @@ class MySceneGraph
                     xyz = this.getXYZ(children[i]);
 
                     if(typeof xyz == "string")
-                        return transformationErrorTag + xyz;
+                        return componentErrorTag + "Transformation: " + xyz;
                     else
                         mat4.translate(transformationMatrix, transformationMatrix, xyz);
 
@@ -1045,7 +1090,7 @@ class MySceneGraph
                     xyz = this.getXYZ(children[i]);
 
                     if(typeof xyz == "string")
-                        return transformationErrorTag + xyz;
+                        return componentErrorTag + "Transformation: " + xyz;
                     else
                         mat4.scale(transformationMatrix, transformationMatrix, xyz);
 
@@ -1074,17 +1119,17 @@ class MySceneGraph
                             break;
 
                         default:
-                            return "Component " + componentID + ": Axis not defined";
+                            return componentErrorTag +  "Transformation: Error in axis component";
                     }
 
-                    if(axis == null || angle == null)
-                        return transformationErrorTag + "Rotation not properly defined";
+                    if(angle == null || isNaN(angle))
+                        return componentErrorTag + "Transformation: " + "Error in angle component";
 
                     mat4.rotate(transformationMatrix, transformationMatrix, angle * DEGREE_TO_RAD, axis);
                     break;
 
                 default:
-                    return "Component " + componentID + ": Transformation error";
+                    return componentErrorTag + "Unkown transformation";
             }
 
         }
@@ -1100,6 +1145,10 @@ class MySceneGraph
     {
         var children = componentMaterialsBlock.children;
         var materialID, materialList = [];
+        var componentMaterialErrorTag = "Component " + componentID + ": Material: ";
+
+        if(children.length == 0)
+            return componentMaterialErrorTag + "At least one material must be referenced";
 
         for(let i = 0; i < children.length; i++)
         {
@@ -1111,12 +1160,15 @@ class MySceneGraph
 
             materialID = this.reader.getString(children[i], "id");
 
+            if(materialID == null)
+                return componentMaterialErrorTag + "No ID defined for material";
+
             if(materialID == "inherit")
                 materialList.push(materialID);
             else
             {
                 if(this.materials[materialID] == null)
-                    return "Component " + componentID + ": Material " + materialID + " not defined previously";
+                    return componentMaterialErrorTag + materialID + " not defined previously";
                 else
                     materialList.push(this.materials[materialID]);
             }
@@ -1134,13 +1186,17 @@ class MySceneGraph
     {
         var textureID = this.reader.getString(componentTextureTag, "id");
         var textureSpecs = [];
+        var componentTextureErrorTag = "Component " + componentID + ": Texture ";
+
+        if(textureID == null)
+            return componentTextureErrorTag + "No ID referenced";
 
         if(textureID == "inherit" || textureID == "none")
             textureSpecs.push(textureID);
         else
         {
             if(this.textures[textureID] == null)
-                return "Component " + componentID + ": Texture " + textureID + " not previously defined";
+                return componentTextureErrorTag + textureID + " not previously defined";
             else
                 textureSpecs.push(this.textures[textureID]);
         }
@@ -1295,8 +1351,6 @@ class MySceneGraph
                 case "inherit":
                     texture = textureInit;
                     material.setTexture(texture[0]);
-                    material.setTextureWrap("REPEAT", "REPEAT");
-                    
                     break;
 
                 case "none":
@@ -1306,7 +1360,6 @@ class MySceneGraph
                 default:
                     texture = node.texture;
                     material.setTexture(texture[0]);
-                    material.setTextureWrap("REPEAT", "REPEAT");
             }
         }
         
