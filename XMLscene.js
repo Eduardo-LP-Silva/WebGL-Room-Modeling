@@ -12,8 +12,9 @@ class XMLscene extends CGFscene
     constructor(myinterface) 
     {
         super();
-
         this.interface = myinterface;
+        this.interface.initKeys();
+    
         this.viewIndex = 0;
         this.oldViewIndex = this.viewIndex;
     }
@@ -111,7 +112,6 @@ class XMLscene extends CGFscene
         // Adds lights group.
         this.interface.addLightsGroup(this.lights);
         this.interface.addViewsGroup(this.graph.views);
-        this.interface.initKeys();
         
         var cameraSpecs = this.graph.views[this.graph.defaultViewID];
 
