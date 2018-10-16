@@ -72,4 +72,54 @@ class MyInterface extends CGFinterface
 
         group.add(this.scene, "viewIndex", viewIDs);
     }
+
+    /**
+     * Initiates Key Processing
+     */
+    initKeys()
+    {
+        this.processKeyboard=function(){};
+        this.activeKeys={};
+    };
+
+    processKeyDown(event) 
+	{
+		this.activeKeys[event.code]=true;
+	};
+		
+	processKeyUp(event) 
+	{
+		this.activeKeys[event.code]=false;
+	};
+		
+	isKeyPressed(keyCode) 
+	{
+		return this.activeKeys[keyCode] || false;
+    };
+
+    /**
+     * Handles the key inputs
+     */
+    handleInputs()
+    {
+        if(this.isKeyPressed("KeyM"))
+        {
+            console.log("Changed Materials");
+            
+            for(var key in this.scene.graph.nodes) 
+            {
+                if(this.scene.graph.nodes.hasOwnProperty(key)) 
+                {
+                    let index = this.scene.graph.nodes[key].materialIndex;
+
+                    if(this.scene.graph.nodes[key].materials.length != 0)
+                        if(index == this.scene.graph.nodes[key].materials.length - 1)
+                            this.scene.graph.nodes[key].materialIndex = 0;
+                        else
+                            this.scene.graph.nodes[key].materialIndex++;
+                }
+            }   
+        }
+
+    }
 }

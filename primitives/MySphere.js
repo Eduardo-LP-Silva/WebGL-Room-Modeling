@@ -83,4 +83,9 @@ class MySphere extends CGFobject
 		this.semiSphere.display();*/
 		this.scene.popMatrix();
 	}
+
+	update(maxS, maxT)
+	{
+		//Nothing to see here
+	}
 }

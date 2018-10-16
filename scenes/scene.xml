@@ -18,6 +18,11 @@
       <from x="0" y="3" z="2" />
       <to x="0" y="3" z="-2" />
     </perspective>
+
+    <perspective id="Bed View" near="0.01" far="500" angle="70">
+      <from x="-17" y="10" z="2" />
+      <to x="-17" y="0" z="0" />
+    </perspective>
   </views>
 
   <!-- Ambient -->
@@ -41,11 +46,19 @@
       <diffuse r="0.2" g="0.2" b="0.2" a="1.0" />
       <specular r="1.0" g="1.0" b="1.0" a="1.0" />
     </omni>
+
+    <spot id="SpotLight" enabled="1" angle="0" exponent="1">
+      <location x="-24.8" y="8" z="0" w="1" />
+      <target x="-15" y="0" z="0"/>
+      <ambient r="0.5" g="0.5" b="0.5" a="1.0" />
+      <diffuse r="0.2" g="0.2" b="0.2" a="1.0" />
+      <specular r="1.0" g="1.0" b="1.0" a="1.0" />
+    </spot>
   </lights>
 
   <!-- Textures -->
   <textures>
-    <texture id="wood_texture" file="scenes/images/wood-image.jpg" />
+    <texture id="wood_texture" file="scenes/images/wood-image.png" />
     <texture id="dark_wood" file="scenes/images/dark_wood.png" />
     <texture id="shiny_metal" file="scenes/images/shiny_metal.png" />
     <texture id="porcelain" file="scenes/images/porcelain.png" />
@@ -446,7 +459,7 @@
         <material id="wood_mat" />
       </materials>
 
-      <texture id="dark_wood" length_s="1" length_t="1" />
+      <texture id="dark_wood" length_s="5" length_t="5" />
 
       <children>
         <primitiveref id="plane"/>

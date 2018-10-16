@@ -57,4 +57,10 @@ class MyTorus extends CGFobject
 		this.initGLBuffers();
 
   }
+
+  update(maxS, maxT)
+	{
+		//Nothing to see here
+	}
+  
 }

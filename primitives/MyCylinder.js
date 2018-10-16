@@ -36,4 +36,9 @@ class MyCylinder extends CGFobject
 
 				this.scene.popMatrix();
 	};
+
+	update(maxS, maxT)
+	{
+		//Nothing to see here
+	}
 };

@@ -72,6 +72,13 @@ class XMLscene extends CGFscene
 
                 this.lights[i].setVisible(true);
 
+                if(light[5] != null && light[6] != null && light[7].length != 0)
+                {
+                    this.lights[i].setSpotCutOff(light[5]);
+                    this.lights[i].setSpotExponent(light[6]);
+                    this.lights[i].setSpotDirection(light[7][0], light[7][1], light[7][2]);
+                }
+
                 if (light[0])
                     this.lights[i].enable();
                 else
@@ -103,6 +110,8 @@ class XMLscene extends CGFscene
 
         // Adds lights group.
         this.interface.addLightsGroup(this.lights);
+        this.interface.addViewsGroup(this.graph.views);
+        this.interface.initKeys();
         
         var cameraSpecs = this.graph.views[this.graph.defaultViewID];
 
@@ -113,8 +122,7 @@ class XMLscene extends CGFscene
         this.camera.setTarget(cameraSpecs[5]);
         this.viewIndex = this.graph.defaultViewID;
         this.oldViewIndex = this.viewIndex;
-
-        this.interface.addViewsGroup(this.graph.views);
+       
 
         this.sceneInited = true;
     }
@@ -130,6 +138,8 @@ class XMLscene extends CGFscene
         // Clear image and depth buffer everytime we update the scene
         this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+
+        this.interface.handleInputs();
 
         if(this.viewIndex != this.oldViewIndex)
         {
@@ -172,4 +182,6 @@ class XMLscene extends CGFscene
         this.popMatrix();
         // ---- END Background, camera and axis setup
     }
+
+    
 }
