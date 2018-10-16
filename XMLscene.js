@@ -139,8 +139,6 @@ class XMLscene extends CGFscene
         this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
-        this.interface.handleInputs();
-
         if(this.viewIndex != this.oldViewIndex)
         {
             var cameraSpecs = this.graph.views[this.viewIndex];

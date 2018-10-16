@@ -84,42 +84,35 @@ class MyInterface extends CGFinterface
 
     processKeyDown(event) 
 	{
-		this.activeKeys[event.code]=true;
+        this.activeKeys[event.code]=true;
 	};
 		
 	processKeyUp(event) 
 	{
+        if(this.activeKeys[event.code] == true)
+        {
+            switch(event.code)
+            {
+                case "KeyM":
+                    console.log("Changed Materials");
+                    for(var key in this.scene.graph.nodes) 
+                    {
+                        if(this.scene.graph.nodes.hasOwnProperty(key)) 
+                        {
+                            let index = this.scene.graph.nodes[key].materialIndex;
+    
+                            if(this.scene.graph.nodes[key].materials.length != 0)
+                                if(index == this.scene.graph.nodes[key].materials.length - 1)
+                                    this.scene.graph.nodes[key].materialIndex = 0;
+                                else
+                                    this.scene.graph.nodes[key].materialIndex++;
+                        }
+                    }
+                    
+                    break;
+            }
+        }
 		this.activeKeys[event.code]=false;
-	};
-		
-	isKeyPressed(keyCode) 
-	{
-		return this.activeKeys[keyCode] || false;
     };
 
-    /**
-     * Handles the key inputs
-     */
-    handleInputs()
-    {
-        if(this.isKeyPressed("KeyM"))
-        {
-            console.log("Changed Materials");
-            
-            for(var key in this.scene.graph.nodes) 
-            {
-                if(this.scene.graph.nodes.hasOwnProperty(key)) 
-                {
-                    let index = this.scene.graph.nodes[key].materialIndex;
-
-                    if(this.scene.graph.nodes[key].materials.length != 0)
-                        if(index == this.scene.graph.nodes[key].materials.length - 1)
-                            this.scene.graph.nodes[key].materialIndex = 0;
-                        else
-                            this.scene.graph.nodes[key].materialIndex++;
-                }
-            }   
-        }
-
-    }
 }

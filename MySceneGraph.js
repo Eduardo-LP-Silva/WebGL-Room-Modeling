@@ -107,7 +107,7 @@ class MySceneGraph
         else
         {
             if (index != SCENE_INDEX)
-                this.onXMLMinorError("tag <scene> out of order");
+                this.onXMLMinorError("<scene> out of order");
 
             //Parses scene node
             if ((error = this.parseScene(nodes[index])) != null)
