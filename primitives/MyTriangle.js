@@ -50,9 +50,9 @@ class MyTriangle extends CGFobject
 		var sinBeta = Math.sqrt(a**2-(a*cosBeta)*(a*cosBeta))/a;
 
 		this.texCoords = [
-			c-a*cosBeta, 1-a*sinBeta,
-			0, 1,
-			c, 1
+			c-a*cosBeta, this.maxT-a*sinBeta,
+			0, this.maxT,
+			c, this.maxT
 
 		];
 
@@ -64,13 +64,14 @@ class MyTriangle extends CGFobject
 
 	};
 
-	update(maxS, maxT)
+	update(S, T)
 	{
 		this.texCoords = [
-			this.minS, this.maxT, // 0,1
-			this.maxS, this.maxT, // 1,1,
-			this.minS, this.minT, // 0,0,
-			this.maxS, this.minT // 1,0
+			c-a*cosBeta, T-a*sinBeta,
+			0, T,
+			c, T
 		];
+
+		this.updateTexCoordsGLBuffers();
 	}
 };
