@@ -44,7 +44,8 @@ class XMLscene extends CGFscene
     /**
      * Initializes the scene cameras.
      */
-    initCameras() {
+    initCameras() 
+    {
        this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
     }
     /**
@@ -111,18 +112,21 @@ class XMLscene extends CGFscene
 
         // Adds lights group.
         this.interface.addLightsGroup(this.lights);
-        this.interface.addViewsGroup(this.graph.views);
+        
         
         var cameraSpecs = this.graph.views[this.graph.defaultViewID];
 
-        this.camera.fov = cameraSpecs[1];
-        this.camera.near = cameraSpecs[2];
-        this.camera.far = cameraSpecs[3];
-        this.camera.setPosition(cameraSpecs[4]);
-        this.camera.setTarget(cameraSpecs[5]);
+        if(cameraSpecs[0] == 'P')
+            this.camera = new CGFcamera(cameraSpecs[1], cameraSpecs[2], cameraSpecs[3], cameraSpecs[4], cameraSpecs[5]);
+        else
+            this.camera = new CGFcameraOrtho(cameraSpecs[1], cameraSpecs[2], cameraSpecs[3], cameraSpecs[4], 
+                cameraSpecs[5], cameraSpecs[6], cameraSpecs[7], cameraSpecs[8], cameraSpecs[9]);
+        
+        this.interface.setActiveCamera(this.camera);
         this.viewIndex = this.graph.defaultViewID;
         this.oldViewIndex = this.viewIndex;
        
+        this.interface.addViewsGroup(this.graph.views);
 
         this.sceneInited = true;
     }
@@ -142,13 +146,15 @@ class XMLscene extends CGFscene
         if(this.viewIndex != this.oldViewIndex)
         {
             var cameraSpecs = this.graph.views[this.viewIndex];
+            if(cameraSpecs[0] == 'P')
+                this.camera = new CGFcamera(cameraSpecs[1], cameraSpecs[2], cameraSpecs[3], cameraSpecs[4], 
+                    cameraSpecs[5]);
+            else
+                this.camera = new CGFcameraOrtho(cameraSpecs[1], cameraSpecs[2], cameraSpecs[3], cameraSpecs[4], 
+                    cameraSpecs[5], cameraSpecs[6], cameraSpecs[7], cameraSpecs[8], cameraSpecs[9]);
+            this.interface.setActiveCamera(this.camera);
 
-            this.camera.fov = cameraSpecs[1];
-            this.camera.near = cameraSpecs[2];
-            this.camera.far = cameraSpecs[3];
-            this.camera.setPosition(cameraSpecs[4]);
-            this.camera.setTarget(cameraSpecs[5]);
-            this.oldViewIndex = this.viewIndex;
+                this.oldViewIndex = this.viewIndex;
         }
         
         // Initialize Model-View matrix as identity (no transformation

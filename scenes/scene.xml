@@ -23,6 +23,11 @@
       <from x="-17" y="10" z="2" />
       <to x="-17" y="0" z="0" />
     </perspective>
+
+    <ortho id="Ortho View" near="0.01" far="500" left="-10" right="10" top="8" bottom="0">
+      <from x="-17" y="10" z="2" />
+      <to x="-17" y="10" z="0" />
+    </ortho>
   </views>
 
   <!-- Ambient -->
@@ -100,7 +105,7 @@
       <specular r="0.2" g="0.2" b="0.2" a="1" />
     </material>
 
-    <material id="mirror_mat" shininess = "1">
+    <material id="shiny_mat" shininess = "1">
       <emission r="0.3" g="0.3" b="0.3" a="1" />
       <ambient r="1" g="1" b="1" a="1" />
       <diffuse r="0.2" g="0.2" b="0.2" a="1" />
@@ -257,7 +262,7 @@
       </transformation>
 
       <materials>
-        <material id="mirror_mat" />
+        <material id="shiny_mat" />
       </materials>
 
       <texture id="mirror_ball" length_s="1" length_t="1" />
@@ -457,6 +462,7 @@
 
       <materials>
         <material id="wood_mat" />
+        <material id="shiny_mat"/>
       </materials>
 
       <texture id="dark_wood" length_s="5" length_t="5" />
