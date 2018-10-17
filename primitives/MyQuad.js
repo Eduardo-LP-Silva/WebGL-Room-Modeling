@@ -66,7 +66,7 @@ class MyQuad extends CGFobject
 
 	update(S, T)
 	{
-		
+
 		this.texCoords = [
 			this.minS, T,
 			S, T,
@@ -77,7 +77,7 @@ class MyQuad extends CGFobject
 			S, this.minT,
 			this.minS, this.minT
 		];
-	
-		//this.updateTexCoordsGLBuffers();
+
+		this.updateTexCoordsGLBuffers();
 	}
 };
