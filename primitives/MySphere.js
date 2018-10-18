@@ -24,11 +24,11 @@ class MySemiSphere extends CGFobject
 
 			for (var stackIndex = 0; stackIndex < this.stacks; stackIndex++) {
 		 		 for (var sliceIndex = 0; sliceIndex < this.slices; sliceIndex++) {
-							 var first = (stackIndex * (this.slices + 1)) + sliceIndex;
-							 var second = first + this.slices + 1;
+							 var a = (stackIndex * (this.slices + 1)) + sliceIndex;
+							 var b = a + this.slices + 1;
 
-							 this.indices.push(first, second + 1, second);
-							 this.indices.push(first, first + 1, second + 1);
+							 this.indices.push(a, b + 1, b);
+							 this.indices.push(a, a + 1, b + 1);
 					 }
 			 }
 
