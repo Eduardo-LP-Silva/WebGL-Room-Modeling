@@ -86,8 +86,6 @@ class MyTriangle extends CGFobject
 			this.d/S,1-( this.h/T)
 		];
 
-		console.log(this.texCoords);
-
 		this.updateTexCoordsGLBuffers();
 	}
 };
