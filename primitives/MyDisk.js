@@ -1,5 +1,17 @@
+/**
+ * MyDisk class, representing a flat disk.
+ */
 class MyDisk extends CGFobject
 {
+    /**
+     * @constructor
+     * @param {CGFscene} scene 
+     * @param {int} slices 
+	 * @param {float} minS 
+	 * @param {float} maxS 
+	 * @param {float} minT 
+	 * @param {float} maxT 
+     */
 	constructor(scene, slices, minS = 0, maxS = 1, minT = 0, maxT = 1) 
 	{
         super(scene);
@@ -12,17 +24,18 @@ class MyDisk extends CGFobject
 		this.initBuffers();
 	};
 
+    /**
+     * Initiates the GL Buffers.
+     */
 	initBuffers() 
 	{    
-        var i;
-
         this.vertices = [];
         this.indices = [];
         this.normals = [];
         this.texCoords = [];
         
-        var ang = 2*Math.PI / this.slices;
-        var i, j, k, x, y;
+        var ang = 2 * Math.PI / this.slices;
+        var i, j, x, y;
         var n_vertices = 0;
         
         //Filling vertices, normals and texCoords
@@ -41,6 +54,7 @@ class MyDisk extends CGFobject
         this.vertices.push(0,0,0);
         this.normals.push(0,0,1);
         this.texCoords.push(0.5,0.5);
+
         n_vertices++;
       
         //Filling indexes
@@ -54,13 +68,12 @@ class MyDisk extends CGFobject
             else
                 this.indices.push(i + 1);
             
-           this.indices.push(i);
+            this.indices.push(i);
         }
         
         for(i = 0; i < n_vertices - 1; i++)
         {
             this.indices.push(n_vertices - 1);
-
             this.indices.push(i);
             
             if(i == this.slices - 1)

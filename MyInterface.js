@@ -1,5 +1,5 @@
 /**
-* MyInterface class, creating a GUI interface.
+* MyInterface class, creating a datGUI interface.
 */
 class MyInterface extends CGFinterface 
 {
@@ -22,9 +22,6 @@ class MyInterface extends CGFinterface
         //  http://workshop.chromeexperiments.com/examples/gui
 
         this.gui = new dat.GUI();
-
-        // add a group of controls (and open/expand by defult)
-
         return true;
     }
 
@@ -36,7 +33,8 @@ class MyInterface extends CGFinterface
     {
         var group = this.gui.addFolder("Lights");
 
-        // add two check boxes to the group. The identifiers must be members variables of the scene initialized in scene.init as boolean
+        // add check boxes to the group. The identifiers must be members variables of the scene initialized in 
+        //scene.init as boolean
         // e.g. this.option1=true; this.option2=false;
 
         var i = 0;
@@ -54,8 +52,8 @@ class MyInterface extends CGFinterface
     }
 
     /**
-     * Adds a new Views folder to the GUI
-     * @param {The associative array containing all the information regarding the scene's views} views 
+     * Adds a new Views folder to the GUI.
+     * @param {array} views 
      */
     addViewsGroup(views)
     {
@@ -74,7 +72,7 @@ class MyInterface extends CGFinterface
     }
 
     /**
-     * Initiates Key Processing
+     * Initiates Key Processing.
      */
     initKeys()
     {
@@ -82,11 +80,20 @@ class MyInterface extends CGFinterface
         this.activeKeys={};
     };
 
+    /**
+     * Merely sets the the correspondent key active state to true.
+     * @param {Event} event 
+     */
     processKeyDown(event) 
 	{
         this.activeKeys[event.code]=true;
 	};
-		
+        
+    /**
+     * Verifies if the correspondent key was being pressed previously and if that key was 'M/m', switches the scene's 
+     * materials
+     * @param {Event} event 
+     */
 	processKeyUp(event) 
 	{
         if(this.activeKeys[event.code] == true)

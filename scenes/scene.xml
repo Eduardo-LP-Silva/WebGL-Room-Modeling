@@ -24,7 +24,7 @@
       <to x="-17" y="0" z="0" />
     </perspective>
 
-    <ortho id="Ortho View" near="0.01" far="500" left="-10" right="10" top="8" bottom="0">
+    <ortho id="Ortho View" near="0.01" far="500" left="-10" right="10" top="10" bottom="-10">
       <from x="-17" y="10" z="2" />
       <to x="-17" y="10" z="0" />
     </ortho>
@@ -73,6 +73,7 @@
     <texture id="mattress" file="scenes/images/mattress.png" />
     <texture id="zebra" file="scenes/images/zebra.png" />
     <texture id="mirror_ball" file="scenes/images/mirror_ball.png" />
+    <texture id="cake" file="scenes/images/cake.png" />
   </textures>
 
   <!-- Materials -->
@@ -151,6 +152,10 @@
       <rectangle x1="-0.5" y1="-0.5" x2="0.5" y2="0.5" />
     </primitive>
 
+    <primitive id="floor_quad">
+      <rectangle x1="-25" y1="-25" x2="25" y2="25" />
+    </primitive>
+
     <primitive id="cylinder">
       <cylinder base="0.3" top="0.3" height="8" slices="40" stacks="40" />
     </primitive>
@@ -165,6 +170,10 @@
 
     <primitive id="sphere">
       <sphere radius="5" slices="40" stacks="40"/>
+    </primitive>
+
+    <primitive id="torus">
+      <torus inner="4" outer="10" slices="40" loops="40"/>
     </primitive>
   </primitives>
 
@@ -187,6 +196,7 @@
         <componentref id="chair_2" />
         <componentref id="plate_1"/>
         <componentref id="plate_2"/>
+        <componentref id="plate_3"/>
         <componentref id="knife_1"/>
         <componentref id="knife_2"/>
         <componentref id="fork_1"/>
@@ -197,6 +207,26 @@
         <componentref id="wall_1"/>
         <componentref id="wall_2"/>
         <componentref id="mirror_ball_lamp"/>
+        <componentref id="cake"/>
+      </children>
+    </component>
+
+    <!-- Cake -->
+    <component id="cake">
+      <transformation>
+        <translate x="0" y="2.46" z="-1.3"/>
+        <scale x="0.03" y="0.04" z="0.03"/>
+        <rotate axis="x" angle="90"/>
+      </transformation>
+
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+
+      <texture id="cake" length_s="1" length_t="1"/>
+
+      <children>
+        <primitiveref id="torus"/>
       </children>
     </component>
 
@@ -211,7 +241,7 @@
         <material id="matte_mat" />
       </materials>
 
-      <texture id="black" length_s="1" length_t="1" />
+      <texture id="none"/>
 
       <children>
         <componentref id="lamp_base"/>
@@ -456,7 +486,7 @@
     <component id="floor">
       <transformation>
         <translate x="0" y="-0.02" z="0"/>
-        <scale x="50" y="1" z="50"/>
+        <!--<scale x="50" y="1" z="50"/> -->
         <transformationref id="rotation_x_90"/>
       </transformation>
 
@@ -468,7 +498,7 @@
       <texture id="dark_wood" length_s="5" length_t="5" />
 
       <children>
-        <primitiveref id="plane"/>
+        <primitiveref id="floor_quad"/>
       </children>
     </component>
 
@@ -789,7 +819,7 @@
         <material id="metal_mat" />
       </materials>
 
-      <texture id="shiny_metal" length_s="1" length_t="1" />
+      <texture id="shiny_metal" length_s="4" length_t="4" />
 
       <children>
         <primitiveref id="triangle"/>
@@ -797,6 +827,22 @@
     </component>
 
     <!-- Plates -->
+
+    <component id="plate_3">
+      <transformation>
+        <translate x="0" y="2.46" z="-1.3"/>
+      </transformation>
+
+      <materials>
+        <material id="default_mat" />
+      </materials>
+
+      <texture id="porcelain" length_s="1" length_t="1" />
+
+      <children>
+        <componentref id="plate"/>
+      </children>
+    </component>
 
     <component id="plate_2">
       <transformation>

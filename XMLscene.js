@@ -15,8 +15,8 @@ class XMLscene extends CGFscene
         this.interface = myinterface;
         this.interface.initKeys();
     
-        this.viewIndex = 0;
-        this.oldViewIndex = this.viewIndex;
+        this.viewIndex = 0; //The index associated with the active camera
+        this.oldViewIndex = this.viewIndex; //The second camera index used to check if the camera has changed
     }
 
     /**
@@ -28,39 +28,36 @@ class XMLscene extends CGFscene
         super.init(application);
 
         this.sceneInited = false;
-
         this.initCameras();
-
         this.enableTextures(true);
-
         this.gl.clearDepth(100.0);
         this.gl.enable(this.gl.DEPTH_TEST);
         this.gl.enable(this.gl.CULL_FACE);
         this.gl.depthFunc(this.gl.LEQUAL);
-
         this.axis = new CGFaxis(this);
     }
 
     /**
-     * Initializes the scene cameras.
+     * Initializes the scene's camera.
      */
     initCameras() 
     {
        this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
     }
+
     /**
-     * Initializes the scene lights with the values read from the XML file.
+     * Initializes the scene's lights with the values read from the XML file.
      */
     initLights() 
     {
-        var i = 0;
-        // Lights index.
+        var i = 0; // Lights index.
+        
 
         // Reads the lights from the scene graph.
         for (var key in this.graph.lights) 
         {
             if (i >= 8)
-                break;              // Only eight lights allowed by WebGL.
+                break; // Only eight lights allowed by WebGL.
 
             if (this.graph.lights.hasOwnProperty(key)) 
             {
@@ -90,21 +87,18 @@ class XMLscene extends CGFscene
 
                 i++;
             }
-
-            
         }
     }
 
-
     /* Handler called when the graph is finally loaded. 
-     * As loading is asynchronous, this may be called already after the application has started the run loop
+     * As loading is asynchronous, this may be called already after the application has started the run loop.
      */
     onGraphLoaded() 
     {
         this.axis = new CGFaxis(this, this.graph.referenceLength);
 
-        this.gl.clearColor(this.graph.background[0], this.graph.background[1], this.graph.background[2], this.graph.background[3]);
-
+        this.gl.clearColor(this.graph.background[0], this.graph.background[1], this.graph.background[2], 
+            this.graph.background[3]);
         this.setGlobalAmbientLight(this.graph.ambientIllumination[0], 
             this.graph.ambientIllumination[1], this.graph.ambientIllumination[2], this.graph.ambientIllumination[3]);
 
@@ -113,7 +107,7 @@ class XMLscene extends CGFscene
         // Adds lights group.
         this.interface.addLightsGroup(this.lights);
         
-        
+        //Associates the camera with the default one referenced in the XML file.
         var cameraSpecs = this.graph.views[this.graph.defaultViewID];
 
         if(cameraSpecs[0] == 'P')
@@ -125,39 +119,38 @@ class XMLscene extends CGFscene
         this.interface.setActiveCamera(this.camera);
         this.viewIndex = this.graph.defaultViewID;
         this.oldViewIndex = this.viewIndex;
-       
         this.interface.addViewsGroup(this.graph.views);
 
         this.sceneInited = true;
     }
-
 
     /**
      * Displays the scene.
      */
     display() 
     {
-        // ---- BEGIN Background, camera and axis setup
-
         // Clear image and depth buffer everytime we update the scene
         this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
+        //Checks if camera has changed
         if(this.viewIndex != this.oldViewIndex)
         {
             var cameraSpecs = this.graph.views[this.viewIndex];
+            
             if(cameraSpecs[0] == 'P')
                 this.camera = new CGFcamera(cameraSpecs[1], cameraSpecs[2], cameraSpecs[3], cameraSpecs[4], 
                     cameraSpecs[5]);
             else
                 this.camera = new CGFcameraOrtho(cameraSpecs[1], cameraSpecs[2], cameraSpecs[3], cameraSpecs[4], 
                     cameraSpecs[5], cameraSpecs[6], cameraSpecs[7], cameraSpecs[8], cameraSpecs[9]);
+
             this.interface.setActiveCamera(this.camera);
 
                 this.oldViewIndex = this.viewIndex;
         }
         
-        // Initialize Model-View matrix as identity (no transformation
+        // Initialize Model-View matrix as identity (no transformation)
         this.updateProjectionMatrix();
         this.loadIdentity();
 
@@ -166,26 +159,23 @@ class XMLscene extends CGFscene
 
         this.pushMatrix();
 
-        if (this.sceneInited) 
-        {
-            // Draw axis
-            this.axis.display();
+            if (this.sceneInited) 
+            {
+                // Draw axis
+                this.axis.display();
 
-            for (var i = 0; i < this.lights.length; i++)
-                this.lights[i].update();
+                for (var i = 0; i < this.lights.length; i++)
+                    this.lights[i].update();
 
-            // Displays the scene (MySceneGraph function).
-            this.graph.displayScene();
-        }
-        else 
-        {
-            // Draw axis
-            this.axis.display();
-        }
+                // Displays the scene (MySceneGraph function).
+                this.graph.displayScene();
+            }
+            else 
+            {
+                // Draw axis
+                this.axis.display();
+            }
 
         this.popMatrix();
-        // ---- END Background, camera and axis setup
     }
-
-    
 }

@@ -1,5 +1,20 @@
+/**
+ * MyQuad class, representing a flat quadratic object.
+ */
 class MyQuad extends CGFobject
 {
+	/**
+	 * @constructor
+	 * @param {CGFscene} scene 
+	 * @param {float} x1 
+	 * @param {float} y1 
+	 * @param {float} x2 
+	 * @param {float} y2 
+	 * @param {float} minS 
+	 * @param {float} maxS 
+	 * @param {float} minT 
+	 * @param {float} maxT 
+	 */
 	constructor(scene, x1, y1, x2, y2, minS = 0.0, maxS = 1.0, minT = 0.0, maxT = 1.0)
 	{
 		super(scene);
@@ -11,12 +26,15 @@ class MyQuad extends CGFobject
 		this.x2 = x2;
 		this.y1 = y1;
 		this.y2 = y2;
+
 		this.initBuffers();
 	};
 
+	/**
+	 * Initiates GL Buffers
+	 */
 	initBuffers()
 	{
-
 		this.vertices = [
 			this.x1, this.y1, 0,
 			this.x2, this.y1, 0,
@@ -64,10 +82,17 @@ class MyQuad extends CGFobject
 		this.initGLBuffers();
 	};
 
+	/**
+	 * Updates the texture coordinates.
+	 * 
+	 * @param {float} maxS 
+	 * @param {float} maxT 
+	 */
 	update(S, T)
 	{
+		this.texCoords.length = 0;
 
-		this.texCoords = [
+		this.texCoords.push(
 			this.minS, T,
 			S, T,
 			S, this.minT,
@@ -76,8 +101,8 @@ class MyQuad extends CGFobject
 			S, T,
 			S, this.minT,
 			this.minS, this.minT
-		];
+		);
 
-		this.updateTexCoordsGLBuffers();
+		//this.updateTexCoordsGLBuffers();
 	}
 };

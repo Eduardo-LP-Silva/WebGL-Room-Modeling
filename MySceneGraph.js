@@ -13,13 +13,15 @@ var PRIMITIVES_INDEX = 7;
 var COMPONENTS_INDEX = 8;
 
 /**
- * MySceneGraph class, representing the scene graph.
+ * MySceneGraph class, representing the scene's graph.
  */
 class MySceneGraph
 {
-    /**
-     * @constructor
-     */
+     /**
+      * @constructor
+      * @param {string} filename 
+      * @param {CGFscene} scene 
+      */
     constructor(filename, scene)
     {
         this.loadedOk = null;
@@ -36,13 +38,13 @@ class MySceneGraph
         this.axisCoords['z'] = [0, 0, 1];
         this.referenceLength = 0; //Axis length
         this.views = []; //Associative 2D array containing all the view/camera data
-        this.ambientIllumination = [];
-        this.background = [];
-        this.textures = [];
-        this.materials = [];
-        this.transformations = [];
-        this.root = null;
-        this.defaultViewID = null;
+        this.ambientIllumination = []; //The array containing the color parameters regarding the ambient illumination
+        this.background = []; //The array containing the color parameters regarding the background
+        this.textures = []; //The associate array containing the textures
+        this.materials = []; //The associate array containing the materials
+        this.transformations = []; //The associate array containing the transformations (matrices)
+        this.root = null; //The root node
+        this.defaultViewID = null; //The default camera ID
 
         // File reading
         this.reader = new CGFXMLreader();
@@ -57,7 +59,7 @@ class MySceneGraph
     }
 
     /*
-     * Callback to be executed after successful reading
+     * Callback to be executed after successful reading.
      */
     onXMLReady()
     {
@@ -82,7 +84,7 @@ class MySceneGraph
 
     /**
      * Parses the XML file, processing each block.
-     * @param {XML root element} rootElement
+     * @param {element} rootElement
      */
     parseXMLFile(rootElement)
     {
@@ -220,8 +222,8 @@ class MySceneGraph
     }
 
     /**
-     * Parses the <scene> node
-     * @param {scene block element} sceneNode
+     * Parses the <scene> node.
+     * @param {element} sceneNode
      */
     parseScene(sceneNode)
     {
@@ -241,8 +243,8 @@ class MySceneGraph
     }
 
     /**
-     * Parses the <views> node
-     * @param {views block element} viewNode
+     * Parses the <views> node.
+     * @param {element} viewNode
      */
     parseViews(viewNode)
     {
@@ -273,8 +275,8 @@ class MySceneGraph
     }
 
     /**
-     * Parses a single view block
-     * @param {The view block} viewBlock 
+     * Parses a single view block.
+     * @param {element} viewBlock 
      */
     parseViewBlock(viewBlock)
     {
@@ -364,8 +366,8 @@ class MySceneGraph
     }
 
     /**
-     * Parses the <ambient> node
-     * @param {ambient block element} ambientNode
+     * Parses the <ambient> node.
+     * @param {element} ambientNode
      */
     parseAmbient(ambientNode)
     {
@@ -400,7 +402,7 @@ class MySceneGraph
 
     /**
      * Parses the <lights> node.
-     * @param {lights block element} lightsNode
+     * @param {element} lightsNode
      */
     parseLights(lightsNode)
     {
@@ -546,7 +548,7 @@ class MySceneGraph
 
     /**
      * Parses the <textures> block.
-     * @param {textures block element} texturesNode
+     * @param {element} texturesNode
      */
     parseTextures(texturesNode)
     {
@@ -588,7 +590,7 @@ class MySceneGraph
 
     /**
      * Parses the <materials> node.
-     * @param {materials block element} materialsNode
+     * @param {element} materialsNode
      */
     parseMaterials(materialsNode)
     {
@@ -697,8 +699,8 @@ class MySceneGraph
     }
 
     /**
-     * Parses the <transformations> node
-     * @param {transformation block element} transformationsNode
+     * Parses the <transformations> node.
+     * @param {element} transformationsNode
      */
     parseTransformations(transformationsNode)
     {
@@ -726,8 +728,8 @@ class MySceneGraph
     }
 
     /**
-     * Parses a single transformation block
-     * @param {a single transformation block} transformationBlock
+     * Parses a single transformation block.
+     * @param {element} transformationBlock
      */
     parseTransformation(transformationBlock)
     {
@@ -808,8 +810,8 @@ class MySceneGraph
     }
 
     /**
-     * Parses the primitives node
-     * @param {primitives block} primitivesNode
+     * Parses the primitives node.
+     * @param {element} primitivesNode
      */
     parsePrimitives(primitivesNode)
     {
@@ -839,8 +841,8 @@ class MySceneGraph
     }
 
     /**
-     * Processes a single primitive block
-     * @param {the single primitive block to be processed} primitiveBlock
+     * Processes a single primitive block.
+     * @param {element} primitiveBlock
      */
     parsePrimitive(primitiveBlock)
     {
@@ -907,8 +909,8 @@ class MySceneGraph
 
     }
     /**
-     * Processes the components node
-     * @param {The components node} componentsNode
+     * Processes the components node.
+     * @param {element} componentsNode
      */
     parseComponents(componentsNode)
     {
@@ -940,7 +942,6 @@ class MySceneGraph
         else
             this.root = this.nodes[this.idRoot];
 
-
         //Second pass - analyze & parse remaining details
 
         for(let i = 0; i < children.length; i++)
@@ -955,8 +956,8 @@ class MySceneGraph
     }
 
     /**
-     * Processes a single component block
-     * @param {The single component block} componentBlock
+     * Processes a single component block.
+     * @param {element} componentBlock
      */
     parseComponent(componentBlock)
     {
@@ -999,12 +1000,19 @@ class MySceneGraph
 
         if(typeof (childrenList = this.parseComponentChildren(children[index], componentID)) == "string")
             return childrenList;
+
+        for(let i = 0; i < this.nodes[this.idRoot].materials.length; i++)
+            if(this.nodes[this.idRoot].materials[i] == "inherit" || this.nodes[this.idRoot].materials[i] == "none")
+                this.nodes[this.idRoot].materials[i] = new CGFappearance(this.scene);
+
+        if(this.nodes[this.idRoot].texture[0] == "inherit")
+            this.nodes[this.idRoot].texture[0] = "none";
     }
 
     /**
      * Parses the children block in a component.
-     * @param {The component's children block} componentChildrenBlock
-     * @param {The component's ID} componentID
+     * @param {element} componentChildrenBlock
+     * @param {string} componentID
      */
     parseComponentChildren(componentChildrenBlock, componentID)
     {
@@ -1034,17 +1042,14 @@ class MySceneGraph
 
     /**
      * Parses the transformation block of a component.
-     * @param {The component's tranformation block} componentTransformationBlock
-     * @param {The component's ID} componentID
+     * @param {element} componentTransformationBlock
+     * @param {string} componentID
      */
     parseComponentTransformation(componentTransformationBlock, componentID)
     {
         var children = componentTransformationBlock.children;
         var transformationMatrix, xyz;
         var componentErrorTag = "Component " + componentID + ": ";
-
-        if(children.length == 0)
-            return componentErrorTag + "At least one transformation must be referenced or declared";
 
         for(let i = 0; i < children.length; i++)
         {
@@ -1138,8 +1143,8 @@ class MySceneGraph
 
     /**
      * Parses the materials block in a component.
-     * @param {The component's materials block} componentMaterialsBlock
-     * @param {The component's ID} componentID
+     * @param {element} componentMaterialsBlock
+     * @param {string} componentID
      */
     parseComponentMaterials(componentMaterialsBlock, componentID)
     {
@@ -1179,8 +1184,8 @@ class MySceneGraph
 
     /**
      * Parses the texture tag of a component.
-     * @param {The component's texture tag} componentTextureTag
-     * @param {The component's id} componentID
+     * @param {element} componentTextureTag
+     * @param {string} componentID
      */
     parseComponentTexture(componentTextureTag, componentID)
     {
@@ -1200,16 +1205,21 @@ class MySceneGraph
             else
                 textureSpecs.push(this.textures[textureID]);
         }
+        
+        if(textureID != "none" && textureID != "inherit")
+        {
             
-        textureSpecs.push(this.reader.getFloat(componentTextureTag, "length_s"));
-        textureSpecs.push(this.reader.getFloat(componentTextureTag, "length_t"));
+            var length_s = this.reader.getFloat(componentTextureTag, "length_s");
+            var length_t = this.reader.getFloat(componentTextureTag, "length_t");
+            textureSpecs.push(length_s, length_t);
+        }
 
         this.nodes[componentID].texture = textureSpecs;
     }
 
     /**
-     * Returns the XYZ values from a tag
-     * @param {the tag containing the XYZ values} tag
+     * Returns the XYZ values from a tag.
+     * @param {element} tag
      */
     getXYZ(tag)
     {
@@ -1232,9 +1242,9 @@ class MySceneGraph
     }
 
     /**
-     * Retrieves RGBA components from a generic tag
-     * @param {tag containing RGBA components} tag
-     * @param {object ID} ID
+     * Retrieves RGBA components from a generic tag.
+     * @param {element} tag
+     * @param {string} ID
      */
     retrieveColor(tag, ID)
     {
@@ -1274,10 +1284,10 @@ class MySceneGraph
         return colorArray;
     }
 
-    /*
-     * Callback to be executed on any read error, showing an error on the console.
-     * @param {string} message
-     */
+     /**
+      * Callback to be executed on any read error, showing an error on the console.
+      * @param {string} message 
+      */
     onXMLError(message)
     {
         console.error("XML Loading Error: " + message);
@@ -1292,7 +1302,6 @@ class MySceneGraph
     {
         console.warn("Warning: " + message);
     }
-
 
     /**
      * Callback to be executed on any message.
@@ -1313,10 +1322,10 @@ class MySceneGraph
     }
 
     /**
-     * Displays a node
-     * @param {The node's ID} nodeID
-     * @param {The texture associated} textureInit
-     * @param {The material associated} materialInit
+     * Displays a node.
+     * @param {strig} nodeID
+     * @param {array} textureInit
+     * @param {array} materialInit
      */
     displayNode(nodeID, textureInit, materialInit)
     {
@@ -1350,11 +1359,15 @@ class MySceneGraph
             {
                 case "inherit":
                     texture = textureInit;
+                    texture[1] = node.texture[1];
+                    texture[2] = node.texture[2];
                     material.setTexture(texture[0]);
                     break;
 
                 case "none":
                     texture = textureInit;
+                    texture[0] = null;
+                    material.setTexture(null);
                     break;
 
                 default:
@@ -1364,7 +1377,7 @@ class MySceneGraph
         }
         
         material.apply();
-            
+
         if(node.transformations != null)
         {
             this.scene.multMatrix(node.transformations);

@@ -1,10 +1,16 @@
 /**
- * My Node class
+ * My Node class, representing a graph node (primitive or component).
  */
  class MyNode
  {
      /**
-      * Constructor
+      * @constructor
+      * @param {CGFobject} build 
+      * @param {string} id 
+      * @param {array} children 
+      * @param {mat4} transformations 
+      * @param {array} texture 
+      * @param {array} materials 
       */
      constructor(build = null, id, children = [], transformations = null, texture = [], materials = [])
      {
@@ -18,7 +24,7 @@
      }
 
      /**
-      * Applies its transformation matrix and displays the primitive if present
+      * Applies its transformation matrix and displays the primitive.
       */
      display()
      {
