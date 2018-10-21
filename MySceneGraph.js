@@ -933,7 +933,7 @@ class MySceneGraph
             if(componentID == null)
                 return "No ID defined for component";
 
-            if(this.nodes[componentID] != null)
+            if(this.nodes[componentID] != null && this.nodes[componentID].build == null)
                 return "ID must be unique for each transformation (conflict: ID = " + componentID + ")";
             else
                 this.nodes[componentID] = new MyNode(null, componentID);
@@ -1370,7 +1370,7 @@ class MySceneGraph
      */
     displayNode(nodeID, textureInit, materialInit)
     {
-        var texture, material = materialInit;
+        var texture = [null, null, null], material = materialInit;
         var node;
 
         if(nodeID != null)
@@ -1400,19 +1400,23 @@ class MySceneGraph
             {
                 case "inherit":
                     texture = textureInit;
-                    texture[1] = node.texture[1];
-                    texture[2] = node.texture[2];
+
+                    //texture[1] = node.texture[1];
+                    //texture[2] = node.texture[2];
                     material.setTexture(texture[0]);
+
+                    //console.log(texture[1]);
                     break;
 
                 case "none":
-                    texture = textureInit;
                     texture[0] = null;
                     material.setTexture(null);
                     break;
 
                 default:
-                    texture = node.texture;
+                    texture[0] = node.texture[0];
+                    texture[1] = node.texture[1];
+                    texture[2] = node.texture[2];
                     material.setTexture(texture[0]);
             }
         }
@@ -1423,7 +1427,7 @@ class MySceneGraph
         {
             this.scene.multMatrix(node.transformations);
         }
-
+        
         for(let i = 0; i < node.children.length; i++)
         {
             this.displayNode(node.children[i], texture, material);
@@ -1431,7 +1435,9 @@ class MySceneGraph
 
         if(node.build != null)
         {
-            node.build.update(textureInit[1], textureInit[2])
+            if(textureInit[1] != node.build.maxS || textureInit[2] != node.build.maxT)
+                node.build.update(textureInit[1], textureInit[2]);
+                
             node.build.display();
         }
 

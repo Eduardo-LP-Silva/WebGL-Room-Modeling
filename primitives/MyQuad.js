@@ -41,17 +41,12 @@ class MyQuad extends CGFobject
 			this.x2, this.y2, 0,
 			this.x1, this.y2, 0,
 
-			this.x1, this.y1, 0,
-			this.x2, this.y1, 0,
-			this.x2, this.y2, 0,
-			this.x1, this.y2, 0
+			
 		];
 
 		this.indices = [
-			0, 1, 2,
-			3, 2, 0,
-			4, 6, 7,
-			6, 5, 4
+			1,2,3,
+			1,3,0
 		];
 
 		this.normals = [
@@ -59,11 +54,6 @@ class MyQuad extends CGFobject
 			0, 0, 1,
 			0, 0, 1,
 			0, 0, 1,
-
-			0, 0, 1,
-			0, 0, 1,
-			0, 0, 1,
-			0, 0, 1
 		];
 
 		this.texCoords = [
@@ -71,11 +61,6 @@ class MyQuad extends CGFobject
 			this.maxS, this.maxT,
 			this.maxS, this.minT,
 			this.minS, this.minT,
-			this.minS, this.maxT,
-			this.maxS, this.maxT,
-			this.maxS, this.minT,
-			this.minS, this.minT
-
 		];
 
 		this.primitiveType=this.scene.gl.TRIANGLES;
@@ -92,17 +77,16 @@ class MyQuad extends CGFobject
 	{
 		this.texCoords.length = 0;
 
+		this.maxS = S;
+		this.maxT = T;
+
 		this.texCoords.push(
 			this.minS, T,
 			S, T,
 			S, this.minT,
 			this.minS, this.minT,
-			this.minS, T,
-			S, T,
-			S, this.minT,
-			this.minS, this.minT
 		);
 
-		//this.updateTexCoordsGLBuffers();
+		this.updateTexCoordsGLBuffers();
 	}
 };
