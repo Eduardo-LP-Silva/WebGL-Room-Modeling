@@ -1233,6 +1233,7 @@ class MySceneGraph
         var textureID = this.reader.getString(componentTextureTag, "id");
         var textureSpecs = [];
         var componentTextureErrorTag = "Component " + componentID + ": Texture ";
+        var length_s = null, length_t = null;
 
         if(textureID == null)
             return componentTextureErrorTag + "No ID referenced";
@@ -1247,13 +1248,27 @@ class MySceneGraph
                 textureSpecs.push(this.textures[textureID]);
         }
         
-        if(textureID != "none" && textureID != "inherit")
+        if(textureID != "none")
         {
-            
-            var length_s = this.reader.getFloat(componentTextureTag, "length_s");
-            var length_t = this.reader.getFloat(componentTextureTag, "length_t");
-            textureSpecs.push(length_s, length_t);
-        }
+            if(!this.reader.hasAttribute(componentTextureTag, "length_s"))
+            {
+                if(textureID != "inherit")
+                    return componentTextureErrorTag + "length_s not defined";
+            }
+            else
+                length_s = this.reader.getFloat(componentTextureTag, "length_s");
+                
+         
+            if(!this.reader.hasAttribute(componentTextureTag, "length_t"))
+            {
+                if(textureID != "inherit")
+                    return componentTextureErrorTag + "length_t not defined";
+            }
+            else
+                length_t = this.reader.getFloat(componentTextureTag, "length_t");
+        }   
+
+        textureSpecs.push(length_s, length_t);
 
         this.nodes[componentID].texture = textureSpecs;
     }
@@ -1401,11 +1416,20 @@ class MySceneGraph
                 case "inherit":
                     texture = textureInit;
 
-                    //texture[1] = node.texture[1];
-                    //texture[2] = node.texture[2];
+                    if(node.texture[1] != null && node.texture[2] != null)
+                    {
+                        texture[1] = node.texture[1];
+                        texture[2] = node.texture[2];
+                    }
+                    else
+                    {
+                        texture[1] = textureInit[1];
+                        texture[2] = textureInit[2];
+                    }
+                    
                     material.setTexture(texture[0]);
 
-                    //console.log(texture[1]);
+                    //console.log(node.texture);
                     break;
 
                 case "none":

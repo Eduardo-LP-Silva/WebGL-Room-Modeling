@@ -19,13 +19,8 @@
       <to x="0" y="3" z="-2" />
     </perspective>
 
-    <perspective id="Bed View" near="0.01" far="500" angle="70">
-      <from x="-17" y="10" z="2" />
-      <to x="-17" y="0" z="0" />
-    </perspective>
-
     <ortho id="Ortho View" near="0.01" far="500" left="-10" right="10" top="10" bottom="-5">
-      <from x="0" y="5.2" z="0" />
+      <from x="5" y="5.2" z="0" />
       <to x="-5" y="5" z="0" />
     </ortho>
   </views>
@@ -1046,7 +1041,7 @@
         <material id="default_mat" />
       </materials>
 
-      <texture id="none" length_s="1" length_t="1" />
+      <texture id="wood_texture" length_s="2" length_t="2" />
 
       <children>
         <componentref id="table_countertop" />
@@ -1070,7 +1065,7 @@
         <material id="matte_mat" />
       </materials>
 
-      <texture id="wood_texture" length_s="1" length_t="1" />
+      <texture id="inherit"/>
 
       <children>
         <componentref id="cube" />
@@ -1157,7 +1152,7 @@
         <material id="inherit" />
       </materials>
 
-      <texture id="inherit" length_s="1" length_t="1" />
+      <texture id="inherit"/>
 
       <children>
         <componentref id="cube_top" />
@@ -1180,7 +1175,7 @@
         <material id="inherit" />
       </materials>
 
-      <texture id="inherit" length_s="1" length_t="1" />
+      <texture id="inherit"/>
 
       <children>
         <primitiveref id="plane" />
@@ -1198,7 +1193,7 @@
         <material id="inherit" />
       </materials>
 
-      <texture id="inherit" length_s="1" length_t="1" />
+      <texture id="inherit"/>
 
       <children>
         <primitiveref id="plane" />
@@ -1215,7 +1210,7 @@
         <material id="inherit" />
       </materials>
 
-      <texture id="inherit" length_s="1" length_t="1" />
+      <texture id="inherit"/>
 
       <children>
         <primitiveref id="plane" />
@@ -1233,7 +1228,7 @@
         <material id="inherit" />
       </materials>
 
-      <texture id="inherit" length_s="1" length_t="1" />
+      <texture id="inherit"/>
 
       <children>
         <primitiveref id="plane" />
@@ -1251,7 +1246,7 @@
         <material id="inherit" />
       </materials>
 
-      <texture id="inherit" length_s="1" length_t="1" />
+      <texture id="inherit"/>
 
       <children>
         <primitiveref id="plane" />
@@ -1269,7 +1264,7 @@
         <material id="inherit" />
       </materials>
 
-      <texture id="inherit" length_s="1" length_t="1" />
+      <texture id="inherit"/>
 
       <children>
         <primitiveref id="plane" />
