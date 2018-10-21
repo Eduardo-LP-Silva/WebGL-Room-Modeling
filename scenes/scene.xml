@@ -24,9 +24,9 @@
       <to x="-17" y="0" z="0" />
     </perspective>
 
-    <ortho id="Ortho View" near="0.01" far="500" left="-10" right="10" top="10" bottom="-10">
-      <from x="-17" y="10" z="2" />
-      <to x="-17" y="10" z="0" />
+    <ortho id="Ortho View" near="0.01" far="500" left="-10" right="10" top="10" bottom="-5">
+      <from x="0" y="5.2" z="0" />
+      <to x="-5" y="5" z="0" />
     </ortho>
   </views>
 
@@ -486,13 +486,12 @@
     <component id="floor">
       <transformation>
         <translate x="0" y="-0.02" z="0"/>
-        <!--<scale x="50" y="1" z="50"/> -->
         <transformationref id="rotation_x_90"/>
       </transformation>
 
       <materials>
         <material id="wood_mat" />
-        <material id="shiny_mat"/>
+        <material id="matte_mat"/>
       </materials>
 
       <texture id="dark_wood" length_s="5" length_t="5" />
@@ -524,7 +523,6 @@
 
     <component id="candle">
       <transformation>
-
         <translate x="0" y="2.46" z="0"/>
         <rotate axis="x" angle="-90"/>
       </transformation>
@@ -564,6 +562,7 @@
 
       <materials>
         <material id="metal_mat" />
+        <material id="shiny_mat" />
       </materials>
 
       <texture id="shiny_metal" length_s="1" length_t="1" />
@@ -633,6 +632,7 @@
 
       <materials>
         <material id="metal_mat" />
+        <material id="shiny_mat" />
       </materials>
 
       <texture id="shiny_metal" length_s="1" length_t="1" />
@@ -649,6 +649,7 @@
 
       <materials>
         <material id="default_mat" />
+        <material id="shiny_mat" />
       </materials>
 
       <texture id="shiny_metal" length_s="1" length_t="1" />
@@ -668,6 +669,7 @@
 
       <materials>
         <material id="metal_mat" />
+        <material id="shiny_mat" />
       </materials>
 
       <texture id="shiny_metal" length_s="1" length_t="1" />
@@ -732,6 +734,7 @@
 
       <materials>
         <material id="metal_mat" />
+        <material id="shiny_mat" />
       </materials>
 
       <texture id="shiny_metal" length_s="1" length_t="1" />
@@ -817,6 +820,7 @@
 
       <materials>
         <material id="metal_mat" />
+        <material id="shiny_mat" />
       </materials>
 
       <texture id="shiny_metal" length_s="4" length_t="4" />
@@ -884,6 +888,7 @@
 
       <materials>
         <material id="matte_mat" />
+        <material id="shiny_mat" />
       </materials>
 
       <texture id="porcelain" length_s="1" length_t="1" />
@@ -934,6 +939,7 @@
 
       <materials>
         <material id="wood_mat" />
+        <material id="matte_mat" />
       </materials>
 
       <texture id="wood_texture" length_s="1" length_t="1" />
@@ -1084,6 +1090,7 @@
 
       <materials>
         <material id="wood_mat" />
+        <material id="matte_mat" />
       </materials>
 
       <texture id="wood_texture" length_s="1" length_t="1" />
@@ -1103,6 +1110,7 @@
 
       <materials>
         <material id="metal_mat" />
+        <material id="shiny_mat" />
       </materials>
 
       <texture id="shiny_metal" length_s="1" length_t="1" />
@@ -1121,6 +1129,7 @@
 
       <materials>
         <material id="metal_mat" />
+        <material id="shiny_mat" />
       </materials>
 
       <texture id="shiny_metal" length_s="1" length_t="1" />
@@ -1138,6 +1147,7 @@
       </transformation>
       <materials>
         <material id="metal_mat" />
+        <material id="shiny_mat" />
       </materials>
       <texture id="shiny_metal" length_s="1" length_t="1" />
       <children>
@@ -1153,6 +1163,7 @@
       </transformation>
       <materials>
         <material id="metal_mat" />
+        <material id="shiny_mat" />
       </materials>
       <texture id="shiny_metal" length_s="1" length_t="1" />
       <children>
