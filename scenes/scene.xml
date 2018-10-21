@@ -116,33 +116,14 @@
 
   <!-- Transformations -->
   <transformations>
-    <transformation id="null_transformation">
-      <translate x="0" y="0" z="0"/>
-    </transformation>
-
     <transformation id="rotation_x_90">
       <rotate axis="x" angle="90"/>
     </transformation>
 
-    <transformation id="rotation_y_90">
-      <rotate axis="y" angle="90"/>
-    </transformation>
-
-    <transformation id="scale_0.5_0.5_0.3">
-      <scale x="0.5" y="0.5" z="0.3"/>
-    </transformation>
-
-    <transformation id="scale_0.3_1.4_0.3">
-      <scale x="0.3" y="1.4" z="0.3"/>
-    </transformation>
-
-    <transformation id="wall_transformation">
-      <scale x="50" y="10" z="1"/>
-      <rotate axis="z" angle="90"/>
-    </transformation>
-
-    <transformation id="bed_leg_scale">
-      <scale x="0.3" y="0.5" z="0.3"/>
+    <transformation id="rug_transformation">
+      <translate x="0" y="-0.01" z="0"/>
+      <scale x="10" y="1" z="10"/>
+      <rotate axis="x" angle="90"/>
     </transformation>
   </transformations>
 
@@ -181,7 +162,6 @@
   <components>
     <component id="scene">
       <transformation>
-        <transformationref id="null_transformation" />
       </transformation>
 
       <materials>
@@ -362,7 +342,7 @@
     <component id="bed_leg_1">
       <transformation>
         <translate x="-5" y="0.25" z="3"/>
-        <transformationref id="bed_leg_scale"/>
+        <scale x="0.3" y="0.5" z="0.3"/>
       </transformation>
 
       <materials>
@@ -379,7 +359,7 @@
     <component id="bed_leg_2">
       <transformation>
         <translate x="-5" y="0.25" z="-3"/>
-        <transformationref id="bed_leg_scale"/>
+        <scale x="0.3" y="0.5" z="0.3"/>
       </transformation>
 
       <materials>
@@ -396,7 +376,7 @@
     <component id="bed_leg_3">
       <transformation>
         <translate x="5" y="0.25" z="3"/>
-        <transformationref id="bed_leg_scale"/>
+        <scale x="0.3" y="0.5" z="0.3"/>
       </transformation>
 
       <materials>
@@ -413,7 +393,7 @@
     <component id="bed_leg_4">
       <transformation>
         <translate x="5" y="0.25" z="-3"/>
-        <transformationref id="bed_leg_scale"/>
+        <scale x="0.3" y="0.5" z="0.3"/>
       </transformation>
 
       <materials>
@@ -432,7 +412,8 @@
     <component id="wall_1">
       <transformation>
         <translate x="0" y="5" z="25"/>
-        <transformationref id="wall_transformation"/>
+        <scale x="50" y="10" z="1"/>
+        <rotate axis="z" angle="90"/>
       </transformation>
 
       <materials>
@@ -450,7 +431,8 @@
       <transformation>
         <translate x="-25" y="5" z="0"/>
         <rotate axis="y" angle="90"/>
-        <transformationref id="wall_transformation"/>
+        <scale x="50" y="10" z="1"/>
+        <rotate axis="z" angle="90"/>
       </transformation>
 
       <materials>
@@ -468,7 +450,6 @@
 
     <component id="scene_floor">
       <transformation>
-        <transformationref id="null_transformation"/>
       </transformation>
 
       <materials>
@@ -486,7 +467,7 @@
     <component id="floor">
       <transformation>
         <translate x="0" y="-0.02" z="0"/>
-        <transformationref id="rotation_x_90"/>
+        <rotate axis="x" angle="90"/>
       </transformation>
 
       <materials>
@@ -503,9 +484,7 @@
 
     <component id="rug">
       <transformation>
-        <translate x="0" y="-0.01" z="0"/>
-        <scale x="10" y="1" z="10"/>
-        <transformationref id="rotation_x_90"/>
+        <transformationref id="rug_transformation"/>
       </transformation>
 
       <materials>
@@ -644,7 +623,6 @@
 
     <component id="fork_top">
       <transformation>
-        <transformationref id="null_transformation"/>
       </transformation>
 
       <materials>
@@ -781,7 +759,6 @@
 
     <component id="knife">
       <transformation>
-        <transformationref id="null_transformation"/>
       </transformation>
 
       <materials>
@@ -934,7 +911,6 @@
 
     <component id="chair">
       <transformation>
-        <transformationref id="null_transformation" />
       </transformation>
 
       <materials>
@@ -994,7 +970,7 @@
     <component id="chair_leg_1">
       <transformation>
         <translate x="0.6" y="0.7" z="0.6" />
-        <transformationref id="scale_0.3_1.4_0.3"/>
+        <scale x="0.3" y="1.4" z="0.3"/>
       </transformation>
 
       <materials>
@@ -1011,7 +987,7 @@
     <component id="chair_leg_2">
       <transformation>
         <translate x="0.6" y="0.7" z="-0.6" />
-        <transformationref id="scale_0.3_1.4_0.3"/>
+        <scale x="0.3" y="1.4" z="0.3"/>
       </transformation>
 
       <materials>
@@ -1028,7 +1004,7 @@
     <component id="chair_leg_3">
       <transformation>
         <translate x="-0.6" y="0.7" z="0.6" />
-        <transformationref id="scale_0.3_1.4_0.3"/>
+        <scale x="0.3" y="1.4" z="0.3"/>
       </transformation>
 
       <materials>
@@ -1045,7 +1021,7 @@
     <component id="chair_leg_4">
       <transformation>
         <translate x="-0.6" y="0.7" z="-0.6" />
-        <transformationref id="scale_0.3_1.4_0.3"/>
+        <scale x="0.3" y="1.4" z="0.3"/>
       </transformation>
 
       <materials>
@@ -1062,7 +1038,6 @@
     <!-- Table -->
     <component id="table">
       <transformation>
-        <transformationref id="null_transformation" />
       </transformation>
 
       <materials>
@@ -1105,7 +1080,7 @@
       <transformation>
         <rotate axis="x" angle="-90"/>
         <translate x="-1.2" y="3.2" z="0"/>
-        <transformationref id="scale_0.5_0.5_0.3" />
+        <scale x="0.5" y="0.5" z="0.3"/>
       </transformation>
 
       <materials>
@@ -1124,7 +1099,7 @@
       <transformation>
         <rotate axis="x" angle="-90"/>
         <translate x="1.2" y="3.2" z="0"/>
-        <transformationref id="scale_0.5_0.5_0.3" />
+        <scale x="0.5" y="0.5" z="0.3"/>
       </transformation>
 
       <materials>
@@ -1143,7 +1118,7 @@
       <transformation>
         <rotate axis="x" angle="-90"/>
         <translate x="1.2" y="-3.2" z="0"/>
-        <transformationref id="scale_0.5_0.5_0.3" />
+       <scale x="0.5" y="0.5" z="0.3"/>
       </transformation>
       <materials>
         <material id="metal_mat" />
@@ -1159,7 +1134,7 @@
       <transformation>
         <rotate axis="x" angle="-90"/>
         <translate x="-1.2" y="-3.2" z="0"/>
-        <transformationref id="scale_0.5_0.5_0.3" />
+        <scale x="0.5" y="0.5" z="0.3"/>
       </transformation>
       <materials>
         <material id="metal_mat" />
@@ -1174,7 +1149,6 @@
     <!-- Cube -->
     <component id="cube">
       <transformation>
-        <transformationref id="null_transformation" />
       </transformation>
 
       <materials>
@@ -1197,7 +1171,7 @@
     <component id="cube_top">
       <transformation>
         <translate x="0" y="0.5" z="0"/>
-        <transformationref id="rotation_x_90" />
+        <rotate axis="x" angle="90"/>
       </transformation>
 
       <materials>
@@ -1215,7 +1189,7 @@
     <component id="cube_bottom">
       <transformation>
         <translate x="0" y="-0.5" z="0"/>
-        <transformationref id="rotation_x_90" />
+        <rotate axis="x" angle="90"/>
       </transformation>
 
       <materials>
@@ -1267,7 +1241,7 @@
     <component id="cube_back">
       <transformation>
         <translate x="-0.5" y="0" z="0"/>
-        <transformationref id="rotation_y_90"/>
+        <rotate axis="y" angle="90"/>
       </transformation>
 
       <materials>
@@ -1285,7 +1259,7 @@
     <component id="cube_front">
       <transformation>
         <translate x="0.5" y="0" z="0"/>
-        <transformationref id="rotation_y_90"/>
+         <rotate axis="y" angle="90"/>
       </transformation>
 
       <materials>

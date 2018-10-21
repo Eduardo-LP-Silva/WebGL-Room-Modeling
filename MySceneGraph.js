@@ -93,6 +93,8 @@ class MySceneGraph
 
         var nodes = rootElement.children;
 
+        //console.log(nodes[0]);
+
         // Reads the names of the nodes to an auxiliary buffer.
         var nodeNames = [];
 
@@ -1048,37 +1050,72 @@ class MySceneGraph
     parseComponentTransformation(componentTransformationBlock, componentID)
     {
         var children = componentTransformationBlock.children;
-        var transformationMatrix, xyz;
+        var error;
+
+        if(children.length != 0)
+            if(children[0].nodeName == "transformationref")
+                error = this.parseComponentTransformationsRef(children, componentID);
+            else
+                error = this.parseComponentTransformationsExplicit(children, componentID);
+
+        if(error != null)
+            return error;
+    }
+
+    /**
+     * Parses a component's transformations of the type transformationref.
+     * @param {array} transformations 
+     * @param {string} componentID 
+     */
+    parseComponentTransformationsRef(transformations, componentID)
+    {
         var componentErrorTag = "Component " + componentID + ": ";
+        var transformationMatrix;
 
-        for(let i = 0; i < children.length; i++)
+        for(let i = 0; i < transformations.length; i++)
         {
-            switch(children[i].nodeName)
+            if(transformations[i].nodeName != "transformationref")
+                return componentErrorTag + "Mixed transformations not allowed";
+
+            let transformationID = this.reader.getString(transformations[i], "id");
+
+            if(transformationID == null)
+                return componentErrorTag + "No ID defined for transformation";
+
+            if(this.transformations[transformationID] == null)
+                return componentErrorTag + "Transformation " + transformationID + " not defined previously";
+            else
             {
-                case "transformationref":
-                    let transformationID = this.reader.getString(children[i], "id");
+                if(i == 0)
+                    transformationMatrix = this.transformations[transformationID];
+                else
+                    mat4.mul(transformationMatrix, transformationMatrix, this.transformations[transformationID]);
+            }
+        }
+        
+        this.nodes[componentID].transformations = transformationMatrix;
+    }
 
-                    if(transformationID == null)
-                        return componentErrorTag + "No ID defined for transformation";
+    /**
+     * Parses a component's explicit transformations.
+     * @param {array} transformations 
+     * @param {string} componentID 
+     */
+    parseComponentTransformationsExplicit(transformations, componentID)
+    {
+        var componentErrorTag = "Component " + componentID + ": ";
+        var transformationMatrix, xyz;
 
-                    if(this.transformations[transformationID] == null)
-                        return componentErrorTag + "Transformation " + transformationID + " not defined previously";
-                    else
-                    {
-                        if(i == 0)
-                            transformationMatrix = this.transformations[transformationID];
-                        else
-                            mat4.mul(transformationMatrix, transformationMatrix, this.transformations[transformationID]);
-                    }
-                        
-                    break;
-
+        for(let i = 0; i < transformations.length; i++)
+        {
+            switch(transformations[i].nodeName)
+            {
                 case "translate":
 
                     if(i == 0)
                         transformationMatrix = mat4.create();
 
-                    xyz = this.getXYZ(children[i]);
+                    xyz = this.getXYZ(transformations[i]);
 
                     if(typeof xyz == "string")
                         return componentErrorTag + "Transformation: " + xyz;
@@ -1092,7 +1129,7 @@ class MySceneGraph
                     if(i == 0)
                         transformationMatrix = mat4.create();
 
-                    xyz = this.getXYZ(children[i]);
+                    xyz = this.getXYZ(transformations[i]);
 
                     if(typeof xyz == "string")
                         return componentErrorTag + "Transformation: " + xyz;
@@ -1106,8 +1143,8 @@ class MySceneGraph
                     if(i == 0)
                         transformationMatrix = mat4.create();
 
-                    var axis = this.reader.getString(children[i], "axis"), 
-                        angle = this.reader.getFloat(children[i], "angle");
+                    var axis = this.reader.getString(transformations[i], "axis"), 
+                        angle = this.reader.getFloat(transformations[i], "angle");
 
                     switch(axis)
                     {
@@ -1133,11 +1170,15 @@ class MySceneGraph
                     mat4.rotate(transformationMatrix, transformationMatrix, angle * DEGREE_TO_RAD, axis);
                     break;
 
-                default:
-                    return componentErrorTag + "Unkown transformation";
-            }
+                case "transformationref":
+                    return componentErrorTag + "Mixed transformations not allowed";
 
+                default:
+                    return componentErrorTag + "Unknown transformation";
+                    
+            }
         }
+
         this.nodes[componentID].transformations = transformationMatrix;
     }
 
