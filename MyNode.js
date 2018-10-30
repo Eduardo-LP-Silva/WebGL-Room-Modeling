@@ -29,6 +29,7 @@
      display()
      {
         build.scene.pushMatrix();
+            //build.sene.translate(X,Y,Z);
             build.scene.multMatrix(this.transformations);
             build.display();
         build.scene.popMatrix();

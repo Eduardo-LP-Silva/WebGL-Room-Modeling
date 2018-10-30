@@ -15,7 +15,8 @@ function getUrlVars()
 //Include additional files here
 serialInclude(['../lib/CGF.js', 'XMLscene.js', 'MySceneGraph.js', 'MyInterface.js', 'MyNode.js',
     'primitives/MyCylinder.js', 'primitives/MyQuad.js', 'primitives/MyTriangle.js', 'primitives/MyTorus.js', 
-    'primitives/MySphere.js', 'primitives/MyDisk.js', 'primitives/MyCylinderBody.js', 
+    'primitives/MySphere.js', 'primitives/MyDisk.js', 'primitives/MyCylinderBody.js', 'primitives/Plane.js',
+    'animations/Animation.js', 'animations/CircularAnimation.js', 'animations/LinearAnimation.js',
 
 main=function()
 {

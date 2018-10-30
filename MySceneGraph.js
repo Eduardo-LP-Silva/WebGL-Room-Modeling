@@ -9,8 +9,9 @@ var LIGHTS_INDEX = 3;
 var TEXTURES_INDEX = 4;
 var MATERIALS_INDEX = 5;
 var TRANSFORMATIONS_INDEX = 6;
-var PRIMITIVES_INDEX = 7;
-var COMPONENTS_INDEX = 8;
+var ANIMATIONS_INDEX = 7;
+var PRIMITIVES_INDEX = 8;
+var COMPONENTS_INDEX = 9;
 
 /**
  * MySceneGraph class, representing the scene's graph.
@@ -45,6 +46,7 @@ class MySceneGraph
         this.transformations = []; //The associate array containing the transformations (matrices)
         this.root = null; //The root node
         this.defaultViewID = null; //The default camera ID
+        this.animations = []; //Animation array
 
         // File reading
         this.reader = new CGFXMLreader();
@@ -195,6 +197,19 @@ class MySceneGraph
             if ((error = this.parseTransformations(nodes[index])) != null)
                 return error;
         }
+
+        // <animations>
+        if ((index = nodeNames.indexOf("animations")) == -1)
+            return "tag <animations> missing";
+        else
+        {
+            if (index != ANIMATIONS_INDEX)
+                this.onXMLMinorError("tag <animations> out of order");
+
+            //Parse animations node
+            if ((error = this.parseAnimations(nodes[index])) != null)
+                return error;
+        } 
 
         // <primitives>
         if ((index = nodeNames.indexOf("primitives")) == -1)
@@ -811,6 +826,99 @@ class MySceneGraph
         }
     }
 
+    parseAnimations(animationsNode)
+    {
+        var animationID, animationErrorTag, error;
+
+        for(let i = 0; i < animationsNode.children; i++)
+        {
+            animationID = this.reader.getString(linearAnimation, "id");
+
+            if(animationID == null)
+                return "No ID defined for animation\n";
+            
+            animationErrorTag = "Animation " + animationID + ": ";
+
+            if(this.animations[animationID] != null)
+                return animationErrorTag + "ID must be unique\n";
+
+            switch(animationsNode.children[i].nodeName)
+            {
+                case "linear":
+                    error = this.parseLinearAnimation(animationsNode.children[i], animationID);
+                    break;
+
+                case "circular":
+                    error = this.parseCircularAnimation(animationsNode.children[i], animationID);
+                    break;
+
+                default:
+                    return animationErrorTag +  "Unknown Animation\n";
+            }
+
+            if(error != null)
+                return animationErrorTag + error;
+        }
+            
+    }
+
+    parseLinearAnimation(linearAnimation, animationID)
+    {     
+        var span = this.reader.getFloat(linearAnimation, "span");
+
+        if(span == null || isNaN(span))
+            return "Error in span component\n";
+
+        if(linearAnimation.children.length < 2)
+            return "There must be at least 2 control points";
+        
+        var trajectory = [];
+        var controlPoint = []; 
+
+        for(let i = 0; i < linearAnimation.children.length; i++)
+        {
+            controlPoint = this.getXYZ(linearAnimation.children[i]);
+
+            if(typeof controlPoint == "string")
+                return controlPoint;
+            else
+                trajectory.push(controlPoint);
+        }
+
+        this.animations[animationID] = new LinearAnimation(trajectory, span);
+    }
+
+    parseCircularAnimation(circularAnimation, animationID)
+    {
+        var span = this.reader.getFloat(circularAnimation, "span");
+
+        if(span == null || isNaN(span))
+            return "Error in span component\n";
+
+        /* How to do it
+        var center = this.reader.getFloat(circularAnimation, "center");
+
+        if(center == null || isNaN(center))
+            return "Error in center component"; */
+
+        var radius = this.reader.getFloat(circularAnimation, "radius");
+
+        if(radius == null || isNaN(radius))
+            return "Error in radius component";
+
+        var initialAngle = this.reader.getFloat(circularAnimation, "startang");
+
+        if(initialAngle == null || isNaN(initialAngle))
+            return "Error in startang component";
+
+        var rotationAngle = this.reader.getFloat(circularAnimation, "rotang");
+
+        if(rotationAngle == null || isNaN(rotationAngle))
+            return "Error in rotang component";
+
+        //this.animations[animationID] = new CircularAnimation(center, radius, initialAngle, rotationAngle, span);
+    }
+
     /**
      * Parses the primitives node.
      * @param {element} primitivesNode
@@ -850,12 +958,15 @@ class MySceneGraph
     {
         var primitiveID = this.reader.getString(primitiveBlock, "id");
         var build;
+        var uvDivs;
 
         if(primitiveID == null)
             return "No ID defined for primitive";
 
+        var primitiveErrorTag = "Primitive " + primitiveID + ": ";
+
         if(this.nodes[primitiveID] != null)
-            return "ID must be unique for each primitive (conflict: ID = " + primitiveID + ")";
+            return primitiveErrorTag + "ID must be unique";
 
         var children = primitiveBlock.children;
 
@@ -903,6 +1014,48 @@ class MySceneGraph
                     this.reader.getFloat(children[0], "loops"));
                 break;
 
+            case "patch":
+
+                uvDivs = this.getUVDivs(children[0]);
+
+                if(typeof uvDivs == "string")
+                    return primitiveErrorTag + uvDivs;
+
+                let npointsU = this.reader.getInteger(children[0], "npointsU");
+                
+                if(npointsU == null || isNaN(npointsU))
+                    return primitiveErrorTag + "Error in npointsU component";
+                
+                let npointsV = this.reader.getInteger(children[0], "npointsV");
+                
+                if(npointsV == null || isNaN(npointsV))
+                    return primitiveErrorTag + "Error in npointsV component";
+
+                let controlPoints = [], controlPoint;
+
+                for(let i = 0; i < children[0].children.length; i++)
+                {
+                    controlPoint = this.getXYZ(children[0].children[i]);
+
+                    if(typeof controlPoint == "string")
+                        return primitiveErrorTag + controlPoint;
+                    else
+                        controlPoints.push(controlPoint);
+                }
+
+                build = new Plane(this.scene, uvDivs[0], uvDivs[1], npointsU, npointsV, controlPoints);
+                break;
+                
+            case "plane":
+                
+                uvDivs = this.getUVDivs(children[0]);
+
+                if(typeof uvDivs == "string")
+                    return primitiveErrorTag + uvDivs;
+                
+                build = new Plane(this.scene, uvDivs[0], uvDivs[1]);
+                break;
+
             default:
                 return "Tag not identified on primitive " + primitiveID;
         }
@@ -910,6 +1063,7 @@ class MySceneGraph
         this.nodes[primitiveID] = new MyNode(build, primitiveID);
 
     }
+
     /**
      * Processes the components node.
      * @param {element} componentsNode
@@ -1274,6 +1428,25 @@ class MySceneGraph
     }
 
     /**
+     * Returns an array containing the number of Divisions in U and V
+     * @param {element} tag 
+     */
+    getUVDivs(tag)
+    {
+        let uDivs = this.reader.getInteger(tag, "npartsU");
+
+        if(uDivs == null || isNaN(uDivs))
+            return "Error in npartsU component";
+
+        let vDivs = this.reader.getInteger(tag, "npartsV");
+
+        if(vDivs == null || isNaN(vDivs))
+            return "Error in npartsV component";
+
+        return [uDivs, vDivs]; //Check if this works
+    }
+
+    /**
      * Returns the XYZ values from a tag.
      * @param {element} tag
      */
@@ -1281,9 +1454,21 @@ class MySceneGraph
     {
         var xyz = [];
 
-        xyz.push(this.reader.getFloat(tag, "x"));
-        xyz.push(this.reader.getFloat(tag, "y"));
-        xyz.push(this.reader.getFloat(tag, "z"));
+        if(this.reader.hasAttribute(tag, "x"))
+            xyz.push(this.reader.getFloat(tag, "x"));
+        else
+            xyz.push(this.reader.getFloat(tag, "xx"));
+
+        if(this.reader.hasAttribute(tag, "y"))
+            xyz.push(this.reader.getFloat(tag, "y"));
+        else
+            xyz.push(this.reader.getFloat(tag, "yy"));
+
+
+        if(this.reader.hasAttribute(tag, "z"))
+            xyz.push(this.reader.getFloat(tag, "z"));
+        else
+            xyz.push(this.reader.getFloat(tag, "zz"));
 
         if(xyz[0] == null || isNaN(xyz[0]))
             return "X value not properly defined";
