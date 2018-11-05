@@ -1,11 +1,15 @@
 class Animation
 {
-    constructor(object)
+    constructor(totalTime)
     {
-        this.object = object;
+        this.totalTime = totalTime;
+        this.elapsedTime = 0;
+        this.stage = 0;
+        this.initialTransformationMatrix = null;
+        this.velocity = null;
     }
 
-    update()
+    update(currentTime)
     {
         //TODO Complete
     }
@@ -14,4 +18,10 @@ class Animation
     {
         //TODO Complete
     }
+
+    //Method to be overriden by child classes
+    calculateVelocity() {}
+
+    //Method to be overriden by child classes
+    calculateDistance() {}
 }

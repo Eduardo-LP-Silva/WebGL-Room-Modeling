@@ -1026,10 +1026,14 @@ class MySceneGraph
                 if(npointsU == null || isNaN(npointsU))
                     return primitiveErrorTag + "Error in npointsU component";
                 
+                npointsU--;
+                
                 let npointsV = this.reader.getInteger(children[0], "npointsV");
                 
                 if(npointsV == null || isNaN(npointsV))
                     return primitiveErrorTag + "Error in npointsV component";
+
+                npointsV--;
 
                 let controlPoints = [], controlPoint;
 
@@ -1119,7 +1123,7 @@ class MySceneGraph
     {
         var children = componentBlock.children;
         var i, nodeNames = [], index;
-        var tranformationMatrix, materialList = [], textureSpecs = [], childrenList = [];
+        var tranformationMatrix, materialList = [], textureSpecs = [], childrenList = [], animations = [];
         var componentID = this.reader.getString(componentBlock, "id");
 
         for(i = 0; i < children.length; i++)
@@ -1127,7 +1131,7 @@ class MySceneGraph
 
         index = nodeNames.indexOf("transformation");
 
-        if(index == null)
+        if(index == -1)
             return "No <transformation> tag present in component " + componentID;
 
         if(typeof (tranformationMatrix = this.parseComponentTransformation(children[index], componentID)) == "string")
@@ -1135,7 +1139,7 @@ class MySceneGraph
 
         index = nodeNames.indexOf("materials");
 
-        if(index == null)
+        if(index == -1)
             return "No <materials> tag present in component " + componentID;
 
         if(typeof (materialList = this.parseComponentMaterials(children[index], componentID)) == "string")
@@ -1143,15 +1147,23 @@ class MySceneGraph
 
         index = nodeNames.indexOf("texture");
 
-        if(index == null)
+        if(index == -1)
             return "No <texture> tag present in component: " + componentID;
 
         if(typeof (textureSpecs = this.parseComponentTexture(children[index], componentID)) == "string")
             return textureSpecs;
 
+        index = nodeNames.indexOf("animations");
+
+        if(index != -1)
+        {
+            if(typeof (animations = this.parseComponentAnimations(children[index], componentID)) == "string")
+                return animations;
+        }
+
         index = nodeNames.indexOf("children");
 
-        if(index == null)
+        if(index == -1)
             return "No <children> tag present in component: " + componentID;
 
         if(typeof (childrenList = this.parseComponentChildren(children[index], componentID)) == "string")
@@ -1425,6 +1437,34 @@ class MySceneGraph
         textureSpecs.push(length_s, length_t);
 
         this.nodes[componentID].texture = textureSpecs;
+    }
+
+    /**
+     * Parses a component's animation tag
+     * @param {element} componentAnimationsTag 
+     * @param {string} componentID 
+     */
+    parseComponentAnimations(componentAnimationsTag, componentID)
+    {
+        var animationID, errorMessage = "Component " + componentID;
+        var animations = [];
+
+        for(let i = 0; i < componentAnimationsTag.children.length; i++)
+        {
+            animationID = this.reader.getString(componentAnimationsTag.children[i], "id");
+
+            if(animationID == null)
+                return "No ID defined for component animation";
+            
+            errorMessage += ": Animation " + animationID + " ";
+
+            if(this.animations[animationID] == null)
+                return errorMessage + "not defined previously";
+            
+            animations.push(this.animations[animationID]);
+        }
+
+        this.nodes[componentID].animations = animations;
     }
 
     /**

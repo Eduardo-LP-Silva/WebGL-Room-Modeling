@@ -12,13 +12,14 @@
       * @param {array} texture 
       * @param {array} materials 
       */
-     constructor(build = null, id, children = [], transformations = null, texture = [], materials = [])
+     constructor(build = null, id, children = [], transformations = null, texture = [], materials = [], animations = [])
      {
         this.id = id;
         this.build = build;
         this.children = children;
         this.texture = texture;
         this.materials = materials;
+        this.animations = animations;
         this.transformations = transformations;
         this.materialIndex = 0;
      }

@@ -3,12 +3,18 @@ class Plane extends CGFobject
     constructor(scene, uDivs, vDivs, degreeU = null, degreeV = null, controlPoints = [])
     {
         super(scene);
+
+        var surface;
         
-        if(degreeU == null || degreeV == null)
-            this.generateDefaultSurface(uDivs, vDivs);
+        if(degreeU == null || degreeV == null || controlPoints.length == 0)
+            surface = this.generateDefaultSurface();
+        else
+            surface = this.generateCustomSurface(degreeU, degreeV, controlPoints);
+
+        this.nurbsObject = new CGFnurbsObject(this.scene, uDivs, vDivs, surface);
     }
 
-    generateDefaultSurface(uDivs, vDivs)
+    generateDefaultSurface()
     {
         var controlPoints = [
             [
@@ -21,9 +27,22 @@ class Plane extends CGFobject
             ]
         ];
 
-        var nurbsSurface = new CGFnurbsSurface(1, 1, controlPoints);
+        return nurbsSurface = new CGFnurbsSurface(1, 1, controlPoints);
+    }
 
-        this.nurbsObject = new CGFnurbsObject(this.scene, uDivs, vDivs, nurbsSurface);
+    generateCustomSurface(degreeU, degreeV, controlPoints)
+    {
+        var points = [];
+
+        for(let i = 0; i < controlPoints.length; i++)
+        {
+            points[i] = [];
+
+            for(let j = 0; j <= degreeV; j++)
+                points[i].push(controlPoints[i]);
+        }
+
+        return new CGFnurbsSurface(degreeU, degreeV, points);
     }
 
     display()
