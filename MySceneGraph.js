@@ -830,9 +830,9 @@ class MySceneGraph
     {
         var animationID, animationErrorTag, error;
 
-        for(let i = 0; i < animationsNode.children; i++)
+        for(let i = 0; i < animationsNode.children.length; i++)
         {
-            animationID = this.reader.getString(linearAnimation, "id");
+            animationID = this.reader.getString(animationsNode.children[i], "id");
 
             if(animationID == null)
                 return "No ID defined for animation\n";
@@ -845,6 +845,7 @@ class MySceneGraph
             switch(animationsNode.children[i].nodeName)
             {
                 case "linear":
+                
                     error = this.parseLinearAnimation(animationsNode.children[i], animationID);
                     break;
 
@@ -1653,8 +1654,6 @@ class MySceneGraph
                     }
                     
                     material.setTexture(texture[0]);
-
-                    //console.log(node.texture);
                     break;
 
                 case "none":
@@ -1676,7 +1675,9 @@ class MySceneGraph
         {
             this.scene.multMatrix(node.transformations);
         }
-        
+
+        node.update(this.scene.currTime);
+
         for(let i = 0; i < node.children.length; i++)
         {
             this.displayNode(node.children[i], texture, material);

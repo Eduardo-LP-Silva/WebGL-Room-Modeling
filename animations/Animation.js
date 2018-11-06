@@ -4,8 +4,7 @@ class Animation
     {
         this.totalTime = totalTime;
         this.elapsedTime = 0;
-        this.stage = 0;
-        this.initialTransformationMatrix = null;
+        this.transformationMatrix = mat4.create();
         this.velocity = null;
     }
 

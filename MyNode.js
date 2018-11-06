@@ -22,6 +22,7 @@
         this.animations = animations;
         this.transformations = transformations;
         this.materialIndex = 0;
+        this.animationIndex = 0;
      }
 
      /**
@@ -30,9 +31,24 @@
      display()
      {
         build.scene.pushMatrix();
-            //build.sene.translate(X,Y,Z);
             build.scene.multMatrix(this.transformations);
             build.display();
         build.scene.popMatrix();
+     }
+
+     update(currTime)
+     {
+        if(this.animationIndex < this.animations.length)
+        {
+            if(this.animations[this.animationIndex].elapsedTime > this.animations[this.animationIndex].totalTime)
+                this.animationIndex++;
+            else
+            {
+                this.animations[this.animationIndex].update(currTime); 
+                mat4.multiply(this.transformations, this.transformations, 
+                    this.animations[this.animationIndex].transformationMatrix);
+            }
+                   
+        }
      }
  }

@@ -127,13 +127,7 @@
     <linear id="pull_back_chair_1" span="3">
       <controlpoint xx="0" yy="0" zz="0"/>
       <controlpoint xx="0" yy="0" zz="-4"/>
-      <controlpoint xx="-2" yy="0" zz="-4"/>
-    </linear>
-
-    <linear id="pull_back_chair_2" span="3">
-      <controlpoint xx="0" yy="0" zz="0"/>
-      <controlpoint xx="0" yy="0" zz="4"/>
-      <controlpoint xx="-2" yy="0" zz="4"/>
+     <!-- <controlpoint xx="-2" yy="0" zz="-4"/> -->
     </linear>
   </animations>
 
@@ -898,6 +892,10 @@
       </materials>
 
       <texture id="none" length_s="1" length_t="1" />
+
+      <animations>
+        <animationref id="pull_back_chair_1"/>
+      </animations>
 
       <children>
         <componentref id="chair" />
