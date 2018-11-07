@@ -38,17 +38,24 @@
 
      update(currTime)
      {
+        var newTransformations = this.transformations;
+
         if(this.animationIndex < this.animations.length)
         {
-            if(this.animations[this.animationIndex].elapsedTime > this.animations[this.animationIndex].totalTime)
+            if(this.animations[this.animationIndex].initTime == - 1)
+                this.animations[this.animationIndex].initTimeStamps(currTime);
+
+            if(this.animations[this.animationIndex].getElapsedTime(currTime) 
+                > this.animations[this.animationIndex].totalTime)
                 this.animationIndex++;
             else
             {
                 this.animations[this.animationIndex].update(currTime); 
-                mat4.multiply(this.transformations, this.transformations, 
+                mat4.multiply(newTransformations, this.transformations, 
                     this.animations[this.animationIndex].transformationMatrix);
-            }
-                   
+            }      
         }
+
+        return newTransformations;
      }
  }

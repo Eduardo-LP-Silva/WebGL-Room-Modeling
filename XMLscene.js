@@ -17,7 +17,6 @@ class XMLscene extends CGFscene
     
         this.viewIndex = 0; //The index associated with the active camera
         this.oldViewIndex = this.viewIndex; //The second camera index used to check if the camera has changed
-        this.initialTime = 0;
         this.currTime = 0;
     }
 
@@ -133,10 +132,7 @@ class XMLscene extends CGFscene
      */
     update(currTime)
     {
-        if(this.initialTime == 0)
-            this.initialTime = currTime;
-        else
-            this.currTime = (currTime - this.initialTime) / 1000;
+        this.currTime = currTime;
     }
 
     /**

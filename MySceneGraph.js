@@ -1673,10 +1673,10 @@ class MySceneGraph
 
         if(node.transformations != null)
         {
-            this.scene.multMatrix(node.transformations);
+            this.scene.multMatrix(node.update(this.scene.currTime));
         }
 
-        node.update(this.scene.currTime);
+        
 
         for(let i = 0; i < node.children.length; i++)
         {

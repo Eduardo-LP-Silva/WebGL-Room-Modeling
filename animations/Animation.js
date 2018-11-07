@@ -3,9 +3,15 @@ class Animation
     constructor(totalTime)
     {
         this.totalTime = totalTime;
-        this.elapsedTime = 0;
+        this.initTime = -1;
         this.transformationMatrix = mat4.create();
         this.velocity = null;
+    }
+
+    //Method to be overriden by child classes
+    initTimeStamps(currTime)
+    {
+
     }
 
     update(currentTime)
@@ -23,4 +29,9 @@ class Animation
 
     //Method to be overriden by child classes
     calculateDistance() {}
+
+    getElapsedTime(currTime)
+    {
+        return (currTime - this.initTime) / 1000;
+    }
 }

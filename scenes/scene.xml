@@ -124,10 +124,10 @@
 
   <!-- Animations -->
   <animations>
-    <linear id="pull_back_chair_1" span="3">
+    <linear id="pull_back_chair_1" span="7">
       <controlpoint xx="0" yy="0" zz="0"/>
       <controlpoint xx="0" yy="0" zz="-4"/>
-     <!-- <controlpoint xx="-2" yy="0" zz="-4"/> -->
+     <controlpoint xx="-4" yy="0" zz="0"/>
     </linear>
   </animations>
 
