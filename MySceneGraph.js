@@ -1676,8 +1676,6 @@ class MySceneGraph
             this.scene.multMatrix(node.update(this.scene.currTime));
         }
 
-        
-
         for(let i = 0; i < node.children.length; i++)
         {
             this.displayNode(node.children[i], texture, material);

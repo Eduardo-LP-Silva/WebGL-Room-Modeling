@@ -38,8 +38,6 @@
 
      update(currTime)
      {
-        var newTransformations = this.transformations;
-
         if(this.animationIndex < this.animations.length)
         {
             if(this.animations[this.animationIndex].initTime == - 1)
@@ -51,11 +49,11 @@
             else
             {
                 this.animations[this.animationIndex].update(currTime); 
-                mat4.multiply(newTransformations, this.transformations, 
+                mat4.multiply(this.transformations, this.transformations, 
                     this.animations[this.animationIndex].transformationMatrix);
             }      
         }
 
-        return newTransformations;
+        return this.transformations;
      }
  }
