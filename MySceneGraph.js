@@ -886,7 +886,7 @@ class MySceneGraph
                 trajectory.push(controlPoint);
         }
 
-        this.animations[animationID] = new LinearAnimation(trajectory, span);
+        this.animations[animationID] = ['l', trajectory, span];
     }
 
     parseCircularAnimation(circularAnimation, animationID)
@@ -1461,8 +1461,9 @@ class MySceneGraph
 
             if(this.animations[animationID] == null)
                 return errorMessage + "not defined previously";
-            
-            animations.push(this.animations[animationID]);
+
+            if(this.animations[animationID][0] == 'l')
+                animations.push(new LinearAnimation(this.animations[animationID][1].slice(), this.animations[animationID][2]));
         }
 
         this.nodes[componentID].animations = animations;
