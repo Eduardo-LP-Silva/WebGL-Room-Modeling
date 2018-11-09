@@ -1,4 +1,4 @@
-class Plane extends CGFobject
+class Patch extends CGFobject
 {
     constructor(scene, uDivs, vDivs, degreeU = null, degreeV = null, controlPoints = [])
     {

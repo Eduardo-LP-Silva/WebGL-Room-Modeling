@@ -140,7 +140,7 @@
 
   <!-- Primitives -->
   <primitives>
-    <primitive id="plane">
+    <primitive id="rectangle">
       <rectangle x1="-0.5" y1="-0.5" x2="0.5" y2="0.5" />
     </primitive>
 
@@ -167,6 +167,11 @@
     <primitive id="torus">
       <torus inner="4" outer="10" slices="40" loops="40"/>
     </primitive>
+
+    <primitive id="plane">
+      <plane npartsU="1" npartsV="1"/>
+    </primitive>
+
   </primitives>
 
   <!-- Components -->
@@ -199,8 +204,26 @@
         <componentref id="wall_2"/>
         <componentref id="mirror_ball_lamp"/>
         <componentref id="cake"/>
+        <componentref id="teste"/>
       </children>
     </component>
+
+    <!-- TESTE -->
+    <component id="teste">
+      <transformation>
+        <translate x="0" y="3" z="0"/>
+      </transformation>
+      <materials>
+        <material id="inherit"/>
+      </materials>
+        <texture id="rug" length_s="1" length_t="1" />
+      <children>
+        <primitiveref id="plane"/>
+      </children>
+    </component>
+
+
+    <!-- TESTE -->
 
     <!-- Cake -->
     <component id="cake">
@@ -436,7 +459,7 @@
       <texture id="zebra" length_s="1" length_t="1" />
 
       <children>
-        <primitiveref id="plane"/>
+        <primitiveref id="rectangle"/>
       </children>
     </component>
 
@@ -455,7 +478,7 @@
       <texture id="zebra" length_s="1" length_t="1" />
 
       <children>
-        <primitiveref id="plane"/>
+        <primitiveref id="rectangle"/>
       </children>
     </component>
 
@@ -507,7 +530,7 @@
       <texture id="rug" length_s="1" length_t="1" />
 
       <children>
-        <primitiveref id="plane"/>
+        <primitiveref id="rectangle"/>
       </children>
     </component>
 
@@ -1202,7 +1225,7 @@
       <texture id="inherit"/>
 
       <children>
-        <primitiveref id="plane" />
+        <primitiveref id="rectangle" />
       </children>
     </component>
 
@@ -1220,7 +1243,7 @@
       <texture id="inherit"/>
 
       <children>
-        <primitiveref id="plane" />
+        <primitiveref id="rectangle" />
       </children>
     </component>
 
@@ -1237,7 +1260,7 @@
       <texture id="inherit"/>
 
       <children>
-        <primitiveref id="plane" />
+        <primitiveref id="rectangle" />
       </children>
     </component>
 
@@ -1255,7 +1278,7 @@
       <texture id="inherit"/>
 
       <children>
-        <primitiveref id="plane" />
+        <primitiveref id="rectangle" />
       </children>
     </component>
 
@@ -1273,7 +1296,7 @@
       <texture id="inherit"/>
 
       <children>
-        <primitiveref id="plane" />
+        <primitiveref id="rectangle" />
       </children>
     </component>
 
@@ -1291,7 +1314,7 @@
       <texture id="inherit"/>
 
       <children>
-        <primitiveref id="plane" />
+        <primitiveref id="rectangle" />
       </children>
     </component>
   </components>

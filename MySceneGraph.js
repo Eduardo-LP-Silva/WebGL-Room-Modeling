@@ -20,8 +20,8 @@ class MySceneGraph
 {
      /**
       * @constructor
-      * @param {string} filename 
-      * @param {CGFscene} scene 
+      * @param {string} filename
+      * @param {CGFscene} scene
       */
     constructor(filename, scene)
     {
@@ -79,7 +79,7 @@ class MySceneGraph
 
         this.loadedOk = true;
 
-        /* As the graph loaded ok, signal the scene so that any additional initialization depending on the graph can 
+        /* As the graph loaded ok, signal the scene so that any additional initialization depending on the graph can
         take place */
         this.scene.onGraphLoaded();
     }
@@ -102,6 +102,8 @@ class MySceneGraph
 
         for (var i = 0; i < nodes.length; i++)
             nodeNames.push(nodes[i].nodeName);
+
+
 
         var error, index;
 
@@ -209,7 +211,7 @@ class MySceneGraph
             //Parse animations node
             if ((error = this.parseAnimations(nodes[index])) != null)
                 return error;
-        } 
+        }
 
         // <primitives>
         if ((index = nodeNames.indexOf("primitives")) == -1)
@@ -267,7 +269,7 @@ class MySceneGraph
     {
         var children = viewNode.children;
         var error;
-        var defaultID = this.reader.getString(viewNode, "default"); 
+        var defaultID = this.reader.getString(viewNode, "default");
 
         if(defaultID == null)
             return "Default view is missing";
@@ -284,16 +286,16 @@ class MySceneGraph
         }
 
         if(this.views[defaultID] == null)
-            return "Default view " + defaultID + " not defined"; 
+            return "Default view " + defaultID + " not defined";
         else
-            this.defaultViewID = defaultID; 
-            
+            this.defaultViewID = defaultID;
+
         this.log("Parsed views");
     }
 
     /**
      * Parses a single view block.
-     * @param {element} viewBlock 
+     * @param {element} viewBlock
      */
     parseViewBlock(viewBlock)
     {
@@ -306,7 +308,7 @@ class MySceneGraph
             return "View " + viewID + " already declared";
 
         var viewErrorTag = "View " + viewID + ": ";
-        
+
         var near = this.reader.getFloat(viewBlock, "near");
 
         if(near == null || isNaN(near))
@@ -466,7 +468,7 @@ class MySceneGraph
                 }
 
             // Get id of the current light.
-            
+
             var enableIndex = this.reader.getFloat(children[i], "enabled");
 
             if(enableIndex == null || isNaN(enableIndex))
@@ -511,7 +513,7 @@ class MySceneGraph
             var positionLight = [];
 
             positionLight = this.getXYZ(grandChildren[positionIndex]);
-                
+
             // w
             var w = this.reader.getFloat(grandChildren[positionIndex], 'w');
 
@@ -519,7 +521,7 @@ class MySceneGraph
                 return "unable to parse w-coordinate of the light position for ID = " + lightId;
             else
                 positionLight.push(w);
-            
+
             // Retrieves the ambient component.
             var ambientIllumination = this.retrieveColor(grandChildren[ambientIndex], lightId);
 
@@ -544,7 +546,7 @@ class MySceneGraph
             if (targetIndex != -1 && children[i].nodeName == "spot")
             {
                 targetPosition = this.getXYZ(grandChildren[targetIndex]);
-                
+
                 if(typeof targetPosition == "string")
                     return lightErrorMessage + targetPosition;
             }
@@ -556,7 +558,7 @@ class MySceneGraph
 
         if (numLights == 0)
             return "at least one light must be defined";
-        else 
+        else
             if(numLights > 8)
                 this.onXMLMinorError("too many lights defined; WebGL imposes a limit of 8 lights");
 
@@ -573,7 +575,7 @@ class MySceneGraph
 
         if(children.length == 0)
             return "At least one texture must be defined";
-    
+
         for(var i = 0; i < children.length; i++)
         {
             if(children[i].nodeName != "texture")
@@ -836,7 +838,7 @@ class MySceneGraph
 
             if(animationID == null)
                 return "No ID defined for animation\n";
-            
+
             animationErrorTag = "Animation " + animationID + ": ";
 
             if(this.animations[animationID] != null)
@@ -860,11 +862,11 @@ class MySceneGraph
             if(error != null)
                 return animationErrorTag + error;
         }
-            
+
     }
 
     parseLinearAnimation(linearAnimation, animationID)
-    {     
+    {
         var span = this.reader.getFloat(linearAnimation, "span");
 
         if(span == null || isNaN(span))
@@ -872,9 +874,9 @@ class MySceneGraph
 
         if(linearAnimation.children.length < 2)
             return "There must be at least 2 control points";
-        
+
         var trajectory = [];
-        var controlPoint = []; 
+        var controlPoint = [];
 
         for(let i = 0; i < linearAnimation.children.length; i++)
         {
@@ -998,7 +1000,7 @@ class MySceneGraph
                 break;
 
             case "cylinder":
-                build = new MyCylinder(this.scene, this.reader.getFloat(children[0], "base"), 
+                build = new MyCylinder(this.scene, this.reader.getFloat(children[0], "base"),
                     this.reader.getFloat(children[0], "top"), this.reader.getFloat(children[0], "height"),
                     this.reader.getFloat(children[0], "slices"), this.reader.getFloat(children[0], "stacks"));
 
@@ -1023,14 +1025,14 @@ class MySceneGraph
                     return primitiveErrorTag + uvDivs;
 
                 let npointsU = this.reader.getInteger(children[0], "npointsU");
-                
+
                 if(npointsU == null || isNaN(npointsU))
                     return primitiveErrorTag + "Error in npointsU component";
-                
+
                 npointsU--;
-                
+
                 let npointsV = this.reader.getInteger(children[0], "npointsV");
-                
+
                 if(npointsV == null || isNaN(npointsV))
                     return primitiveErrorTag + "Error in npointsV component";
 
@@ -1050,14 +1052,14 @@ class MySceneGraph
 
                 build = new Plane(this.scene, uvDivs[0], uvDivs[1], npointsU, npointsV, controlPoints);
                 break;
-                
+
             case "plane":
-                
+
                 uvDivs = this.getUVDivs(children[0]);
 
                 if(typeof uvDivs == "string")
                     return primitiveErrorTag + uvDivs;
-                
+
                 build = new Plane(this.scene, uvDivs[0], uvDivs[1]);
                 break;
 
@@ -1231,8 +1233,8 @@ class MySceneGraph
 
     /**
      * Parses a component's transformations of the type transformationref.
-     * @param {array} transformations 
-     * @param {string} componentID 
+     * @param {array} transformations
+     * @param {string} componentID
      */
     parseComponentTransformationsRef(transformations, componentID)
     {
@@ -1259,14 +1261,14 @@ class MySceneGraph
                     mat4.mul(transformationMatrix, transformationMatrix, this.transformations[transformationID]);
             }
         }
-        
+
         this.nodes[componentID].transformations = transformationMatrix;
     }
 
     /**
      * Parses a component's explicit transformations.
-     * @param {array} transformations 
-     * @param {string} componentID 
+     * @param {array} transformations
+     * @param {string} componentID
      */
     parseComponentTransformationsExplicit(transformations, componentID)
     {
@@ -1310,7 +1312,7 @@ class MySceneGraph
                     if(i == 0)
                         transformationMatrix = mat4.create();
 
-                    var axis = this.reader.getString(transformations[i], "axis"), 
+                    var axis = this.reader.getString(transformations[i], "axis"),
                         angle = this.reader.getFloat(transformations[i], "angle");
 
                     switch(axis)
@@ -1342,7 +1344,7 @@ class MySceneGraph
 
                 default:
                     return componentErrorTag + "Unknown transformation";
-                    
+
             }
         }
 
@@ -1414,7 +1416,7 @@ class MySceneGraph
             else
                 textureSpecs.push(this.textures[textureID]);
         }
-        
+
         if(textureID != "none")
         {
             if(!this.reader.hasAttribute(componentTextureTag, "length_s"))
@@ -1424,8 +1426,8 @@ class MySceneGraph
             }
             else
                 length_s = this.reader.getFloat(componentTextureTag, "length_s");
-                
-         
+
+
             if(!this.reader.hasAttribute(componentTextureTag, "length_t"))
             {
                 if(textureID != "inherit")
@@ -1433,7 +1435,7 @@ class MySceneGraph
             }
             else
                 length_t = this.reader.getFloat(componentTextureTag, "length_t");
-        }   
+        }
 
         textureSpecs.push(length_s, length_t);
 
@@ -1442,8 +1444,8 @@ class MySceneGraph
 
     /**
      * Parses a component's animation tag
-     * @param {element} componentAnimationsTag 
-     * @param {string} componentID 
+     * @param {element} componentAnimationsTag
+     * @param {string} componentID
      */
     parseComponentAnimations(componentAnimationsTag, componentID)
     {
@@ -1456,7 +1458,7 @@ class MySceneGraph
 
             if(animationID == null)
                 return "No ID defined for component animation";
-            
+
             errorMessage += ": Animation " + animationID + " ";
 
             if(this.animations[animationID] == null)
@@ -1471,7 +1473,7 @@ class MySceneGraph
 
     /**
      * Returns an array containing the number of Divisions in U and V
-     * @param {element} tag 
+     * @param {element} tag
      */
     getUVDivs(tag)
     {
@@ -1569,7 +1571,7 @@ class MySceneGraph
 
      /**
       * Callback to be executed on any read error, showing an error on the console.
-      * @param {string} message 
+      * @param {string} message
       */
     onXMLError(message)
     {
@@ -1600,7 +1602,7 @@ class MySceneGraph
      */
     displayScene()
     {
-        this.displayNode(this.idRoot, this.nodes[this.idRoot].texture, 
+        this.displayNode(this.idRoot, this.nodes[this.idRoot].texture,
             this.nodes[this.idRoot].materials[this.nodes[this.idRoot].materialIndex]);
     }
 
@@ -1621,7 +1623,7 @@ class MySceneGraph
             this.log("Error in node ID");
 
         this.scene.pushMatrix();
-    
+
         if(node.materials.length != 0)
         {
             switch(node.materials[node.materialIndex])
@@ -1653,7 +1655,7 @@ class MySceneGraph
                         texture[1] = textureInit[1];
                         texture[2] = textureInit[2];
                     }
-                    
+
                     material.setTexture(texture[0]);
                     break;
 
@@ -1669,7 +1671,7 @@ class MySceneGraph
                     material.setTexture(texture[0]);
             }
         }
-        
+
         material.apply();
 
         if(node.transformations != null)
@@ -1686,7 +1688,7 @@ class MySceneGraph
         {
             if(textureInit[1] != node.build.maxS || textureInit[2] != node.build.maxT)
                 node.build.update(textureInit[1], textureInit[2]);
-                
+
             node.build.display();
         }
 
