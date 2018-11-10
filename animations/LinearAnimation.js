@@ -37,7 +37,9 @@ class LinearAnimation extends Animation
         for(let i = 0; i < this.trajectory.length; i++)
         {
             stageDistance = vec3.length(this.trajectory[i]);
-            vec3.normalize(this.trajectory[i], this.trajectory[i]);
+
+            if(i != 0)
+                vec3.normalize(this.trajectory[i], this.trajectory[i]);
 
             if(stageDistance == 0)
             {

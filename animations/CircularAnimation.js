@@ -5,7 +5,27 @@ class CircularAnimation extends Animation
         super(time);
         this.center = center;
         this.radius = radius;
-        this.initialAngle = initialAngle;
-        this.rotationAngle = rotationAngle;
+        this.initialAngle = initialAngle * DEGREE_TO_RAD;
+        this.rotationAngle = rotationAngle * DEGREE_TO_RAD;
+        this.lastUpadtedTime = -1;
+
+        this.calculateVelocity();
     }
+
+    initTimeStamps(currTime)
+    {
+        this.lastUpadtedTime = currTime;
+    }
+
+    calculateVelocity()
+    {
+        this.velocity = this.rotationAngle / this.totalTime;
+    }
+
+    calculateDistance()
+    {
+        return this.rotationAngle * this.radius;
+    }
+
+
 }

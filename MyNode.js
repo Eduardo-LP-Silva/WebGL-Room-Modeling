@@ -21,6 +21,7 @@
         this.materials = materials;
         this.animations = animations;
         this.transformations = transformations;
+        this.animationTransformations = transformations;
         this.materialIndex = 0;
         this.animationIndex = 0;
      }
@@ -36,24 +37,41 @@
         build.scene.popMatrix();
      }
 
-     update(currTime)
+     updateAnimations(currTime)
      {
         if(this.animationIndex < this.animations.length)
         {
             if(this.animations[this.animationIndex].initTime == - 1)
+            {
                 this.animations[this.animationIndex].initTimeStamps(currTime);
-
+                this.animationTransformations = mat4.clone(this.transformations);
+            }
+                
             if(this.animations[this.animationIndex].getElapsedTime(currTime) 
                 > this.animations[this.animationIndex].totalTime)
                 this.animationIndex++;
             else
             {
                 this.animations[this.animationIndex].update(currTime); 
-                mat4.multiply(this.transformations, this.transformations, 
+
+                mat4.multiply(this.animationTransformations, this.animationTransformations, 
                     this.animations[this.animationIndex].transformationMatrix);
             }      
         }
+     }
 
-        return this.transformations;
+     applyAnimation(sceneMatrix)
+     {
+        if(this.animations.length > 0)
+        {
+            if(this.animationIndex >= this.animations.length)
+                this.animations[this.animationIndex - 1].apply(sceneMatrix, this.animationTransformations);
+            else
+                this.animations[this.animationIndex].apply(sceneMatrix, this.animationTransformations);
+        }
+        else
+            mat4.mul(sceneMatrix, sceneMatrix, this.transformations);
+
+        return sceneMatrix;
      }
  }

@@ -898,11 +898,11 @@ class MySceneGraph
         if(span == null || isNaN(span))
             return "Error in span component\n";
 
-        /* How to do it
-        var center = this.reader.getFloat(circularAnimation, "center");
+        
+        var center = this.reader.getVector3(circularAnimation, "center");
 
-        if(center == null || isNaN(center))
-            return "Error in center component"; */
+        if(center == null)
+            return "Error in center component";
 
         var radius = this.reader.getFloat(circularAnimation, "radius");
 
@@ -919,7 +919,7 @@ class MySceneGraph
         if(rotationAngle == null || isNaN(rotationAngle))
             return "Error in rotang component";
 
-        //this.animations[animationID] = new CircularAnimation(center, radius, initialAngle, rotationAngle, span);
+        this.animations[animationID] = ['c',center, radius, initialAngle, rotationAngle, span];
     }
 
     /**
@@ -1465,7 +1465,15 @@ class MySceneGraph
                 return errorMessage + "not defined previously";
 
             if(this.animations[animationID][0] == 'l')
-                animations.push(new LinearAnimation(this.animations[animationID][1].slice(), this.animations[animationID][2]));
+                animations.push(new LinearAnimation(this.animations[animationID][1].slice(), 
+                    this.animations[animationID][2]));
+            else
+                if(this.animations[animationID][0] == 'c')
+                    animations.push(new CircularAnimation(this.animations[animationID][1], 
+                        this.animations[animationID][2], this.animations[animationID][3], 
+                        this.animations[animationID][4], this.animations[animationID][5]));
+                else
+                        return "Unidentified animation";
         }
 
         this.nodes[componentID].animations = animations;
@@ -1676,7 +1684,9 @@ class MySceneGraph
 
         if(node.transformations != null)
         {
-            this.scene.multMatrix(node.update(this.scene.currTime));
+            //this.scene.multMatrix(node.transformations);
+            this.scene.setMatrix(node.applyAnimation(this.scene.getMatrix()));
+            //this.scene.multMatrix(node.update(this.scene.currTime));
         }
 
         for(let i = 0; i < node.children.length; i++)

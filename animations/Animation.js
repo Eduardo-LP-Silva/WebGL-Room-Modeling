@@ -14,14 +14,11 @@ class Animation
 
     }
 
-    update(currentTime)
-    {
-        //TODO Complete
-    }
+    update(currentTime){}
 
-    apply()
+    apply(sceneMatrix, currentAnimationMatrix)
     {
-        //TODO Complete
+        mat4.mul(sceneMatrix, sceneMatrix, currentAnimationMatrix);
     }
 
     //Method to be overriden by child classes
