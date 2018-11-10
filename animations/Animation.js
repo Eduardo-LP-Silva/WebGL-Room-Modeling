@@ -9,11 +9,9 @@ class Animation
     }
 
     //Method to be overriden by child classes
-    initTimeStamps(currTime)
-    {
+    initTimeStamps(currTime){}
 
-    }
-
+    //Method to be overriden by child classes
     update(currentTime){}
 
     apply(sceneMatrix, currentAnimationMatrix)

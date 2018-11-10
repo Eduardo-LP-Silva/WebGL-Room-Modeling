@@ -21,6 +21,7 @@
         this.materials = materials;
         this.animations = animations;
         this.transformations = transformations;
+        this.originalTransformations = transformations;
         this.animationTransformations = transformations;
         this.materialIndex = 0;
         this.animationIndex = 0;
@@ -45,6 +46,7 @@
             {
                 this.animations[this.animationIndex].initTimeStamps(currTime);
                 this.animationTransformations = mat4.clone(this.transformations);
+                this.originalTransformations = mat4.clone(this.transformations);
             }
                 
             if(this.animations[this.animationIndex].getElapsedTime(currTime) 
@@ -54,8 +56,15 @@
             {
                 this.animations[this.animationIndex].update(currTime); 
 
-                mat4.multiply(this.animationTransformations, this.animationTransformations, 
+                //Incremental
+                if(this.animations[this.animationIndex] instanceof LinearAnimation)
+                    mat4.multiply(this.animationTransformations, this.animationTransformations, 
+                        this.animations[this.animationIndex].transformationMatrix);
+                else //Total replacement
+                    mat4.multiply(this.animationTransformations, this.originalTransformations, 
                     this.animations[this.animationIndex].transformationMatrix);
+                
+                
             }      
         }
      }

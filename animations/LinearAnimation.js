@@ -19,6 +19,14 @@ class LinearAnimation extends Animation
         this.initTime = currTime;
         this.lastUpdateTime = currTime;
         this.stageInitTime = currTime;
+        this.initAnimation();
+    }
+
+    initAnimation()
+    {
+        var initialTrajectory = this.trajectory[this.stage].slice(0, 3);
+
+        mat4.translate(this.transformationMatrix, this.transformationMatrix, initialTrajectory);
     }
 
     calculateVelocity()
@@ -83,12 +91,7 @@ class LinearAnimation extends Animation
 
                 if(this.stage < this.trajectory.length)
                 {
-                    if(this.stage == 1)
-                    {
-                        this.trajectory[this.stage - 1].splice(3,1);
-                        mat4.translate(this.transformationMatrix, mat4.create(), this.trajectory[this.stage - 1]);
-                    }
-
+                   
                     //Calculate rotation angle
 
                     let v1 = Array.from(this.trajectory[this.stage - 1]);
