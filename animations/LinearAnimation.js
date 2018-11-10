@@ -9,7 +9,6 @@ class LinearAnimation extends Animation
         this.path = [];
         this.lastUpdateTime = 0;
         this.stageInitTime = 0;
-        this.angle = 0;
         this.stage = 0;
     
         this.calculateVelocity();
@@ -82,37 +81,42 @@ class LinearAnimation extends Animation
 
                 if(this.stage < this.trajectory.length)
                 {
+                    if(this.stage == 1)
+                    {
+                        this.trajectory[this.stage - 1].splice(3,1);
+                        mat4.translate(this.transformationMatrix, mat4.create(), this.trajectory[this.stage - 1]);
+                    }
+
                     //Calculate rotation angle
 
                     let v1 = Array.from(this.trajectory[this.stage - 1]);
                     v1.splice(3, 1);
                     let v2 = Array.from(this.trajectory[this.stage]);
                     v2.splice(3, 1);
-                    
-                    this.angle = -Math.atan2(v1[0] * v2[2] - v1[2]*v2[0], v1[0]*v2[0] + v1[2]*v2[2]);
-                    //this.angle = Math.acos(vec3.dot(v1, v2) / (vec3.length(v1) * vec3.length(v2)));
-  
-                    mat4.rotate(this.transformationMatrix, this.transformationMatrix, this.angle, [0,1,0]);
- 
-                    //this.stage++;
+                        
+                    var angle = -Math.atan2(v1[0] * v2[2] - v1[2]*v2[0], v1[0]*v2[0] + v1[2]*v2[2]);
+    
+                    mat4.rotate(this.transformationMatrix, this.transformationMatrix, angle, [0,1,0]);
+    
 
                     let vector = [0,0,0], defaultVector = [0,0,1];
-                    
+                        
                     //Calculate angle between default [0,0,1] and v2
 
                     let differenceAngle = Math.atan2(defaultVector[0] * v2[2] - defaultVector[2]*v2[0], 
-                            defaultVector[0]*v2[0] + defaultVector[2]*v2[2]);
+                        defaultVector[0]*v2[0] + defaultVector[2]*v2[2]);
 
                     vector[0] = this.path[this.stage][2] * Math.sin(differenceAngle) 
                         + this.path[this.stage][0] * Math.cos(differenceAngle);
-                    
+                        
                     vector[1] = this.path[this.stage][1];
 
                     vector[2] = this.path[this.stage][2] * Math.cos(differenceAngle) 
                         - this.path[this.stage][0] * Math.sin(differenceAngle);
-                    
+                        
                     this.path[this.stage] = vector;
                 }
+            
             }
             else
             {              
