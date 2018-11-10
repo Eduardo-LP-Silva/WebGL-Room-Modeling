@@ -63,8 +63,6 @@
                 else //Total replacement
                     mat4.multiply(this.animationTransformations, this.originalTransformations, 
                     this.animations[this.animationIndex].transformationMatrix);
-                
-                
             }      
         }
      }

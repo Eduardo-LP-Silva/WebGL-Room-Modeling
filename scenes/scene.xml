@@ -137,7 +137,7 @@
       <controlpoint xx="1" yy="0" zz="0"/>
     </linear>
 
-    <circular id="chair_rotate" span="3" center="0 0 0" radius="2" startang="0" rotang="540"/>
+    <circular id="chair_rotate" span="5" center="0 0 0" radius="2" startang="90" rotang="720"/>
   </animations>
 
   <!-- Primitives -->

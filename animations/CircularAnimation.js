@@ -7,7 +7,7 @@ class CircularAnimation extends Animation
         this.radius = radius;
         this.rotationAngle = rotationAngle * DEGREE_TO_RAD;
         this.lastUpadtedTime = -1;
-        this.angle = initialAngle * DEGREE_TO_RAD;
+        this.angle = Math.PI / 2 + initialAngle * DEGREE_TO_RAD;
 
         this.calculateVelocity();
     }
@@ -50,7 +50,7 @@ class CircularAnimation extends Animation
             mat4.translate(this.transformationMatrix, mat4.create(), this.center);
             
             this.angle += this.velocity * ((currentTime - this.lastUpadtedTime) / 1000);
-            this.angle %= 2 * Math.PI;
+            this.angle %= (2 * Math.PI);
 
             let radiusTranslation = [];
 
@@ -58,7 +58,11 @@ class CircularAnimation extends Animation
             radiusTranslation.push(0);
             radiusTranslation.push(this.radius * Math.cos(this.angle));
 
+            
+
             mat4.translate(this.transformationMatrix, this.transformationMatrix, radiusTranslation);
+
+            mat4.rotate(this.transformationMatrix, this.transformationMatrix, this.angle + Math.PI / 2, [0,1,0]);
 
             /*
             this.angle += 0.01;
