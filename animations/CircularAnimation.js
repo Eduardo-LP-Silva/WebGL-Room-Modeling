@@ -58,23 +58,12 @@ class CircularAnimation extends Animation
             radiusTranslation.push(0);
             radiusTranslation.push(this.radius * Math.cos(this.angle));
 
-            
-
             mat4.translate(this.transformationMatrix, this.transformationMatrix, radiusTranslation);
 
-            mat4.rotate(this.transformationMatrix, this.transformationMatrix, this.angle + Math.PI / 2, [0,1,0]);
-
-            /*
-            this.angle += 0.01;
-
-            let distances = [];
-
-            distances.push(this.radius * Math.sin(this.angle * ((currentTime - this.lastUpadtedTime) / 1000)));
-            distances.push(0);
-            distances.push(this.radius * Math.cos(this.angle * ((currentTime - this.lastUpadtedTime) / 1000)));
-
-            mat4.translate(this.transformationMatrix, mat4.create(), distances); */
-
+            if(this.rotationAngle >= 0)
+                mat4.rotate(this.transformationMatrix, this.transformationMatrix, this.angle + Math.PI / 2, [0,1,0]);
+            else
+                mat4.rotate(this.transformationMatrix, this.transformationMatrix, this.angle + Math.PI * 3/2, [0,1,0]);
             
             this.lastUpadtedTime = currentTime;
         }
