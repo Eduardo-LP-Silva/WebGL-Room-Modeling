@@ -128,13 +128,13 @@
       <controlpoint xx="0" yy="0" zz="0"/>
       <controlpoint xx="0" yy="0" zz="-4"/>
       <controlpoint xx="-4" yy="0" zz="0"/>
-      <controlpoint xx="0" yy="0" zz="8"/>
+      <controlpoint xx="0" yy="0" zz="7"/>
       <controlpoint xx="1" yy="0" zz="0"/>
     </linear>
 
     <linear id="test_animation" span="0.1">
       <controlpoint xx="0" yy="0" zz="0"/>
-      <controlpoint xx="0" yy="1" zz="0"/>
+      <controlpoint xx="1" yy="0" zz="0"/>
     </linear>
   </animations>
 
