@@ -132,12 +132,19 @@
       <controlpoint xx="1" yy="0" zz="0"/>
     </linear>
 
+    <linear id="lamp_animation" span="3">
+      <controlpoint xx="0" yy="0" zz="0"/>
+      <controlpoint xx="13" yy="0" zz="0"/>
+      <controlpoint xx="0" yy="0" zz="-20"/>
+    </linear>
+
     <linear id="test_animation" span="0.1">
       <controlpoint xx="0" yy="0" zz="0"/>
       <controlpoint xx="1" yy="0" zz="0"/>
     </linear>
 
     <circular id="chair_rotate" span="5" center="-2 0 0" radius="4" startang="0" rotang="270"/>
+    <circular id="lamp_rotate" span="2" center="3 0 -20" radius="10" startang="0" rotang="120"/>
   </animations>
 
   <!-- Primitives -->
@@ -258,6 +265,11 @@
       </materials>
 
       <texture id="none"/>
+
+      <animations>
+       <animationref id="lamp_animation"/>
+       <animationref id="lamp_rotate"/>
+      </animations>
 
       <children>
         <componentref id="lamp_base"/>
@@ -948,8 +960,7 @@
       <texture id="none" length_s="1" length_t="1" />
 
       <animations>
-        <animationref id="pull_back_chair"/>
-      <!-- <animationref id="chair_rotate"/> -->
+        <animationref id="chair_rotate"/>
       </animations>
 
       <children>
