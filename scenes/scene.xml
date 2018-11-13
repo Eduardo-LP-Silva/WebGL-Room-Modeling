@@ -137,7 +137,7 @@
       <controlpoint xx="1" yy="0" zz="0"/>
     </linear>
 
-    <circular id="chair_rotate" span="5" center="0 0 0" radius="2" startang="90" rotang="720"/>
+    <circular id="chair_rotate" span="5" center="-2 0 0" radius="4" startang="0" rotang="270"/>
   </animations>
 
   <!-- Primitives -->
@@ -926,8 +926,8 @@
       <texture id="none" length_s="1" length_t="1" />
 
       <animations>
-       <!-- <animationref id="pull_back_chair"/> -->
-       <animationref id="chair_rotate"/>
+       <animationref id="pull_back_chair"/>
+      <!-- <animationref id="chair_rotate"/> -->
       </animations>
 
       <children>
@@ -946,6 +946,11 @@
       </materials>
 
       <texture id="none" length_s="1" length_t="1" />
+
+      <animations>
+        <animationref id="pull_back_chair"/>
+      <!-- <animationref id="chair_rotate"/> -->
+      </animations>
 
       <children>
         <componentref id="chair" />

@@ -19,12 +19,12 @@
         this.children = children;
         this.texture = texture;
         this.materials = materials;
-        this.animations = animations;
+        this.animations = animations; //Array containing the node's animations
         this.transformations = transformations;
-        this.originalTransformations = transformations;
-        this.animationTransformations = transformations;
-        this.materialIndex = 0;
-        this.animationIndex = 0;
+        this.originalTransformations = transformations; //Copy of the transformations matrix unaffected by the animations
+        this.animationTransformations = transformations; //Transformation matrix affected by the animations
+        this.materialIndex = 0; //Current material index
+        this.animationIndex = 0; //Current animation index
      }
 
      /**
@@ -38,11 +38,15 @@
         build.scene.popMatrix();
      }
 
+     /**
+      * Updates the node's animation(s).
+      * @param {long} currTime 
+      */
      updateAnimations(currTime)
      {
         if(this.animationIndex < this.animations.length)
         {
-            if(this.animations[this.animationIndex].initTime == - 1)
+            if(this.animations[this.animationIndex].initTime == - 1) //Animations hasn't been initiated yet
             {
                 this.animations[this.animationIndex].initTimeStamps(currTime);
                 this.animationTransformations = mat4.clone(this.transformations);
@@ -50,7 +54,7 @@
             }
                 
             if(this.animations[this.animationIndex].getElapsedTime(currTime) 
-                > this.animations[this.animationIndex].totalTime)
+                > this.animations[this.animationIndex].totalTime) //Animations has ended
                 this.animationIndex++;
             else
             {
@@ -67,17 +71,22 @@
         }
      }
 
+     /**
+      * Applies the current animation to the scene.
+      * @param {mat4} sceneMatrix 
+      */
      applyAnimation(sceneMatrix)
      {
         if(this.animations.length > 0)
         {
-            if(this.animationIndex >= this.animations.length)
-                this.animations[this.animationIndex - 1].apply(sceneMatrix, this.animationTransformations);
-            else
+            if(this.animationIndex >= this.animations.length) //Applies last instance of last animation
+                this.animations[this.animationIndex - 1].apply(sceneMatrix, this.animationTransformations); 
+            else //Applies current animation
                 this.animations[this.animationIndex].apply(sceneMatrix, this.animationTransformations);
         }
         else
-            mat4.mul(sceneMatrix, sceneMatrix, this.transformations);
+            mat4.mul(sceneMatrix, sceneMatrix, this.transformations); /* If no animations are present it applies the 
+            "regular" transformations */
 
         return sceneMatrix;
      }

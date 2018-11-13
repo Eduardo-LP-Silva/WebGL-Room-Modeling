@@ -126,21 +126,24 @@ class XMLscene extends CGFscene
     }
 
     /**
-     * Reipmplementation of the update function of CGFscene
-     * @param {float} currTime 
+     * Reipmplementation of the update function of CGFscene.
+     * @param {long} currTime 
      */
     update(currTime)
     {
         this.updateComponentAnimations(currTime);
     }
 
+    /**
+     * Goes through the nodes and updates their animations.
+     * @param {long} currTime 
+     */
     updateComponentAnimations(currTime)
     {
         for (var key in this.graph.nodes) 
         {
             if (this.graph.nodes.hasOwnProperty(key)) 
             {
-                //console.log(key);
                 this.graph.nodes[key].updateAnimations(currTime);
             }
         }

@@ -828,6 +828,10 @@ class MySceneGraph
         }
     }
 
+    /**
+     * Parses the contents of the animations tag.
+     * @param {element} animationsNode 
+     */
     parseAnimations(animationsNode)
     {
         var animationID, animationErrorTag, error;
@@ -865,6 +869,11 @@ class MySceneGraph
 
     }
 
+    /**
+     * Parses a single linear animation block.
+     * @param {element} linearAnimation 
+     * @param {string} animationID 
+     */
     parseLinearAnimation(linearAnimation, animationID)
     {
         var span = this.reader.getFloat(linearAnimation, "span");
@@ -891,6 +900,11 @@ class MySceneGraph
         this.animations[animationID] = ['l', trajectory, span];
     }
 
+    /**
+     * Parses a singular circular animation block.
+     * @param {element} circularAnimation 
+     * @param {string} animationID 
+     */
     parseCircularAnimation(circularAnimation, animationID)
     {
         var span = this.reader.getFloat(circularAnimation, "span");
@@ -1443,7 +1457,7 @@ class MySceneGraph
     }
 
     /**
-     * Parses a component's animation tag
+     * Parses a component's animation tag.
      * @param {element} componentAnimationsTag
      * @param {string} componentID
      */
@@ -1465,8 +1479,16 @@ class MySceneGraph
                 return errorMessage + "not defined previously";
 
             if(this.animations[animationID][0] == 'l')
-                animations.push(new LinearAnimation(this.animations[animationID][1].slice(), 
+            {
+                let controlPoints = this.animations[animationID][1];
+                let controlPointsCopy = [];
+
+                for(let j = 0; j < controlPoints.length; j++)
+                    controlPointsCopy.push(controlPoints[j].slice());
+
+                animations.push(new LinearAnimation(controlPointsCopy, 
                     this.animations[animationID][2]));
+            }
             else
                 if(this.animations[animationID][0] == 'c')
                     animations.push(new CircularAnimation(this.animations[animationID][1], 
