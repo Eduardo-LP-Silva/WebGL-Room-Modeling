@@ -47,7 +47,6 @@ class MySceneGraph
         this.root = null; //The root node
         this.defaultViewID = null; //The default camera ID
         this.animations = []; //Animation array
-        this.shader = new CGFshader(this.scene.gl, "shaders/height_shader.vert", "shaders/height_shader.frag");
 
         // File reading
         this.reader = new CGFXMLreader();
@@ -1754,12 +1753,7 @@ class MySceneGraph
                 node.build.update(textureInit[1], textureInit[2]);
 
             if(node.build instanceof ShaderPlane)
-            {
-                node.build.texture.apply();
-                this.scene.setActiveShader(this.shader);
-                node.build.display();
-                this.scene.setActiveShader(this.scene.defaultShader);
-            }
+                node.build.update();
             else
                 node.build.display();
             
