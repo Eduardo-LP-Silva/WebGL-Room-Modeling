@@ -69,6 +69,8 @@
     <texture id="zebra" file="scenes/images/zebra.png" />
     <texture id="mirror_ball" file="scenes/images/mirror_ball.png" />
     <texture id="cake" file="scenes/images/cake.png" />
+    <texture id="terrain" file="scenes/images/terrain.png" />
+    <texture id="terrain_hm" file="scenes/images/terrain_hm.png" />
   </textures>
 
   <!-- Materials -->
@@ -181,6 +183,9 @@
       <plane npartsU="1" npartsV="1"/>
     </primitive>
 
+    <primitive id="shader_plane">
+      <terrain idtexture="terrain" idheightmap="terrain_hm" parts="20" heightscale="1.5"/>
+    </primitive>
   </primitives>
 
   <!-- Components -->
@@ -214,6 +219,7 @@
         <componentref id="mirror_ball_lamp"/>
         <componentref id="cake"/>
         <componentref id="teste"/>
+        <componentref id="mountains"/>
       </children>
     </component>
 
@@ -233,6 +239,24 @@
 
 
     <!-- TESTE -->
+
+    <component id="mountains">
+      <transformation>
+        <translate x="0" y="0" z="40"/>
+        <scale x="20" y="1" z="20"/>
+        <rotate axis="x" angle="-90"/>
+      </transformation>
+
+      <materials>
+        <material id="default_mat" />
+      </materials>
+
+      <texture id="none"/>
+
+      <children>
+        <primitiveref id="shader_plane"/>
+      </children>
+    </component>
 
     <!-- Cake -->
     <component id="cake">
