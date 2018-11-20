@@ -6,7 +6,7 @@ class Plane extends CGFobject
 
         var surface;
 
-        if(degreeU == null || degreeV == null || controlPoints.length == 0)
+        if(degreeV == null || degreeV == null || controlPoints.length == 0)
             surface = this.generateDefaultSurface();
         else
             surface = this.generateCustomSurface(degreeU, degreeV, controlPoints);
@@ -33,17 +33,20 @@ class Plane extends CGFobject
 
     generateCustomSurface(degreeU, degreeV, controlPoints)
     {
-        var points = [];
 
-        for(let i = 0; i < controlPoints.length; i++)
-        {
-            points[i] = [];
+      var points = [];
+      var indexCount = 0;
 
-            for(let j = 0; j <= degreeV; j++)
-                points[i].push(controlPoints[i]);
+      for(var i = 0; i <= degreeU; i++){
+        var temp = [];
+        for(var j = 0; j <=degreeV; j++){
+          temp.push(controlPoints[indexCount]);
+          indexCount++;
         }
+        points.push(temp);
+      }
 
-        return new CGFnurbsSurface(degreeU, degreeV, points);
+      return new CGFnurbsSurface(degreeU, degreeV, points);
     }
 
     display()
