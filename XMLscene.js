@@ -35,6 +35,7 @@ class XMLscene extends CGFscene
         this.gl.enable(this.gl.CULL_FACE);
         this.gl.depthFunc(this.gl.LEQUAL);
         this.axis = new CGFaxis(this);
+        //this.testShader = new CGFshader(this.gl, "shaders/shader01.vert", "shaders/shader01.frag");
     }
 
     /**

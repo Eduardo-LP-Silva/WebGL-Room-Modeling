@@ -1077,6 +1077,39 @@ class MySceneGraph
                 build = new Plane(this.scene, uvDivs[0], uvDivs[1]);
                 break;
 
+            case "terrain":
+
+                let textureID = this.reader.getString(primitiveBlock.children[0], "idtexture");
+
+                if(textureID == null)
+                    return primitiveErrorTag + "Error in texture ID";
+                else
+                    if(this.textures[textureID] == null)
+                        return primitiveErrorTag + "Texture " + textureID + " was not previously declared";
+                
+                let heightMapID = this.reader.getString(primitiveBlock.children[0], "idheightmap");
+
+                if(heightMapID == null)
+                    return primitiveErrorTag + "Error in height map ID";
+                else
+                    if(this.textures[heightMapID] == null)
+                        return primitiveErrorTag + "Heigh Map " + heightMapID + " was not previously declared";
+                
+                let parts = this.reader.getInteger(primitiveBlock.children[0], "parts");
+
+                if(parts == null || isNaN(parts))
+                    return primitiveErrorTag + "Error in parts component";
+                
+                let heightScale = this.reader.getFloat(primitiveBlock.children[0], "heightscale");
+                
+                if(heightScale == null || isNaN(heightScale))
+                    return primitiveErrorTag + "Error in height scale";
+                
+                build = new ShaderPlane(this.scene, this.textures[textureID], this.textures[heightMapID], parts, 
+                    heightScale);
+
+                break;
+                
             default:
                 return "Tag not identified on primitive " + primitiveID;
         }
@@ -1719,7 +1752,11 @@ class MySceneGraph
             if(textureInit[1] != node.build.maxS || textureInit[2] != node.build.maxT)
                 node.build.update(textureInit[1], textureInit[2]);
 
-            node.build.display();
+            if(node.build instanceof ShaderPlane)
+                node.build.update();
+            else
+                node.build.display();
+            
         }
 
         this.scene.popMatrix();

@@ -69,6 +69,8 @@
     <texture id="zebra" file="scenes/images/zebra.png" />
     <texture id="mirror_ball" file="scenes/images/mirror_ball.png" />
     <texture id="cake" file="scenes/images/cake.png" />
+    <texture id="terrain" file="scenes/images/terrain.png" />
+    <texture id="terrain_hm" file="scenes/images/terrain_hm.png" />
   </textures>
 
   <!-- Materials -->
@@ -132,12 +134,19 @@
       <controlpoint xx="1" yy="0" zz="0"/>
     </linear>
 
+    <linear id="lamp_animation" span="3">
+      <controlpoint xx="0" yy="0" zz="0"/>
+      <controlpoint xx="13" yy="0" zz="0"/>
+      <controlpoint xx="0" yy="0" zz="-20"/>
+    </linear>
+
     <linear id="test_animation" span="0.1">
       <controlpoint xx="0" yy="0" zz="0"/>
       <controlpoint xx="1" yy="0" zz="0"/>
     </linear>
 
     <circular id="chair_rotate" span="5" center="-2 0 0" radius="4" startang="0" rotang="270"/>
+    <circular id="lamp_rotate" span="2" center="3 0 -20" radius="10" startang="0" rotang="120"/>
   </animations>
 
   <!-- Primitives -->
@@ -174,6 +183,9 @@
       <plane npartsU="1" npartsV="1"/>
     </primitive>
 
+    <primitive id="shader_plane">
+      <terrain idtexture="terrain" idheightmap="terrain_hm" parts="20" heightscale="1.5"/>
+    </primitive>
   </primitives>
 
   <!-- Components -->
@@ -207,6 +219,7 @@
         <componentref id="mirror_ball_lamp"/>
         <componentref id="cake"/>
         <componentref id="teste"/>
+        <componentref id="mountains"/>
       </children>
     </component>
 
@@ -226,6 +239,24 @@
 
 
     <!-- TESTE -->
+
+    <component id="mountains">
+      <transformation>
+        <translate x="0" y="0" z="40"/>
+        <scale x="20" y="1" z="20"/>
+        <rotate axis="x" angle="-90"/>
+      </transformation>
+
+      <materials>
+        <material id="default_mat" />
+      </materials>
+
+      <texture id="none"/>
+
+      <children>
+        <primitiveref id="shader_plane"/>
+      </children>
+    </component>
 
     <!-- Cake -->
     <component id="cake">
@@ -258,6 +289,11 @@
       </materials>
 
       <texture id="none"/>
+
+      <animations>
+       <animationref id="lamp_animation"/>
+       <animationref id="lamp_rotate"/>
+      </animations>
 
       <children>
         <componentref id="lamp_base"/>
@@ -948,8 +984,7 @@
       <texture id="none" length_s="1" length_t="1" />
 
       <animations>
-        <animationref id="pull_back_chair"/>
-      <!-- <animationref id="chair_rotate"/> -->
+        <animationref id="chair_rotate"/>
       </animations>
 
       <children>
