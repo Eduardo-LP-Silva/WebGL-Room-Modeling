@@ -73,7 +73,7 @@ class MyQuad extends CGFobject
 	 * @param {float} maxS 
 	 * @param {float} maxT 
 	 */
-	update(S, T)
+	updateTexCoords(S, T)
 	{
 		this.texCoords.length = 0;
 

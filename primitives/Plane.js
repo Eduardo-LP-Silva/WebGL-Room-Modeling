@@ -53,7 +53,9 @@ class Plane extends CGFobject
     {
         this.nurbsObject.display();
     }
-    update(S, T){
+
+    updateTexCoords(S, T)
+    {
 
     }
 }

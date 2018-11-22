@@ -45,7 +45,6 @@ class MyCylinder extends CGFobject
 			this.baseDisk.display();
 			this.scene.popMatrix();
 			this.scene.pushMatrix();
-			//this.scene.rotate(Math.PI/2, 1, 0, 0);
 			this.scene.scale(this.topRadius, this.topRadius, 1);
 			this.scene.translate(0, 0, this.height);
 			this.topDisk.display();
@@ -57,7 +56,7 @@ class MyCylinder extends CGFobject
 	 * @param {float} maxS 
 	 * @param {float} maxT 
 	 */
-	update(maxS, maxT) 
+	updateTexCoords(maxS, maxT) 
 	{
 		//Nothing to see here
 	}

@@ -137,7 +137,7 @@ class MySphere extends CGFobject
 	 * @param {float} maxS 
 	 * @param {float} maxT 
 	 */
-	update(maxS, maxT) 
+	updateTexCoords(maxS, maxT) 
 	{
 		//Nothing to see here
 	}

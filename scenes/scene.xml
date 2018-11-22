@@ -19,6 +19,16 @@
       <to x="0" y="3" z="-2" />
     </perspective>
 
+    <perspective id="Mockup View" near="0.01" far="500" angle="70">
+      <from x="0" y="10" z="-19" />
+      <to x="0" y="0" z="-20" />
+    </perspective>
+
+    <perspective id="Jacuzzi View" near="0.01" far="500" angle="70">
+      <from x="20" y="10" z="10" />
+      <to x="20" y="0" z="20" />
+    </perspective>
+
     <ortho id="Ortho View" near="0.01" far="500" left="-10" right="10" top="10" bottom="-5">
       <from x="5" y="5.2" z="0" />
       <to x="-5" y="5" z="0" />
@@ -40,11 +50,11 @@
       <specular r="1.0" g="0.6" b="0.2" a="1.0" />
     </omni>
 
-    <omni id="Mirror Ball" enabled="1">
-      <location x="-20" y="8" z="20" w="1" />
-      <ambient r="0.5" g="0.5" b="0.5" a="1.0" />
-      <diffuse r="0.2" g="0.2" b="0.2" a="1.0" />
-      <specular r="1.0" g="1.0" b="1.0" a="1.0" />
+    <omni id="Back Light" enabled="1">
+      <location x="25" y="8" z="0" w="1" />
+      <ambient r="0.4" g="0" b="0.1" a="1.0" />
+      <diffuse r="0.4" g="0.4" b="0.4" a="1.0" />
+      <specular r="0.4" g="0" b="0.1" a="1.0" />
     </omni>
 
     <spot id="SpotLight" enabled="1" angle="20" exponent="1">
@@ -69,8 +79,14 @@
     <texture id="zebra" file="scenes/images/zebra.png" />
     <texture id="mirror_ball" file="scenes/images/mirror_ball.png" />
     <texture id="cake" file="scenes/images/cake.png" />
-    <texture id="terrain" file="scenes/images/terrain.png" />
-    <texture id="terrain_hm" file="scenes/images/terrain_hm.png" />
+    <texture id="terrain" file="scenes/images/mt_st_helens.png" />
+    <texture id="terrain_hm" file="scenes/images/mt_st_helens_hm.png" />
+    <texture id="carpet" file="scenes/images/carpet.png" />
+    <texture id="mokup_tag_texture" file="scenes/images/Mount St-Helens-Tag.png" />
+    <texture id="wood_board" file="scenes/images/wood_board.png" />
+    <texture id="water" file="scenes/images/water.png" />
+    <texture id="water_hm" file="scenes/images/water_hm.png" />
+    <texture id="white_tile" file="scenes/images/white_tile.png" />
   </textures>
 
   <!-- Materials -->
@@ -184,7 +200,11 @@
     </primitive>
 
     <primitive id="shader_plane">
-      <terrain idtexture="terrain" idheightmap="terrain_hm" parts="20" heightscale="1.5"/>
+      <terrain idtexture="terrain" idheightmap="terrain_hm" parts="50" heightscale="0.8"/>
+    </primitive>
+
+    <primitive id="water_plane">
+      <water idtexture="water" idwavemap="water_hm" parts="50" heightscale="0.2" texscale="1"/>
     </primitive>
   </primitives>
 
@@ -216,10 +236,15 @@
         <componentref id="bed"/>
         <componentref id="wall_1"/>
         <componentref id="wall_2"/>
+        <componentref id="wall_3"/>
+        <componentref id="wall_4"/>
         <componentref id="mirror_ball_lamp"/>
         <componentref id="cake"/>
         <componentref id="teste"/>
+        <componentref id="big_table"/>
         <componentref id="mountains"/>
+        <componentref id="mokup_tag"/>
+        <componentref id="jacuzzi"/>
       </children>
     </component>
 
@@ -240,10 +265,263 @@
 
     <!-- TESTE -->
 
+    <component id="jacuzzi">
+      <transformation>
+        <translate x="20" y="1.2" z="20"/>
+        <scale x="8" y="3" z="8"/>
+      </transformation>
+
+      <materials>
+        <material id="wood_mat" />
+      </materials>
+
+      <texture id="wood_board" length_s="3" length_t="1"/>
+
+      <children>
+        <componentref id="open_top_box"/>
+        <componentref id="jacuzzi_water"/>
+        <componentref id="jacuzzi_left_tile"/>
+        <componentref id="jacuzzi_right_tile"/>
+        <componentref id="jacuzzi_upper_tile"/>
+        <componentref id="jacuzzi_lower_tile"/>
+      </children>
+    </component>
+
+    <component id="jacuzzi_water">
+      <transformation>
+        <translate x="0" y="0.18" z="0"/>
+        <rotate axis="x" angle="-90"/>
+      </transformation>
+
+      <materials>
+        <material id="shiny_mat" />
+      </materials>
+
+      <texture id="none"/>
+
+      <children>
+        <primitiveref id="water_plane"/>
+      </children>
+    </component>
+
+    <component id="jacuzzi_lower_tile">
+      <transformation>
+        <translate x="0" y="0.5" z="-0.45"/>
+        <rotate axis="y" angle="90"/>
+        <scale x="0.1" y="1" z="1"/>
+        <rotate axis="x" angle="-90"/>
+      </transformation>
+
+      <materials>
+        <material id="shiny_mat" />
+      </materials>
+
+      <texture id="white_tile" length_s="1" length_t="1"/>
+
+      <children>
+        <primitiveref id="plane"/>
+      </children>
+    </component>
+
+    <component id="jacuzzi_upper_tile">
+      <transformation>
+        <translate x="0" y="0.5" z="0.45"/>
+        <rotate axis="y" angle="90"/>
+        <scale x="0.1" y="1" z="1"/>
+        <rotate axis="x" angle="-90"/>
+      </transformation>
+
+      <materials>
+        <material id="shiny_mat" />
+      </materials>
+
+      <texture id="white_tile" length_s="1" length_t="1"/>
+
+      <children>
+        <primitiveref id="plane"/>
+      </children>
+    </component>
+
+    <component id="jacuzzi_right_tile">
+      <transformation>
+        <translate x="-0.45" y="0.5" z="0"/>
+        <scale x="0.1" y="1" z="1"/>
+        <rotate axis="x" angle="-90"/>
+      </transformation>
+
+      <materials>
+        <material id="shiny_mat" />
+      </materials>
+
+      <texture id="white_tile" length_s="1" length_t="1"/>
+
+      <children>
+        <primitiveref id="plane"/>
+      </children>
+    </component>
+
+    <component id="jacuzzi_left_tile">
+      <transformation>
+        <translate x="0.45" y="0.5" z="0"/>
+        <scale x="0.1" y="1" z="1"/>
+        <rotate axis="x" angle="-90"/>
+      </transformation>
+
+      <materials>
+        <material id="shiny_mat" />
+      </materials>
+
+      <texture id="white_tile" length_s="1" length_t="1"/>
+
+      <children>
+        <primitiveref id="plane"/>
+      </children>
+    </component>
+
+    <!-- Big Table -->
+    <component id="big_table">
+      <transformation>
+        <translate x="0" y="0" z="-20"/>
+      </transformation>
+
+      <materials>
+        <material id="default_mat" />
+      </materials>
+
+      <texture id="none"/>
+
+      <children>
+        <componentref id="big_table_board"/>
+        <componentref id="big_table_leg_1"/>
+        <componentref id="big_table_leg_2"/>
+        <componentref id="big_table_leg_3"/>
+        <componentref id="big_table_leg_4"/>
+      </children>
+    </component>
+
+    <component id="big_table_board">
+      <transformation>
+        <translate x="0" y="2.3" z="0"/>
+        <scale x="6" y="0.5" z="6"/>
+      </transformation>
+
+      <materials>
+        <material id="wood_mat" />
+      </materials>
+
+      <texture id="dark_wood" length_s="3" length_t="3"/>
+
+      <children>
+        <componentref id="cube"/>
+      </children>
+    </component>
+
+    <component id="big_table_leg_4">
+      <transformation>
+        <translate x="2.8" y="0" z="-2.8"/>
+      </transformation>
+
+      <materials>
+        <material id="inherit" />
+      </materials>
+
+      <texture id="inherit" length_s="3" length_t="3"/>
+
+      <children>
+        <componentref id="big_table_leg"/>
+      </children>
+    </component>
+
+    <component id="big_table_leg_3">
+      <transformation>
+        <translate x="-2.8" y="0" z="-2.8"/>
+      </transformation>
+
+      <materials>
+        <material id="inherit" />
+      </materials>
+
+      <texture id="inherit" length_s="3" length_t="3"/>
+
+      <children>
+        <componentref id="big_table_leg"/>
+      </children>
+    </component>
+
+    <component id="big_table_leg_2">
+      <transformation>
+        <translate x="-2.8" y="0" z="2.8"/>
+      </transformation>
+
+      <materials>
+        <material id="inherit" />
+      </materials>
+
+      <texture id="inherit" length_s="3" length_t="3"/>
+
+      <children>
+        <componentref id="big_table_leg"/>
+      </children>
+    </component>
+
+    <component id="big_table_leg_1">
+      <transformation>
+        <translate x="2.8" y="0" z="2.8"/>
+      </transformation>
+
+      <materials>
+        <material id="inherit" />
+      </materials>
+
+      <texture id="inherit"/>
+
+      <children>
+        <componentref id="big_table_leg"/>
+      </children>
+    </component>
+
+    <component id="big_table_leg">
+      <transformation>
+        <translate x="0" y="1.15" z="0"/>
+        <scale x="0.3" y="2.3" z="0.3"/>
+      </transformation>
+
+      <materials>
+        <material id="wood_mat" />
+      </materials>
+
+      <texture id="dark_wood" length_s="3" length_t="3"/>
+
+      <children>
+        <componentref id="cube"/>
+      </children>
+    </component>
+
+    <!--Mockup -->
+
+    <component id="mokup_tag">
+      <transformation>
+        <translate x="0" y="2.6" z="-17.4"/>
+        <scale x="3" y="1" z="0.5"/>
+        <rotate axis="x" angle="-90"/>
+      </transformation>
+
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+
+      <texture id="mokup_tag_texture" length_s="1" length_t="1" />
+
+      <children>
+        <primitiveref id="rectangle"/>
+      </children>
+    </component>
+
     <component id="mountains">
       <transformation>
-        <translate x="0" y="0" z="40"/>
-        <scale x="20" y="1" z="20"/>
+        <translate x="0" y="1.75" z="-20.3"/>
+        <scale x="5" y="1" z="5"/>
+        <rotate axis="y" angle="180"/>
         <rotate axis="x" angle="-90"/>
       </transformation>
 
@@ -520,6 +798,44 @@
       </children>
     </component>
 
+    <component id="wall_3">
+      <transformation>
+        <translate x="25" y="5" z="0"/>
+        <rotate axis="y" angle="-90"/>
+        <scale x="50" y="10" z="1"/>
+        <rotate axis="z" angle="90"/>
+      </transformation>
+
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+
+      <texture id="zebra" length_s="1" length_t="1" />
+
+      <children>
+        <primitiveref id="rectangle"/>
+      </children>
+    </component>
+
+    <component id="wall_4">
+      <transformation>
+        <translate x="0" y="5" z="-25"/>
+        <scale x="50" y="10" z="1"/>
+        <rotate axis="z" angle="90"/>
+      </transformation>
+
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+
+      <texture id="zebra" length_s="1" length_t="1" />
+
+      <children>
+        <primitiveref id="rectangle"/>
+      </children>
+    </component>
+    
+
     <!-- Floor -->
 
     <component id="scene_floor">
@@ -545,11 +861,10 @@
       </transformation>
 
       <materials>
-        <material id="wood_mat" />
         <material id="matte_mat"/>
       </materials>
 
-      <texture id="dark_wood" length_s="5" length_t="5" />
+      <texture id="carpet" length_s="10" length_t="10" />
 
       <children>
         <primitiveref id="floor_quad"/>
@@ -1241,12 +1556,8 @@
       <texture id="inherit"/>
 
       <children>
-        <componentref id="cube_top" />
-        <componentref id="cube_bottom" />
-        <componentref id="cube_left" />
-        <componentref id="cube_right" />
-        <componentref id="cube_back" />
-        <componentref id="cube_front" />
+        <componentref id="cube_top"/>
+        <componentref id="open_top_box"/>
       </children>
     </component>
 
@@ -1268,8 +1579,28 @@
       </children>
     </component>
 
-    <!-- Cube Bottom -->
-    <component id="cube_bottom">
+    <!-- Open Top Box -->
+    <component id="open_top_box">
+      <transformation>
+      </transformation>
+
+      <materials>
+        <material id="inherit" />
+      </materials>
+
+      <texture id="inherit"/>
+
+      <children>
+        <componentref id="open_top_box_bottom" />
+        <componentref id="open_top_box_left" />
+        <componentref id="open_top_box_right" />
+        <componentref id="open_top_box_back" />
+        <componentref id="open_top_box_front" />
+      </children>
+    </component>
+
+    <!-- Open Box Bottom -->
+    <component id="open_top_box_bottom">
       <transformation>
         <translate x="0" y="-0.5" z="0"/>
         <rotate axis="x" angle="90"/>
@@ -1286,8 +1617,8 @@
       </children>
     </component>
 
-    <!-- Cube Left Side -->
-    <component id="cube_left">
+    <!-- Open Box Left Side -->
+    <component id="open_top_box_left">
       <transformation>
         <translate x="0" y="0" z="0.5"/>
       </transformation>
@@ -1303,8 +1634,8 @@
       </children>
     </component>
 
-    <!-- Cube Right Side -->
-    <component id="cube_right">
+    <!-- Open Box Right Side -->
+    <component id="open_top_box_right">
       <transformation>
         <translate x="0" y="0" z="-0.5"/>
         <rotate axis="y" angle="180"/>
@@ -1321,8 +1652,8 @@
       </children>
     </component>
 
-    <!-- Cube Back -->
-    <component id="cube_back">
+    <!-- Open Box Back -->
+    <component id="open_top_box_back">
       <transformation>
         <translate x="-0.5" y="0" z="0"/>
         <rotate axis="y" angle="-90"/>
@@ -1339,8 +1670,8 @@
       </children>
     </component>
 
-    <!-- Cube Front -->
-    <component id="cube_front">
+    <!-- Open Box Front -->
+    <component id="open_top_box_front">
       <transformation>
         <translate x="0.5" y="0" z="0"/>
          <rotate axis="y" angle="90"/>

@@ -1,6 +1,6 @@
 class ShaderPlane extends Plane
 {
-    constructor(scene, texture, heightMap, parts, heightscale, texscale = null)
+    constructor(scene, texture, heightMap, parts, heightscale)
     {
         super(scene, parts, parts);
 
@@ -8,18 +8,12 @@ class ShaderPlane extends Plane
         this.texture.setTexture(texture);
 
         this.heightMap = heightMap;
-        this.heightscale = heightscale;
-        this.texscale = texscale;
 
-        if(texscale == null)
-        {
-            this.shader = new CGFshader(scene.gl, "shaders/height_shader.vert", "shaders/height_shader.frag");
-            this.shader.setUniformsValues({uSampler2: 1, heightScale: heightscale});
-        }
-        
+        this.shader = new CGFshader(scene.gl, "shaders/height_shader.vert", "shaders/height_shader.frag");
+        this.shader.setUniformsValues({uSampler2: 1, heightScale: heightscale});
     }
 
-    update()
+    activateShader()
     {
         this.texture.apply();
         this.scene.setActiveShader(this.shader);
@@ -27,4 +21,6 @@ class ShaderPlane extends Plane
         this.display();
         this.scene.setActiveShader(this.scene.defaultShader);
     }
+
+    updateTexCoords(S, T){}
 }

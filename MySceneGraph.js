@@ -976,6 +976,7 @@ class MySceneGraph
         var primitiveID = this.reader.getString(primitiveBlock, "id");
         var build;
         var uvDivs;
+        var textureID;
 
         if(primitiveID == null)
             return "No ID defined for primitive";
@@ -1057,6 +1058,7 @@ class MySceneGraph
                 for(let i = 0; i < children[0].children.length; i++)
                 {
                     controlPoint = this.getXYZ(children[0].children[i]);
+                    controlPoint[3] = 1;
 
                     if(typeof controlPoint == "string")
                         return primitiveErrorTag + controlPoint;
@@ -1079,7 +1081,7 @@ class MySceneGraph
 
             case "terrain":
 
-                let textureID = this.reader.getString(primitiveBlock.children[0], "idtexture");
+                textureID = this.reader.getString(primitiveBlock.children[0], "idtexture");
 
                 if(textureID == null)
                     return primitiveErrorTag + "Error in texture ID";
@@ -1109,9 +1111,47 @@ class MySceneGraph
                     heightScale);
 
                 break;
+
+            case "water":
+        
+                textureID = this.reader.getString(primitiveBlock.children[0], "idtexture");
+
+                if(textureID == null)
+                    return primitiveErrorTag + "Error in texture ID";
+                else
+                    if(this.textures[textureID] == null)
+                        return primitiveErrorTag + "Texture " + textureID + " was not previously declared";
+
+                let waveMapID = this.reader.getString(primitiveBlock.children[0], "idwavemap");
+
+                if(waveMapID == null)
+                    return primitiveErrorTag + "Error in wave map ID";
+                else
+                    if(this.textures[waveMapID] == null)
+                        return primitiveErrorTag + "Wave Map " + waveMapID + " was not previously declared";
+                            
+                let partsW = this.reader.getInteger(primitiveBlock.children[0], "parts");
+            
+                if(partsW == null || isNaN(partsW))
+                    return primitiveErrorTag + "Error in parts component";
+                            
+                let heightScaleW = this.reader.getFloat(primitiveBlock.children[0], "heightscale");
+                            
+                if(heightScaleW == null || isNaN(heightScaleW))
+                    return primitiveErrorTag + "Error in height scale";
+
+                let texScale = this.reader.getFloat(primitiveBlock.children[0], "texscale");
+
+                if(texScale == null || isNaN(texScale))
+                    return primitiveErrorTag + "Error in texture scale";
+
+                build = new WaterPlane(this.scene, this.textures[textureID], this.textures[waveMapID], partsW, 
+                    heightScaleW, texScale);
                 
+                break;
+
             default:
-                return "Tag not identified on primitive " + primitiveID;
+                return "Tag not identified on primitive " + primitiveID + ": " + primitiveBlock.children[0].nodeName;
         }
 
         this.nodes[primitiveID] = new MyNode(build, primitiveID);
@@ -1750,10 +1790,10 @@ class MySceneGraph
         if(node.build != null)
         {
             if(textureInit[1] != node.build.maxS || textureInit[2] != node.build.maxT)
-                node.build.update(textureInit[1], textureInit[2]);
+                node.build.updateTexCoords(textureInit[1], textureInit[2]);
 
-            if(node.build instanceof ShaderPlane)
-                node.build.update();
+            if(node.build instanceof ShaderPlane || node.build instanceof WaterPlane)
+                node.build.activateShader();
             else
                 node.build.display();
             
