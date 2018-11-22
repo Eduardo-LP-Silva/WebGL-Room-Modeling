@@ -35,7 +35,6 @@ class XMLscene extends CGFscene
         this.gl.enable(this.gl.CULL_FACE);
         this.gl.depthFunc(this.gl.LEQUAL);
         this.axis = new CGFaxis(this);
-        //this.testShader = new CGFshader(this.gl, "shaders/shader01.vert", "shaders/shader01.frag");
     }
 
     /**
@@ -53,7 +52,6 @@ class XMLscene extends CGFscene
     {
         var i = 0; // Lights index.
         
-
         // Reads the lights from the scene graph.
         for (var key in this.graph.lights) 
         {
@@ -148,7 +146,7 @@ class XMLscene extends CGFscene
                 this.graph.nodes[key].updateAnimations(currTime);
 
                 if(this.graph.nodes[key].build != null && this.graph.nodes[key].build instanceof WaterPlane)
-                    this.graph.nodes[key].build.updateShader(currTime);
+                    this.graph.nodes[key].build.updateShader();
             }
         }
     }

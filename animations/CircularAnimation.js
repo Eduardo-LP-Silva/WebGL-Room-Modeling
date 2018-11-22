@@ -1,5 +1,16 @@
+/**
+ * Represents a circular animation.
+ */
 class CircularAnimation extends Animation
 {
+    /**
+     * @constructor
+     * @param {array} center 
+     * @param {float} radius 
+     * @param {float} initialAngle 
+     * @param {float} rotationAngle 
+     * @param {float} time 
+     */
     constructor(center, radius, initialAngle, rotationAngle, time)
     {
         super(time);
@@ -12,18 +23,28 @@ class CircularAnimation extends Animation
         this.calculateVelocity();
     }
 
+    /**
+     * Initiates the time stamps with appropriate values.
+     * @param {float} currTime 
+     */
     initTimeStamps(currTime)
     {
         this.lastUpadtedTime = currTime;
         this.initTime = currTime;
-        //this.initAnimation();
+        this.initAnimation();
     }
 
+    /**
+     * Calculates the constant angular velocity = Rotation Angle / Time.
+     */
     calculateVelocity()
     {
         this.velocity = this.rotationAngle / this.totalTime;
     }
 
+    /**
+     * Puts the object in the initial position of the animation
+     */
     initAnimation()
     {
         mat4.translate(this.transformationMatrix, this.transformationMatrix, this.center);
@@ -38,11 +59,18 @@ class CircularAnimation extends Animation
 
     }
 
+    /**
+     * Calculates the total distance.
+     */
     calculateDistance()
     {
         return this.rotationAngle * this.radius;
     }
 
+    /**
+     * Updates the animation based on the time passed since the last update.
+     * @param {float} currentTime 
+     */
     update(currentTime)
     {
         if(this.getElapsedTime(currentTime) <= this.totalTime)

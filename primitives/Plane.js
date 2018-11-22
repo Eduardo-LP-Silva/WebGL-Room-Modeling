@@ -1,5 +1,17 @@
+/**
+ * Plane class, represents a plane or a patch formed by NURBS.
+ */
 class Plane extends CGFobject
 {
+    /**
+     * @constructor
+     * @param {CGFscene} scene 
+     * @param {int} uDivs 
+     * @param {int} vDivs 
+     * @param {int} degreeU 
+     * @param {int} degreeV 
+     * @param {array} controlPoints 
+     */
     constructor(scene, uDivs, vDivs, degreeU = null, degreeV = null, controlPoints = [])
     {
         super(scene);
@@ -14,6 +26,9 @@ class Plane extends CGFobject
         this.nurbsObject = new CGFnurbsObject(this.scene, uDivs, vDivs, surface);
     }
 
+    /**
+     * Generates a default 1x1 plane.
+     */
     generateDefaultSurface()
     {
         var controlPoints = [
@@ -31,6 +46,12 @@ class Plane extends CGFobject
         return nurbsSurface;
     }
 
+    /**
+     * Generates a patch with custom degrees.
+     * @param {int} degreeU 
+     * @param {int} degreeV 
+     * @param {array} controlPoints 
+     */
     generateCustomSurface(degreeU, degreeV, controlPoints)
     {
 
@@ -49,13 +70,18 @@ class Plane extends CGFobject
       return new CGFnurbsSurface(degreeU, degreeV, points);
     }
 
+    /**
+     * Displays the NURBS object
+     */
     display()
     {
         this.nurbsObject.display();
     }
 
-    updateTexCoords(S, T)
-    {
-
-    }
+    /**
+     * Dummy function, does nothing in this class.
+     * @param {float} S 
+     * @param {float} T 
+     */
+    updateTexCoords(S, T){}
 }

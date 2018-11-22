@@ -1,11 +1,17 @@
+/**
+ * Represents a linear animation.
+ */
 class LinearAnimation extends Animation
 {
+    /**
+     * @constructor
+     * @param {array} trajectory 
+     * @param {float} totalTime 
+     */
     constructor(trajectory, totalTime)
     {
         super(totalTime);
         this.trajectory = trajectory;
-        /* 2D Array containing the following elements in each index: distance between two control 
-        points | X | Y | Z values to increase/decrease/maintin distance */
         this.path = [];
         this.lastUpdateTime = 0;
         this.stageInitTime = 0;
@@ -14,6 +20,10 @@ class LinearAnimation extends Animation
         this.calculateVelocity();
     }
 
+    /**
+     * Initiates the time stamps neede for control with proper values.
+     * @param {float} currTime 
+     */
     initTimeStamps(currTime)
     {
         this.initTime = currTime;
@@ -22,6 +32,9 @@ class LinearAnimation extends Animation
         this.initAnimation();
     }
 
+    /**
+     * Positions the object in the starting position of the animation.
+     */
     initAnimation()
     {
         var initialTrajectory = this.trajectory[this.stage].slice(0, 3);
@@ -29,6 +42,9 @@ class LinearAnimation extends Animation
         mat4.translate(this.transformationMatrix, this.transformationMatrix, initialTrajectory);
     }
 
+    /**
+     * Calculates the constant velocity = Distance / Span the object should have.
+     */
     calculateVelocity()
     {
         var totalDistance = this.calculateDistance();
@@ -36,6 +52,10 @@ class LinearAnimation extends Animation
         this.velocity = totalDistance / this.totalTime;
     }
 
+    /** 
+     * Calculates the overall distance, normalizes the control points and removes the ones that do not have any movement
+     * (0, 0, 0).
+    */
     calculateDistance()
     {
         var totalDistance = 0;
@@ -51,12 +71,12 @@ class LinearAnimation extends Animation
 
             if(stageDistance == 0)
             {
-                if(i == 0)
+                if(i == 0) //First special case
                 {
                     this.trajectory[i] = [0,0,1];
                     stageDistance = 1;
                 }
-                else
+                else //Else removes the point
                 {
                     this.trajectory.splice(i, 1);
                     i--;
@@ -74,10 +94,15 @@ class LinearAnimation extends Animation
         return totalDistance;
     }
 
+    /**
+     * Updates the animation given the time passed since the last update.
+     * @param {float} currentTime 
+     */
     update(currentTime)
     {
         var distances = [];
     
+        //Make sure the animation hasn't ended
         if(this.stage < this.trajectory.length && this.getElapsedTime(currentTime) <= this.totalTime)
         {
             //stageTime = stageDistance / velocity
@@ -142,6 +167,10 @@ class LinearAnimation extends Animation
         }
     }
 
+    /**
+     * Returns the amount of seconds the animation has been in the last stage.
+     * @param {float} currTime 
+     */
     getStageTime(currTime)
     {
         return (currTime - this.stageInitTime) / 1000;

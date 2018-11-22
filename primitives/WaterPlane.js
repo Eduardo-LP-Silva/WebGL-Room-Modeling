@@ -1,5 +1,17 @@
+/**
+ * Represents a plane with its own shader to simulate moving water.
+ */
 class WaterPlane extends Plane
 {
+    /**
+     * @constructor
+     * @param {CGFscene} scene 
+     * @param {CGFtexture} texture 
+     * @param {CGFtexture} waveMap 
+     * @param {int} parts 
+     * @param {float} heightscale 
+     * @param {float} texscale 
+     */
     constructor(scene, texture, waveMap, parts, heightscale, texscale)
     {
         super(scene, parts, parts);
@@ -14,26 +26,29 @@ class WaterPlane extends Plane
         this.shader.setUniformsValues({uSampler2: 1, heightScale: heightscale, timeFactor: 1, texScale: texscale});
     }
 
-    updateTexCoords(S, T)
-    {
-   
-    }
-
-    updateShader(currTime)
+    updateShader()
     {
         this.lastUpdate = (this.lastUpdate + 0.002) % 10;
 
         this.shader.setUniformsValues({timeFactor: this.lastUpdate});  
-        
-        //console.log(factor);
     }
 
+    /**
+     * Applies the shader to the plane.
+     */
     activateShader()
     {
         this.texture.apply();
         this.scene.setActiveShader(this.shader);
-        this.waveMap.bind(1);
+        this.waveMap.bind(1); //Binds the height texture to 1
         this.display();
         this.scene.setActiveShader(this.scene.defaultShader);
     }
+
+    /**
+     * Dummy function, does nothing in this class.
+     * @param {float} S 
+     * @param {float} T 
+     */
+    updateTexCoords(S, T){}
 }
