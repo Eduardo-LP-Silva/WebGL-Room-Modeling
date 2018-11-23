@@ -206,6 +206,10 @@
     <primitive id="water_plane">
       <water idtexture="water" idwavemap="water_hm" parts="50" heightscale="0.2" texscale="1"/>
     </primitive>
+
+    <primitive id="cylinder2">
+      <cylinder2 base="2" top="3" height="5" slices="50" stacks="50"/>
+    </primitive>
   </primitives>
 
   <!-- Components -->
@@ -240,30 +244,12 @@
         <componentref id="wall_4"/>
         <componentref id="mirror_ball_lamp"/>
         <componentref id="cake"/>
-        <componentref id="teste"/>
         <componentref id="big_table"/>
         <componentref id="mountains"/>
         <componentref id="mokup_tag"/>
         <componentref id="jacuzzi"/>
       </children>
     </component>
-
-    <!-- TESTE -->
-    <component id="teste">
-      <transformation>
-        <translate x="0" y="3" z="0"/>
-      </transformation>
-      <materials>
-        <material id="inherit"/>
-      </materials>
-        <texture id="rug" length_s="1" length_t="1" />
-      <children>
-        <primitiveref id="plane"/>
-      </children>
-    </component>
-
-
-    <!-- TESTE -->
 
     <component id="jacuzzi">
       <transformation>
@@ -834,7 +820,7 @@
         <primitiveref id="rectangle"/>
       </children>
     </component>
-    
+
 
     <!-- Floor -->
 

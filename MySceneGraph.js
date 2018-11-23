@@ -830,7 +830,7 @@ class MySceneGraph
 
     /**
      * Parses the contents of the animations tag.
-     * @param {element} animationsNode 
+     * @param {element} animationsNode
      */
     parseAnimations(animationsNode)
     {
@@ -851,7 +851,7 @@ class MySceneGraph
             switch(animationsNode.children[i].nodeName)
             {
                 case "linear":
-                
+
                     error = this.parseLinearAnimation(animationsNode.children[i], animationID);
                     break;
 
@@ -871,8 +871,8 @@ class MySceneGraph
 
     /**
      * Parses a single linear animation block.
-     * @param {element} linearAnimation 
-     * @param {string} animationID 
+     * @param {element} linearAnimation
+     * @param {string} animationID
      */
     parseLinearAnimation(linearAnimation, animationID)
     {
@@ -902,8 +902,8 @@ class MySceneGraph
 
     /**
      * Parses a singular circular animation block.
-     * @param {element} circularAnimation 
-     * @param {string} animationID 
+     * @param {element} circularAnimation
+     * @param {string} animationID
      */
     parseCircularAnimation(circularAnimation, animationID)
     {
@@ -912,7 +912,7 @@ class MySceneGraph
         if(span == null || isNaN(span))
             return "Error in span component\n";
 
-        
+
         var center = this.reader.getVector3(circularAnimation, "center");
 
         if(center == null)
@@ -1064,6 +1064,7 @@ class MySceneGraph
                         return primitiveErrorTag + controlPoint;
                     else
                         controlPoints.push(controlPoint);
+
                 }
 
                 build = new Plane(this.scene, uvDivs[0], uvDivs[1], npointsU, npointsV, controlPoints);
@@ -1088,7 +1089,7 @@ class MySceneGraph
                 else
                     if(this.textures[textureID] == null)
                         return primitiveErrorTag + "Texture " + textureID + " was not previously declared";
-                
+
                 let heightMapID = this.reader.getString(primitiveBlock.children[0], "idheightmap");
 
                 if(heightMapID == null)
@@ -1096,24 +1097,24 @@ class MySceneGraph
                 else
                     if(this.textures[heightMapID] == null)
                         return primitiveErrorTag + "Heigh Map " + heightMapID + " was not previously declared";
-                
+
                 let parts = this.reader.getInteger(primitiveBlock.children[0], "parts");
 
                 if(parts == null || isNaN(parts))
                     return primitiveErrorTag + "Error in parts component";
-                
+
                 let heightScale = this.reader.getFloat(primitiveBlock.children[0], "heightscale");
-                
+
                 if(heightScale == null || isNaN(heightScale))
                     return primitiveErrorTag + "Error in height scale";
-                
-                build = new ShaderPlane(this.scene, this.textures[textureID], this.textures[heightMapID], parts, 
+
+                build = new ShaderPlane(this.scene, this.textures[textureID], this.textures[heightMapID], parts,
                     heightScale);
 
                 break;
 
             case "water":
-        
+
                 textureID = this.reader.getString(primitiveBlock.children[0], "idtexture");
 
                 if(textureID == null)
@@ -1129,14 +1130,14 @@ class MySceneGraph
                 else
                     if(this.textures[waveMapID] == null)
                         return primitiveErrorTag + "Wave Map " + waveMapID + " was not previously declared";
-                            
+
                 let partsW = this.reader.getInteger(primitiveBlock.children[0], "parts");
-            
+
                 if(partsW == null || isNaN(partsW))
                     return primitiveErrorTag + "Error in parts component";
-                            
+
                 let heightScaleW = this.reader.getFloat(primitiveBlock.children[0], "heightscale");
-                            
+
                 if(heightScaleW == null || isNaN(heightScaleW))
                     return primitiveErrorTag + "Error in height scale";
 
@@ -1145,9 +1146,15 @@ class MySceneGraph
                 if(texScale == null || isNaN(texScale))
                     return primitiveErrorTag + "Error in texture scale";
 
-                build = new WaterPlane(this.scene, this.textures[textureID], this.textures[waveMapID], partsW, 
+                build = new WaterPlane(this.scene, this.textures[textureID], this.textures[waveMapID], partsW,
                     heightScaleW, texScale);
-                
+
+                break;
+
+            case "cylinder2":
+                    build = new Cylinder2(this.scene, this.reader.getFloat(children[0], "base"),
+                        this.reader.getFloat(children[0], "top"), this.reader.getFloat(children[0], "height"),
+                        this.reader.getFloat(children[0], "slices"), this.reader.getFloat(children[0], "stacks"));
                 break;
 
             default:
@@ -1559,13 +1566,13 @@ class MySceneGraph
                 for(let j = 0; j < controlPoints.length; j++)
                     controlPointsCopy.push(controlPoints[j].slice());
 
-                animations.push(new LinearAnimation(controlPointsCopy, 
+                animations.push(new LinearAnimation(controlPointsCopy,
                     this.animations[animationID][2]));
             }
             else
                 if(this.animations[animationID][0] == 'c')
-                    animations.push(new CircularAnimation(this.animations[animationID][1], 
-                        this.animations[animationID][2], this.animations[animationID][3], 
+                    animations.push(new CircularAnimation(this.animations[animationID][1],
+                        this.animations[animationID][2], this.animations[animationID][3],
                         this.animations[animationID][4], this.animations[animationID][5]));
                 else
                         return "Unidentified animation";
@@ -1796,7 +1803,7 @@ class MySceneGraph
                 node.build.activateShader();
             else
                 node.build.display();
-            
+
         }
 
         this.scene.popMatrix();

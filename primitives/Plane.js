@@ -5,12 +5,12 @@ class Plane extends CGFobject
 {
     /**
      * @constructor
-     * @param {CGFscene} scene 
-     * @param {int} uDivs 
-     * @param {int} vDivs 
-     * @param {int} degreeU 
-     * @param {int} degreeV 
-     * @param {array} controlPoints 
+     * @param {CGFscene} scene
+     * @param {int} uDivs
+     * @param {int} vDivs
+     * @param {int} degreeU
+     * @param {int} degreeV
+     * @param {array} controlPoints
      */
     constructor(scene, uDivs, vDivs, degreeU = null, degreeV = null, controlPoints = [])
     {
@@ -48,9 +48,9 @@ class Plane extends CGFobject
 
     /**
      * Generates a patch with custom degrees.
-     * @param {int} degreeU 
-     * @param {int} degreeV 
-     * @param {array} controlPoints 
+     * @param {int} degreeU
+     * @param {int} degreeV
+     * @param {array} controlPoints
      */
     generateCustomSurface(degreeU, degreeV, controlPoints)
     {
@@ -80,8 +80,8 @@ class Plane extends CGFobject
 
     /**
      * Dummy function, does nothing in this class.
-     * @param {float} S 
-     * @param {float} T 
+     * @param {float} S
+     * @param {float} T
      */
     updateTexCoords(S, T){}
 }
