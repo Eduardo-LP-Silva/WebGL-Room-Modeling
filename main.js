@@ -16,7 +16,7 @@ function getUrlVars()
 serialInclude(['../lib/CGF.js', 'XMLscene.js', 'MySceneGraph.js', 'MyInterface.js', 'MyNode.js',
     'primitives/MyCylinder.js', 'primitives/MyQuad.js', 'primitives/MyTriangle.js', 'primitives/MyTorus.js',
     'primitives/MySphere.js', 'primitives/MyDisk.js', 'primitives/MyCylinderBody.js', 'primitives/Plane.js',
-    'primitives/ShaderPlane.js', 'animations/Animation.js', 'primitives/WaterPlane.js',
+    'primitives/Terrain.js', 'animations/Animation.js', 'primitives/Water.js',
     'animations/CircularAnimation.js', 'animations/LinearAnimation.js', 'primitives/Cylinder2.js', 
 
 main=function()

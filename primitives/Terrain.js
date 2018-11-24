@@ -1,7 +1,7 @@
 /**
  * Represents a plane with its own shaders to simulate height differences in textures.
  */
-class ShaderPlane extends Plane
+class Terrain extends Plane
 {
     /**
      * @constructor

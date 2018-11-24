@@ -1,7 +1,7 @@
 /**
  * Represents a plane with its own shader to simulate moving water.
  */
-class WaterPlane extends Plane
+class Water extends Plane
 {
     /**
      * @constructor
