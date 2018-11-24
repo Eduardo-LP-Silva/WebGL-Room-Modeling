@@ -125,6 +125,13 @@
       <diffuse r="0.2" g="0.2" b="0.2" a="1" />
       <specular r="1" g="1" b="1" a="1" />
     </material>
+
+    <material id="balloon_material" shininess = "1">
+      <emission r="0.3" g="0.3" b="0.3" a="1" />
+      <ambient r="0.6" g="0.6" b="0.6" a="0.3" />
+      <diffuse r="1" g="1" b="1" a="1" />
+      <specular r="1" g="1" b="1" a="1" />
+    </material>
   </materials>
 
   <!-- Transformations -->
@@ -210,6 +217,11 @@
     <primitive id="cylinder2">
       <cylinder2 base="2" top="3" height="5" slices="50" stacks="50"/>
     </primitive>
+
+    <primitive id="vehicle">
+      <vehicle />
+    </primitive>
+
   </primitives>
 
   <!-- Components -->
@@ -247,8 +259,29 @@
         <componentref id="big_table"/>
         <componentref id="mockup"/>
         <componentref id="jacuzzi"/>
+        <componentref id="air_balloon"/>
       </children>
     </component>
+
+
+    <component id="air_balloon">
+      <transformation>
+        <translate x="0" y="0" z="0"/>
+        <scale x="1" y="1" z="1"/>
+      </transformation>
+
+      <materials>
+        <material id="balloon_material" />
+      </materials>
+
+      <texture id="wood_board" length_s="3" length_t="1"/>
+
+      <children>
+        <primitiveref id="vehicle"/>
+      </children>
+    </component>
+
+
 
     <component id="jacuzzi">
       <transformation>

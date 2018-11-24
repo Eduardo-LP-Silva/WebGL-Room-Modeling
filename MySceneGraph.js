@@ -1157,6 +1157,10 @@ class MySceneGraph
                         this.reader.getFloat(children[0], "slices"), this.reader.getFloat(children[0], "stacks"));
                 break;
 
+            case "vehicle":
+                build = new Vehicle(this.scene);
+                break;
+
             default:
                 return "Tag not identified on primitive " + primitiveID + ": " + primitiveBlock.children[0].nodeName;
         }
