@@ -145,7 +145,7 @@ class XMLscene extends CGFscene
             {
                 this.graph.nodes[key].updateAnimations(currTime);
 
-                if(this.graph.nodes[key].build != null && this.graph.nodes[key].build instanceof WaterPlane)
+                if(this.graph.nodes[key].build != null && this.graph.nodes[key].build instanceof Water)
                     this.graph.nodes[key].build.updateShader();
             }
         }

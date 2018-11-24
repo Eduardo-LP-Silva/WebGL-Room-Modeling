@@ -63,7 +63,7 @@ class Plane extends CGFobject
 
       var points = [];
       var indexCount = 0;
-
+    
       for(var i = 0; i <= degreeU; i++){
         var temp = [];
         for(var j = 0; j <=degreeV; j++){

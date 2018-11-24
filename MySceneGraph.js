@@ -1108,7 +1108,7 @@ class MySceneGraph
                 if(heightScale == null || isNaN(heightScale))
                     return primitiveErrorTag + "Error in height scale";
 
-                build = new ShaderPlane(this.scene, this.textures[textureID], this.textures[heightMapID], parts,
+                build = new Terrain(this.scene, this.textures[textureID], this.textures[heightMapID], parts,
                     heightScale);
 
                 break;
@@ -1146,7 +1146,7 @@ class MySceneGraph
                 if(texScale == null || isNaN(texScale))
                     return primitiveErrorTag + "Error in texture scale";
 
-                build = new WaterPlane(this.scene, this.textures[textureID], this.textures[waveMapID], partsW,
+                build = new Water(this.scene, this.textures[textureID], this.textures[waveMapID], partsW,
                     heightScaleW, texScale);
 
                 break;
@@ -1803,7 +1803,7 @@ class MySceneGraph
             if(textureInit[1] != node.build.maxS || textureInit[2] != node.build.maxT)
                 node.build.updateTexCoords(textureInit[1], textureInit[2]);
 
-            if(node.build instanceof ShaderPlane || node.build instanceof WaterPlane)
+            if(node.build instanceof Terrain || node.build instanceof Water)
                 node.build.activateShader();
             else
                 node.build.display();

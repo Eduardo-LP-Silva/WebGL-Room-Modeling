@@ -206,6 +206,17 @@
       <plane npartsU="1" npartsV="1"/>
     </primitive>
 
+    <primitive id="patch">
+      <patch npointsU="3" npointsV="2" npartsU="20" npartsV="20">
+        <controlpoint xx="-1.5" yy="-1.5" zz="0"/>
+        <controlpoint xx="-1.5" yy="1.5" zz="0"/>
+        <controlpoint xx="0" yy="-1.5" zz="3"/>
+        <controlpoint xx="0" yy="1.5" zz="3"/>
+        <controlpoint xx="1.5" yy="-1.5" zz="0"/>
+        <controlpoint xx="1.5" yy="1.5" zz="0"/>
+      </patch>
+    </primitive>
+
     <primitive id="shader_plane">
       <terrain idtexture="terrain" idheightmap="terrain_hm" parts="50" heightscale="0.8"/>
     </primitive>
