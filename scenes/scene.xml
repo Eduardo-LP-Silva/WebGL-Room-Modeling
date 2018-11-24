@@ -86,6 +86,8 @@
     <texture id="wood_board" file="scenes/images/wood_board.png" />
     <texture id="water" file="scenes/images/water.png" />
     <texture id="water_hm" file="scenes/images/water_hm.png" />
+    <texture id="fire" file="scenes/images/fire.png" />
+    <texture id="fire_hm" file="scenes/images/fire_hm.png" />
     <texture id="white_tile" file="scenes/images/white_tile.png" />
   </textures>
 
@@ -168,8 +170,16 @@
       <controlpoint xx="1" yy="0" zz="0"/>
     </linear>
 
+    <linear id="ballon_linear" span="10">
+      <controlpoint xx="0" yy="0" zz="0"/>
+      <controlpoint xx="0" yy="2" zz="18"/>
+      <controlpoint xx="15" yy="0" zz="0"/>
+      <controlpoint xx="0" yy="-2" zz="-28"/>
+    </linear>
+
     <circular id="chair_rotate" span="5" center="-2 0 0" radius="4" startang="0" rotang="270"/>
     <circular id="lamp_rotate" span="2" center="3 0 -20" radius="10" startang="0" rotang="120"/>
+    <circular id="ballon_rotate" span="5" center="5 0 -10" radius="10" startang="0" rotang="230"/>
   </animations>
 
   <!-- Primitives -->
@@ -222,7 +232,11 @@
     </primitive>
 
     <primitive id="water_plane">
-      <water idtexture="water" idwavemap="water_hm" parts="50" heightscale="0.2" texscale="1"/>
+      <water idtexture="water" idwavemap="water_hm" parts="50" heightscale="0.2" texscale="3"/>
+    </primitive>
+
+    <primitive id="fire_plane">
+      <water idtexture="fire" idwavemap="fire_hm" parts="50" heightscale="0.6" texscale="1"/>
     </primitive>
 
     <primitive id="cylinder2">
@@ -274,25 +288,48 @@
       </children>
     </component>
 
-
+    <!-- Hot Air Ballon -->
     <component id="air_balloon">
       <transformation>
-        <translate x="0" y="0" z="0"/>
-        <scale x="1" y="1" z="1"/>
+        <translate x="0" y="4" z="0"/>
       </transformation>
 
       <materials>
         <material id="balloon_material" />
       </materials>
 
-      <texture id="wood_board" length_s="3" length_t="1"/>
+      <texture id="none"/>
+
+      <animations>
+       <animationref id="ballon_linear"/>
+       <animationref id="ballon_rotate"/>
+      </animations>
 
       <children>
         <primitiveref id="vehicle"/>
+        <componentref id="balloon_fire"/>
       </children>
     </component>
 
+    <component id="balloon_fire">
+      <transformation>
+        <translate x="0" y="0.9" z="0"/>
+        <scale x="1.5" y="0.8" z="1.5"/>
+        <rotate axis="x" angle="-90"/>
+      </transformation>
 
+      <materials>
+        <material id="shiny_mat" />
+      </materials>
+
+      <texture id="none"/>
+
+      <children>
+        <primitiveref id="fire_plane"/>
+      </children>
+    </component>
+
+    <!-- Jacuzzi -->
 
     <component id="jacuzzi">
       <transformation>

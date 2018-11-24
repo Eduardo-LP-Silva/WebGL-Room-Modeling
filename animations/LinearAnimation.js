@@ -124,27 +124,18 @@ class LinearAnimation extends Animation
                     let v2 = Array.from(this.trajectory[this.stage]);
                     v2.splice(3, 1);
                         
-                    var angle = -Math.atan2(v1[0] * v2[2] - v1[2]*v2[0], v1[0]*v2[0] + v1[2]*v2[2]);
+                    var angle = -this.angle2V(v1, v2);
     
                     mat4.rotate(this.transformationMatrix, this.transformationMatrix, angle, [0,1,0]);
     
-
-                    let vector = [0,0,0], defaultVector = [0,0,1];
+                    let defaultVector = [0,0,1];
                         
                     //Calculate angle between default [0,0,1] and v2
 
-                    let differenceAngle = Math.atan2(defaultVector[0] * v2[2] - defaultVector[2]*v2[0], 
-                        defaultVector[0]*v2[0] + defaultVector[2]*v2[2]);
-
-                    vector[0] = this.path[this.stage][2] * Math.sin(differenceAngle) 
-                        + this.path[this.stage][0] * Math.cos(differenceAngle);
-                        
-                    vector[1] = this.path[this.stage][1];
-
-                    vector[2] = this.path[this.stage][2] * Math.cos(differenceAngle) 
-                        - this.path[this.stage][0] * Math.sin(differenceAngle);
-                        
-                    this.path[this.stage] = vector;
+                    let differenceAngle = this.angle2V(defaultVector, v2);
+                  
+                    this.path[this.stage] = this.rotateVectorY(this.path[this.stage], differenceAngle);
+                    
                 }
             
             }

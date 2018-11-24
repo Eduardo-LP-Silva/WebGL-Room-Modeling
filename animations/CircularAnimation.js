@@ -56,7 +56,6 @@ class CircularAnimation extends Animation
         radiusTranslation.push(this.radius * Math.cos(this.angle));
 
         mat4.translate(this.transformationMatrix, this.transformationMatrix, radiusTranslation); 
-
     }
 
     /**

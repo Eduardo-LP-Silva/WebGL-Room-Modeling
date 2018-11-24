@@ -55,4 +55,34 @@ class Animation
     {
         return (currTime - this.initTime) / 1000;
     }
+
+    /**
+     * Calculates the angle between two vectors in a 2D plane.
+     * @param {array} v1 
+     * @param {array} v2 
+     */
+    angle2V(v1, v2)
+    {
+        return Math.atan2(v1[0] * v2[2] - v1[2]*v2[0], v1[0]*v2[0] + v1[2]*v2[2]);
+    }
+
+    /**
+     * Rotates a vector around the Y axis.
+     * @param {array} v 
+     * @param {float} angle 
+     */
+    rotateVectorY(v, angle)
+    {
+        let vector = [0, 0, 0];
+
+        vector[0] = v[2] * Math.sin(angle)
+            + v[0] * Math.cos(angle);
+
+        vector[1] = v[1];
+
+        vector[2] = v[2] * Math.cos(angle)
+            - v[0] * Math.sin(angle);
+
+        return vector;
+    }
 }
