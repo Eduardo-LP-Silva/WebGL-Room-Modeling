@@ -28,7 +28,7 @@ class Water extends Plane
 
     updateShader()
     {
-        this.lastUpdate = (this.lastUpdate + 0.002) % 10;
+        this.lastUpdate = (this.lastUpdate + 0.002) % 1;
 
         this.shader.setUniformsValues({timeFactor: this.lastUpdate});  
     }
