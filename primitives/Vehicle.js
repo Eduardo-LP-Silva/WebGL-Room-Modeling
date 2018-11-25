@@ -40,7 +40,7 @@ class Vehicle extends CGFobject
     }
 
     /**
-     * 
+     * Generates the points for patch of the outer part of the air balloon.
      */
     topPoints()
     {
@@ -81,8 +81,10 @@ class Vehicle extends CGFobject
     }
 
     /**
-     * 
-     */
+    * Generates the points for patch of the inner part of the air balloon to avoid back-face culling
+    * (opposite the outer part).
+    */
+
     topPoints2()
     {
       var points2 = [
@@ -161,8 +163,8 @@ class Vehicle extends CGFobject
 
     /**
      * Dummy function, does nothing in this class.
-     * @param {float} S 
-     * @param {float} T 
+     * @param {float} S
+     * @param {float} T
      */
     updateTexCoords(S, T){}
 };
