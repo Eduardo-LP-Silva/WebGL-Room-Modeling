@@ -40,6 +40,9 @@ class LinearAnimation extends Animation
         var initialTrajectory = this.trajectory[this.stage].slice(0, 3);
 
         mat4.translate(this.transformationMatrix, this.transformationMatrix, initialTrajectory);
+
+        this.trajectory[0] = [0, 0, 1];
+        this.path[0] = [0, 0, 1];
     }
 
     /**
@@ -69,14 +72,12 @@ class LinearAnimation extends Animation
             if(i != 0)
                 vec3.normalize(this.trajectory[i], this.trajectory[i]);
 
+            if (i == 0) //First special case
+                stageDistance = 0;
+             
             if(stageDistance == 0)
             {
-                if(i == 0) //First special case
-                {
-                    this.trajectory[i] = [0,0,1];
-                    stageDistance = 1;
-                }
-                else //Else removes the point
+                if(i != 0)
                 {
                     this.trajectory.splice(i, 1);
                     i--;
@@ -140,7 +141,7 @@ class LinearAnimation extends Animation
             
             }
             else
-            {              
+            {
                 distances.push(this.velocity * ((currentTime - this.lastUpdateTime) / 1000) 
                     * this.path[this.stage][0]);
 

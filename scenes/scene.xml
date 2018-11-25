@@ -155,8 +155,8 @@
       <controlpoint xx="0" yy="0" zz="0"/>
       <controlpoint xx="0" yy="0" zz="-4"/>
       <controlpoint xx="-4" yy="0" zz="0"/>
-      <controlpoint xx="0" yy="0" zz="7"/>
-      <controlpoint xx="1" yy="0" zz="0"/>
+      <controlpoint xx="0" yy="0" zz="8"/>
+      <controlpoint xx="2" yy="0" zz="0"/>
     </linear>
 
     <linear id="lamp_animation" span="3">
@@ -172,14 +172,19 @@
 
     <linear id="ballon_linear" span="10">
       <controlpoint xx="0" yy="0" zz="0"/>
-      <controlpoint xx="0" yy="2" zz="18"/>
-      <controlpoint xx="15" yy="0" zz="0"/>
+      <controlpoint xx="0" yy="8" zz="18"/>
+      <controlpoint xx="13" yy="0" zz="0"/>
       <controlpoint xx="0" yy="-2" zz="-28"/>
+    </linear>
+
+    <linear id="ballon_land" span="5">
+      <controlpoint xx="-7" yy="6" zz="-10"/>
+      <controlpoint xx="0" yy="-6" zz="10"/>
     </linear>
 
     <circular id="chair_rotate" span="5" center="-2 0 0" radius="4" startang="0" rotang="270"/>
     <circular id="lamp_rotate" span="2" center="3 0 -20" radius="10" startang="0" rotang="120"/>
-    <circular id="ballon_rotate" span="5" center="5 0 -10" radius="10" startang="0" rotang="230"/>
+    <circular id="ballon_rotate" span="5" center="3 6 -10" radius="10" startang="0" rotang="180"/>
   </animations>
 
   <!-- Primitives -->
@@ -291,7 +296,7 @@
     <!-- Hot Air Ballon -->
     <component id="air_balloon">
       <transformation>
-        <translate x="0" y="4" z="0"/>
+        <translate x="2" y="0" z="0"/>
       </transformation>
 
       <materials>
@@ -303,6 +308,7 @@
       <animations>
        <animationref id="ballon_linear"/>
        <animationref id="ballon_rotate"/>
+       <animationref id="ballon_land"/>
       </animations>
 
       <children>
@@ -1380,7 +1386,6 @@
 
       <animations>
        <animationref id="pull_back_chair"/>
-      <!-- <animationref id="chair_rotate"/> -->
       </animations>
 
       <children>
