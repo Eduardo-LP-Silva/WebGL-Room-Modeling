@@ -57,10 +57,6 @@ class Plane extends CGFobject
      */
     generateCustomSurface(degreeU, degreeV, controlPoints)
     {
-
-      console.log("controlPoints: ");
-      console.log(controlPoints);
-
       var points = [];
       var indexCount = 0;
     
@@ -72,9 +68,6 @@ class Plane extends CGFobject
         }
         points.push(temp);
       }
-
-      console.log("points: ");
-      console.log(points);
 
       return new CGFnurbsSurface(degreeU, degreeV, points);
     }

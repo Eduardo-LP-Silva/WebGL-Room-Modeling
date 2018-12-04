@@ -1,0 +1,276 @@
+<yas>
+  <!-- Scene -->
+  <scene root="scene" axis_length="2" />
+
+  <!-- Views -->
+  <views default="Default Perspective">
+    <perspective id="Default Perspective" near="0.01" far="500" angle="70">
+      <from x="10" y="10" z="0" />
+      <to x="0" y="0" z="0" />
+    </perspective>
+
+    <perspective id="Person 1 Perspective" near="0.01" far="500" angle="70">
+      <from x="0" y="3" z="-2" />
+      <to x="0" y="3" z="2" />
+    </perspective>
+
+    <perspective id="Person 2 Perspective" near="0.01" far="500" angle="70">
+      <from x="0" y="3" z="2" />
+      <to x="0" y="3" z="-2" />
+    </perspective>
+
+    <perspective id="Mockup View" near="0.01" far="500" angle="70">
+      <from x="0" y="10" z="-19" />
+      <to x="0" y="0" z="-20" />
+    </perspective>
+
+    <perspective id="Jacuzzi View" near="0.01" far="500" angle="70">
+      <from x="20" y="10" z="10" />
+      <to x="20" y="0" z="20" />
+    </perspective>
+
+    <ortho id="Ortho View" near="0.01" far="500" left="-10" right="10" top="10" bottom="-5">
+      <from x="5" y="5.2" z="0" />
+      <to x="-5" y="5" z="0" />
+    </ortho>
+  </views>
+
+  <!-- Ambient -->
+  <ambient>
+    <ambient r="0.2" g="0.2" b="0.2" a="1" />
+    <background r="0.12" g="0" b="0.12" a="1" />
+  </ambient>
+
+  <!-- Lights -->
+  <lights>
+    <omni id="Candle" enabled="1">
+      <location x="0" y="3.4" z="0" w="1" />
+      <ambient r="1.0" g="0.6" b="0.2" a="1.0" />
+      <diffuse r="1.0" g="0.6" b="0.2" a="1.0" />
+      <specular r="1.0" g="0.6" b="0.2" a="1.0" />
+    </omni>
+
+    <omni id="Back Light" enabled="1">
+      <location x="25" y="8" z="0" w="1" />
+      <ambient r="0.4" g="0" b="0.1" a="1.0" />
+      <diffuse r="0.4" g="0.4" b="0.4" a="1.0" />
+      <specular r="0.4" g="0" b="0.1" a="1.0" />
+    </omni>
+
+    <spot id="SpotLight" enabled="1" angle="20" exponent="1">
+      <location x="-24.8" y="8" z="0" w="1" />
+      <target x="-15" y="0" z="0"/>
+      <ambient r="0.5" g="0.5" b="0.5" a="1.0" />
+      <diffuse r="0.2" g="0.2" b="0.2" a="1.0" />
+      <specular r="1.0" g="1.0" b="1.0" a="1.0" />
+    </spot>
+  </lights>
+
+  <!-- Textures -->
+  <textures>
+    <texture id="wood_texture" file="scenes/images/wood-image.png" />
+    <texture id="dark_wood" file="scenes/images/dark_wood.png" />
+    <texture id="shiny_metal" file="scenes/images/shiny_metal.png" />
+    <texture id="porcelain" file="scenes/images/porcelain.png" />
+    <texture id="black" file="scenes/images/black.png" />
+    <texture id="wax" file="scenes/images/wax.png" />
+    <texture id="rug" file="scenes/images/rug.png" />
+    <texture id="mattress" file="scenes/images/mattress.png" />
+    <texture id="zebra" file="scenes/images/zebra.png" />
+    <texture id="mirror_ball" file="scenes/images/mirror_ball.png" />
+    <texture id="cake" file="scenes/images/cake.png" />
+    <texture id="terrain" file="scenes/images/mt_st_helens.png" />
+    <texture id="terrain_hm" file="scenes/images/mt_st_helens_hm.png" />
+    <texture id="carpet" file="scenes/images/carpet.png" />
+    <texture id="mokup_tag_texture" file="scenes/images/Mount St-Helens-Tag.png" />
+    <texture id="wood_board" file="scenes/images/wood_board.png" />
+    <texture id="water" file="scenes/images/water.png" />
+    <texture id="water_hm" file="scenes/images/water_hm.png" />
+    <texture id="fire" file="scenes/images/fire.png" />
+    <texture id="fire_hm" file="scenes/images/fire_hm.png" />
+    <texture id="white_tile" file="scenes/images/white_tile.png" />
+  </textures>
+
+  <!-- Materials -->
+  <materials>
+    <material id="default_mat" shininess = "0.1">
+      <emission r="0.1" g="0.1" b="0.1" a="1" />
+      <ambient r="0.1" g="0.1" b="0.1" a="1" />
+      <diffuse r="0.1" g="0.1" b="0.1" a="1" />
+      <specular r="0.1" g="0.1" b="0.1" a="1" />
+    </material>
+
+    <material id="wood_mat" shininess = "0.3">
+      <emission r="0.2" g="0.2" b="0.2" a="1" />
+      <ambient r="0.2" g="0.2" b="0.2" a="1" />
+      <diffuse r="0.4" g="0.4" b="0.4" a="1" />
+      <specular r="0.1" g="0.1" b="0.1" a="1" />
+    </material>
+
+    <material id="metal_mat" shininess = "0.6">
+      <emission r="0.2" g="0.2" b="0.2" a="1" />
+      <ambient r="0.3" g="0.3" b="0.3" a="1" />
+      <diffuse r="0.2" g="0.2" b="0.2" a="1" />
+      <specular r="0.8" g="0.8" b="0.8" a="1" />
+    </material>
+
+    <material id="matte_mat" shininess = "0.4">
+      <emission r="0.2" g="0.2" b="0.2" a="1" />
+      <ambient r="0.3" g="0.3" b="0.3" a="1" />
+      <diffuse r="0.5" g="0.5" b="0.5" a="1" />
+      <specular r="0.2" g="0.2" b="0.2" a="1" />
+    </material>
+
+    <material id="shiny_mat" shininess = "1">
+      <emission r="0.3" g="0.3" b="0.3" a="1" />
+      <ambient r="1" g="1" b="1" a="1" />
+      <diffuse r="0.2" g="0.2" b="0.2" a="1" />
+      <specular r="1" g="1" b="1" a="1" />
+    </material>
+
+    <material id="balloon_material" shininess = "1">
+      <emission r="0.3" g="0.3" b="0.3" a="1" />
+      <ambient r="0.6" g="0.6" b="0.6" a="0.3" />
+      <diffuse r="1" g="1" b="1" a="1" />
+      <specular r="1" g="1" b="1" a="1" />
+    </material>
+  </materials>
+
+  <!-- Transformations -->
+  <transformations>
+    <transformation id="rotation_x_90">
+      <rotate axis="x" angle="90"/>
+    </transformation>
+
+    <transformation id="rug_transformation">
+      <translate x="0" y="-0.01" z="0"/>
+      <scale x="10" y="1" z="10"/>
+      <rotate axis="x" angle="-90"/>
+    </transformation>
+  </transformations>
+
+  <!-- Animations -->
+  <animations>
+    <linear id="pull_back_chair" span="5">
+      <controlpoint xx="0" yy="0" zz="0"/>
+      <controlpoint xx="0" yy="0" zz="-4"/>
+      <controlpoint xx="-4" yy="0" zz="0"/>
+      <controlpoint xx="0" yy="0" zz="8"/>
+      <controlpoint xx="2" yy="0" zz="0"/>
+    </linear>
+
+    <linear id="lamp_animation" span="3">
+      <controlpoint xx="0" yy="0" zz="0"/>
+      <controlpoint xx="13" yy="0" zz="0"/>
+      <controlpoint xx="0" yy="0" zz="-20"/>
+    </linear>
+
+    <linear id="test_animation" span="0.1">
+      <controlpoint xx="0" yy="0" zz="0"/>
+      <controlpoint xx="1" yy="0" zz="0"/>
+    </linear>
+
+    <linear id="ballon_linear" span="10">
+      <controlpoint xx="0" yy="0" zz="0"/>
+      <controlpoint xx="0" yy="8" zz="18"/>
+      <controlpoint xx="13" yy="0" zz="0"/>
+      <controlpoint xx="0" yy="-2" zz="-28"/>
+    </linear>
+
+    <linear id="ballon_land" span="5">
+      <controlpoint xx="-7" yy="6" zz="-10"/>
+      <controlpoint xx="0" yy="-6" zz="10"/>
+    </linear>
+
+    <circular id="chair_rotate" span="5" center="-2 0 0" radius="4" startang="0" rotang="270"/>
+    <circular id="lamp_rotate" span="2" center="3 0 -20" radius="10" startang="0" rotang="120"/>
+    <circular id="ballon_rotate" span="5" center="3 6 -10" radius="10" startang="0" rotang="180"/>
+  </animations>
+
+  <!-- Primitives -->
+  <primitives>
+    <primitive id="rectangle">
+      <rectangle x1="-0.5" y1="-0.5" x2="0.5" y2="0.5" />
+    </primitive>
+
+    <primitive id="floor_quad">
+      <rectangle x1="-25" y1="-25" x2="25" y2="25" />
+    </primitive>
+
+    <primitive id="cylinder">
+      <cylinder base="0.3" top="0.3" height="8" slices="40" stacks="40" />
+    </primitive>
+
+    <primitive id="cylinder_bigger_base">
+      <cylinder base="0.3" top="0.1" height="8" slices="40" stacks="40" />
+    </primitive>
+
+    <primitive id="triangle">
+      <triangle x1="0" y1="0" z1="4" x2="0" y2="0" z2="0" x3="4" y3="0" z3="0"/>
+    </primitive>
+
+    <primitive id="sphere">
+      <sphere radius="5" slices="40" stacks="40"/>
+    </primitive>
+
+    <primitive id="torus">
+      <torus inner="4" outer="10" slices="40" loops="40"/>
+    </primitive>
+
+    <primitive id="plane">
+      <plane npartsU="1" npartsV="1"/>
+    </primitive>
+
+    <primitive id="patch">
+      <patch npointsU="3" npointsV="2" npartsU="20" npartsV="20">
+        <controlpoint xx="-1.5" yy="-1.5" zz="0"/>
+        <controlpoint xx="-1.5" yy="1.5" zz="0"/>
+        <controlpoint xx="0" yy="-1.5" zz="3"/>
+        <controlpoint xx="0" yy="1.5" zz="3"/>
+        <controlpoint xx="1.5" yy="-1.5" zz="0"/>
+        <controlpoint xx="1.5" yy="1.5" zz="0"/>
+      </patch>
+    </primitive>
+
+    <primitive id="shader_plane">
+      <terrain idtexture="terrain" idheightmap="terrain_hm" parts="50" heightscale="0.8"/>
+    </primitive>
+
+    <primitive id="water_plane">
+      <water idtexture="water" idwavemap="water_hm" parts="50" heightscale="0.2" texscale="3"/>
+    </primitive>
+
+    <primitive id="fire_plane">
+      <water idtexture="fire" idwavemap="fire_hm" parts="50" heightscale="0.6" texscale="1"/>
+    </primitive>
+
+    <primitive id="cylinder2">
+      <cylinder2 base="2" top="3" height="5" slices="50" stacks="50"/>
+    </primitive>
+
+    <primitive id="vehicle">
+      <vehicle />
+    </primitive>
+
+  </primitives>
+
+  <!-- Components -->
+  <components>
+    <component id="scene">
+      <transformation>
+      </transformation>
+
+      <materials>
+        <material id="default_mat" />
+      </materials>
+
+      <texture id="none" length_s="1" length_t="1" />
+
+      <children>
+        <primitiveref id="rectangle"/>
+      </children>
+    </component>
+
+  </components>
+
+</yas>
