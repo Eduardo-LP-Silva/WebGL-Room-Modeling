@@ -89,6 +89,7 @@
     <texture id="fire" file="scenes/images/fire.png" />
     <texture id="fire_hm" file="scenes/images/fire_hm.png" />
     <texture id="white_tile" file="scenes/images/white_tile.png" />
+    <texture id="black_tile" file="scenes/images/black_tile.jpg" />
   </textures>
 
   <!-- Materials -->
@@ -189,6 +190,11 @@
 
   <!-- Primitives -->
   <primitives>
+
+    <primitive id="piece_sphere">
+      <sphere radius="0.1" slices="30" stacks="30"/>
+    </primitive>
+
     <primitive id="rectangle">
       <rectangle x1="-0.5" y1="-0.5" x2="0.5" y2="0.5" />
     </primitive>
@@ -290,10 +296,51 @@
         <componentref id="mockup"/>
         <componentref id="jacuzzi"/>
         <componentref id="air_balloon"/>
+        <componentref id="white_game_piece"/>
+        <componentref id="black_game_piece"/>
+      </children>
+    </component>
+
+    <component id="white_game_piece">
+      <transformation>
+        <scale x="1" y="0.5" z="1" />
+        <translate x="0" y="5.2" z="0" />
+      </transformation>
+
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+
+      <texture id="white_tile" length_s="1" length_t="1"/>
+
+      <children>
+        <primitiveref id="piece_sphere"/>
+      </children>
+    </component>
+
+    <component id="black_game_piece">
+      <transformation>
+        <scale x="1" y="0.5" z="1" />
+        <translate x="0.5" y="5.2" z="0" />
+
+      </transformation>
+
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+
+      <texture id="black_tile" length_s="1" length_t="1"/>
+
+      <children>
+        <primitiveref id="piece_sphere"/>
       </children>
     </component>
 
     <!-- Hot Air Ballon -->
+
+
+
+
     <component id="air_balloon">
       <transformation>
         <translate x="2" y="0" z="0"/>
