@@ -30,13 +30,13 @@
     </perspective>
 
     <perspective id="Player 1 View" near="0.01" far="500" angle="70">
-      <from x="5" y="5" z="20" />
-      <to x="0" y="2" z="20" />
+      <from x="4" y="7.2" z="21" />
+      <to x="0" y="2" z="21" />
     </perspective>
 
     <perspective id="Player 2 View" near="0.01" far="500" angle="70">
-      <from x="-5" y="5" z="20" />
-      <to x="0" y="2" z="20" />
+      <from x="-4" y="7.2" z="21" />
+      <to x="0" y="2" z="21" />
     </perspective>
 
     <ortho id="Ortho View" near="0.01" far="500" left="-10" right="10" top="10" bottom="-5">
@@ -67,11 +67,11 @@
       <specular r="0.4" g="0" b="0.1" a="1.0" />
     </omni>
 
-    <omni id="Board Light" enabled="1">
+    <omni id="Board Overhead Light" enabled="1">
       <location x="0" y="10" z="20" w="1" />
       <ambient r="0.5" g="0.5" b="0.5" a="1.0" />
-      <diffuse r="1" g="1" b="0.7" a="1.0" />
-      <specular r="1" g="1" b="0.7" a="1.0" />
+      <diffuse r="1" g="0.7" b="0.2" a="1.0" />
+      <specular r="1" g="0.7" b="0.2" a="1.0" />
     </omni>
 
     <spot id="SpotLight" enabled="1" angle="20" exponent="1">
@@ -87,6 +87,7 @@
   <textures>
     <texture id="wood_texture" file="scenes/images/wood-image.png" />
     <texture id="dark_wood" file="scenes/images/dark_wood.png" />
+    <texture id="dark_wood_2" file="scenes/images/dark_wood_2.png" />
     <texture id="shiny_metal" file="scenes/images/shiny_metal.png" />
     <texture id="porcelain" file="scenes/images/porcelain.png" />
     <texture id="black" file="scenes/images/black.png" />
@@ -107,6 +108,7 @@
     <texture id="fire_hm" file="scenes/images/fire_hm.png" />
     <texture id="white_tile" file="scenes/images/white_tile.png" />
     <texture id="board_texture" file="scenes/images/board.png" />
+    <texture id="back_panel" file="scenes/images/back_panel.npg" />
   </textures>
 
   <!-- Materials -->
@@ -308,8 +310,7 @@
         <componentref id="wall_4"/>
         <componentref id="mirror_ball_lamp"/>
         <componentref id="cake"/>
-        <componentref id="big_table"/>
-        <componentref id="mockup"/>
+        <componentref id="mockup_table"/>
         <componentref id="jacuzzi"/>
         <componentref id="air_balloon"/>
         <componentref id="board_table"/>
@@ -319,7 +320,76 @@
     <!-- Board Table -->
     <component id="board_table">
       <transformation>
-        <translate x="0" y="0" z="40"/>
+        <translate x="0" y="0" z="19"/>
+      </transformation>
+
+      <materials>
+        <material id="wood_mat" />
+      </materials>
+
+      <texture id="none"/>
+
+      <children>
+        <componentref id="long_table"/>
+        <componentref id="board"/>
+        <componentref id="game_controller"/>
+      </children>
+    </component>
+
+    <component id="game_controller">
+      <transformation>
+        <translate x="0" y="3.3" z="-4"/>
+        <scale x="3.5" y="1.5" z="0.7"/>
+      </transformation>
+
+      <materials>
+        <material id="wood_mat" />
+      </materials>
+
+      <texture id="dark_wood_2" length_s="2" length_t="2"/>
+
+      <children>
+        <componentref id="cube"/>
+        <componentref id="back_panel"/>
+      </children>
+    </component>
+
+    <component id="back_panel">
+      <transformation>
+        <translate x="0" y="3.3" z="-10"/>
+      </transformation>
+
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+
+      <texture id="back_panel" length_s="1" length_t="1"/>
+
+      <children>
+        <primitiveref id="rectangle"/>
+      </children>
+    </component>
+
+    <component id="score_counter">
+      <transformation>
+        <translate x="0" y="0" z="19"/>
+      </transformation>
+
+      <materials>
+        <material id="wood_mat" />
+      </materials>
+
+      <texture id="none"/>
+
+      <children>
+        <componentref id="long_table"/>
+        <componentref id="board"/>
+      </children>
+    </component>
+
+    <component id="long_table">
+      <transformation>
+        <scale x="1" y="1" z="1.7"/>
       </transformation>
 
       <materials>
@@ -330,13 +400,12 @@
 
       <children>
         <componentref id="big_table"/>
-        <componentref id="board"/>
       </children>
     </component>
 
     <component id="board">
       <transformation>
-        <translate x="0" y="2.6" z="-20"/>
+        <translate x="0" y="2.6" z="1.5"/>
         <scale x="5.5" y="1" z="5.5"/>
         <rotate axis="y" angle="90"/>
         <rotate axis="x" angle="-90"/>
@@ -513,7 +582,6 @@
     <!-- Big Table -->
     <component id="big_table">
       <transformation>
-        <translate x="0" y="0" z="-20"/>
       </transformation>
 
       <materials>
@@ -631,9 +699,26 @@
 
     <!--Mockup -->
 
+    <component id="mockup_table">
+      <transformation>
+        <translate x="0" y="0" z="-20"/>
+      </transformation>
+
+      <materials>
+        <material id="default_mat" />
+      </materials>
+
+      <texture id="none"/>
+
+      <children>
+        <componentref id="big_table"/>
+        <componentref id="mockup"/>
+      </children>
+    </component>
+
     <component id="mockup">
       <transformation>
-        <translate x="0" y="0" z="-20.2"/>
+        <translate x="0" y="0" z="-0.3"/>
       </transformation>
 
       <materials>
@@ -1705,6 +1790,40 @@
         <primitiveref id="cylinder" />
       </children>
     </component>
+
+    <!-- Two Sided Rectangle -->
+    <component id="two_sided_rectangle">
+      <transformation>
+      </transformation>
+
+      <materials>
+        <material id="inherit" />
+      </materials>
+
+      <texture id="inherit"/>
+
+      <children>
+        <componentref id="reflected_rectangle"/>
+        <primitiveref id="rectangle"/>
+      </children>
+    </component>
+
+    <component id="reflected_rectangle">
+      <transformation>
+        <rotate axis="y" angle="180"/>
+      </transformation>
+
+      <materials>
+        <material id="inherit" />
+      </materials>
+
+      <texture id="inherit"/>
+
+      <children>
+        <primitiveref id="rectangle"/>
+      </children>
+    </component>
+
 
     <!-- Cube -->
     <component id="cube">
