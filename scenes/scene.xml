@@ -107,6 +107,7 @@
     <texture id="fire" file="scenes/images/fire.png" />
     <texture id="fire_hm" file="scenes/images/fire_hm.png" />
     <texture id="white_tile" file="scenes/images/white_tile.png" />
+    <texture id="black_tile" file="scenes/images/black_tile.jpg" />
     <texture id="board_texture" file="scenes/images/board.png" />
     <texture id="back_panel" file="scenes/images/back_panel.npg" />
   </textures>
@@ -209,6 +210,11 @@
 
   <!-- Primitives -->
   <primitives>
+
+    <primitive id="piece_sphere">
+      <sphere radius="0.1" slices="30" stacks="30"/>
+    </primitive>
+
     <primitive id="rectangle">
       <rectangle x1="-0.5" y1="-0.5" x2="0.5" y2="0.5" />
     </primitive>
@@ -313,116 +319,14 @@
         <componentref id="mockup_table"/>
         <componentref id="jacuzzi"/>
         <componentref id="air_balloon"/>
-        <componentref id="board_table"/>
-      </children>
-    </component>
-
-    <!-- Board Table -->
-    <component id="board_table">
-      <transformation>
-        <translate x="0" y="0" z="19"/>
-      </transformation>
-
-      <materials>
-        <material id="wood_mat" />
-      </materials>
-
-      <texture id="none"/>
-
-      <children>
-        <componentref id="long_table"/>
-        <componentref id="board"/>
-        <componentref id="game_controller"/>
-      </children>
-    </component>
-
-    <component id="game_controller">
-      <transformation>
-        <translate x="0" y="3.3" z="-4"/>
-        <scale x="3.5" y="1.5" z="0.7"/>
-      </transformation>
-
-      <materials>
-        <material id="wood_mat" />
-      </materials>
-
-      <texture id="dark_wood_2" length_s="2" length_t="2"/>
-
-      <children>
-        <componentref id="cube"/>
-        <componentref id="back_panel"/>
-      </children>
-    </component>
-
-    <component id="back_panel">
-      <transformation>
-        <translate x="0" y="3.3" z="-10"/>
-      </transformation>
-
-      <materials>
-        <material id="matte_mat" />
-      </materials>
-
-      <texture id="back_panel" length_s="1" length_t="1"/>
-
-      <children>
-        <primitiveref id="rectangle"/>
-      </children>
-    </component>
-
-    <component id="score_counter">
-      <transformation>
-        <translate x="0" y="0" z="19"/>
-      </transformation>
-
-      <materials>
-        <material id="wood_mat" />
-      </materials>
-
-      <texture id="none"/>
-
-      <children>
-        <componentref id="long_table"/>
-        <componentref id="board"/>
-      </children>
-    </component>
-
-    <component id="long_table">
-      <transformation>
-        <scale x="1" y="1" z="1.7"/>
-      </transformation>
-
-      <materials>
-        <material id="wood_mat" />
-      </materials>
-
-      <texture id="none"/>
-
-      <children>
-        <componentref id="big_table"/>
-      </children>
-    </component>
-
-    <component id="board">
-      <transformation>
-        <translate x="0" y="2.6" z="1.5"/>
-        <scale x="5.5" y="1" z="5.5"/>
-        <rotate axis="y" angle="90"/>
-        <rotate axis="x" angle="-90"/>
-      </transformation>
-
-      <materials>
-        <material id="wood_mat" />
-      </materials>
-
-      <texture id="board_texture" length_s="1" length_t="1"/>
-
-      <children>
-        <primitiveref id="board_plane"/>
       </children>
     </component>
 
     <!-- Hot Air Ballon -->
+
+
+
+
     <component id="air_balloon">
       <transformation>
         <translate x="2" y="0" z="0"/>
