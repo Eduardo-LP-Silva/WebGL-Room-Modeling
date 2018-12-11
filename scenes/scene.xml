@@ -320,6 +320,44 @@
         <componentref id="jacuzzi"/>
         <componentref id="air_balloon"/>
         <componentref id="board_table"/>
+        <componentref id="white_game_piece"/>
+        <componentref id="black_game_piece"/>
+      </children>
+    </component>
+
+    <!-- Pieces -->
+    <component id="white_game_piece">
+      <transformation>
+        <scale x="1" y="0.5" z="1" />
+        <translate x="0" y="5.2" z="0" />
+      </transformation>
+
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+
+      <texture id="white_tile" length_s="1" length_t="1"/>
+
+      <children>
+        <primitiveref id="piece_sphere"/>
+      </children>
+    </component>
+
+    <component id="black_game_piece">
+      <transformation>
+        <scale x="1" y="0.5" z="1" />
+        <translate x="0.5" y="5.2" z="0" />
+
+      </transformation>
+
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+
+      <texture id="black_tile" length_s="1" length_t="1"/>
+
+      <children>
+        <primitiveref id="piece_sphere"/>
       </children>
     </component>
 
