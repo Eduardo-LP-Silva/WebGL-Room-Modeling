@@ -16,6 +16,12 @@ update_game_PvP(Game, Player) :-
         switch_players(Player, NextPlayer), !, update_game_PvP(PlayedGame, NextPlayer)
     ).
 
+update_game_PvP_ajax(Game, Player, PlayedGame, Winner) :-
+    play_turn_PvP_ajax(Game, Player, PlayedGame),
+    nth0(0, PlayedGame, Board),
+    (game_over(Board, Winner, 0); Winner is 0).
+    
+
 % Executes the necessary instructions to play a PvP turn
 play_turn_PvP(Game, Player, PlayedGame) :-
     nth0(0, Game, Board),
