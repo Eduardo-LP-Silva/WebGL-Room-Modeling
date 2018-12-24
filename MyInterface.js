@@ -51,6 +51,11 @@ class MyInterface extends CGFinterface
             
     }
 
+    addScenesGroup()
+    {
+        this.gui.add(this.scene.graph, 'Environment', ['scene', 'scene_2']);
+    }
+
     /**
      * Adds a new Views folder to the GUI.
      * @param {array} views 

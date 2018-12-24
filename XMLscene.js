@@ -105,6 +105,7 @@ class XMLscene extends CGFscene
 
         // Adds lights group.
         this.interface.addLightsGroup(this.lights);
+        this.interface.addScenesGroup();
         
         //Associates the camera with the default one referenced in the XML file.
         var cameraSpecs = this.graph.views[this.graph.defaultViewID];

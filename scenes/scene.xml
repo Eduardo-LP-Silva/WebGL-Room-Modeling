@@ -109,7 +109,8 @@
     <texture id="white_tile" file="scenes/images/white_tile.png" />
     <texture id="black_tile" file="scenes/images/black_tile.jpg" />
     <texture id="board_texture" file="scenes/images/board.png" />
-    <texture id="back_panel" file="scenes/images/back_panel.npg" />
+    <texture id="tv" file="scenes/images/tv.png" />
+    <texture id="zero" file="scenes/images/zero.png" />
   </textures>
 
   <!-- Materials -->
@@ -286,6 +287,25 @@
 
   <!-- Components -->
   <components>
+
+    <component id="scene_2">
+      <transformation>
+      </transformation>
+
+      <materials>
+        <material id="default_mat" />
+      </materials>
+
+      <texture id="none" length_s="1" length_t="1" />
+
+      <children>
+        <componentref id="board_table"/>
+        <componentref id="white_game_piece"/>
+        <componentref id="black_game_piece"/>
+        <componentref id="TV"/>
+      </children>
+    </component>
+
     <component id="scene">
       <transformation>
       </transformation>
@@ -322,6 +342,7 @@
         <componentref id="board_table"/>
         <componentref id="white_game_piece"/>
         <componentref id="black_game_piece"/>
+        <componentref id="TV"/>
       </children>
     </component>
 
@@ -361,62 +382,29 @@
       </children>
     </component>
 
-    <!-- Board Table -->
-    <component id="board_table">
+    <!-- Game TV -->
+    <component id="TV">
       <transformation>
-        <translate x="0" y="0" z="19"/>
+        <translate x="0" y="5" z="24.7"/>
+        <rotate axis="y" angle="180"/>
+        <scale x="6" y="4" z="1"/>
       </transformation>
 
       <materials>
-        <material id="wood_mat" />
+        <material id="shiny_mat" />
       </materials>
 
-      <texture id="none"/>
-
-      <children>
-        <componentref id="long_table"/>
-        <componentref id="board"/>
-        <componentref id="game_controller"/>
-      </children>
-    </component>
-
-    <component id="game_controller">
-      <transformation>
-        <translate x="0" y="3.3" z="-4"/>
-        <scale x="3.5" y="1.5" z="0.7"/>
-      </transformation>
-
-      <materials>
-        <material id="wood_mat" />
-      </materials>
-
-      <texture id="dark_wood_2" length_s="2" length_t="2"/>
-
-      <children>
-        <componentref id="cube"/>
-        <componentref id="back_panel"/>
-      </children>
-    </component>
-
-    <component id="back_panel">
-      <transformation>
-        <translate x="0" y="3.3" z="-10"/>
-      </transformation>
-
-      <materials>
-        <material id="matte_mat" />
-      </materials>
-
-      <texture id="back_panel" length_s="1" length_t="1"/>
+      <texture id="tv" length_s="1" length_t="1"/>
 
       <children>
         <primitiveref id="rectangle"/>
       </children>
     </component>
 
-    <component id="score_counter">
+    <!-- Board Table -->
+    <component id="board_table">
       <transformation>
-        <translate x="0" y="0" z="19"/>
+        <translate x="0" y="0" z="20"/>
       </transformation>
 
       <materials>
@@ -433,7 +421,7 @@
 
     <component id="long_table">
       <transformation>
-        <scale x="1" y="1" z="1.7"/>
+        <scale x="1" y="1" z="1"/>
       </transformation>
 
       <materials>
@@ -449,7 +437,7 @@
 
     <component id="board">
       <transformation>
-        <translate x="0" y="2.6" z="1.5"/>
+        <translate x="0" y="2.6" z="0"/>
         <scale x="5.5" y="1" z="5.5"/>
         <rotate axis="y" angle="90"/>
         <rotate axis="x" angle="-90"/>

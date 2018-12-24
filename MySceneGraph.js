@@ -32,7 +32,7 @@ class MySceneGraph
         scene.graph = this;
 
         this.nodes = []; //The associative array containing the nodes(components + primitives)
-        this.idRoot = null; // The id of the root element.
+        this.Environment = null; // The id of the root element.
         this.axisCoords = []; //The axis coords
         this.axisCoords['x'] = [1, 0, 0];
         this.axisCoords['y'] = [0, 1, 0];
@@ -251,7 +251,7 @@ class MySceneGraph
         if(root == null)
             return "No root defined for scene\n";
         else
-            this.idRoot = root;
+            this.Environment = root;
 
         this.referenceLength = this.reader.getFloat(sceneNode, "axis_length");
 
@@ -1198,10 +1198,10 @@ class MySceneGraph
                 this.nodes[componentID] = new MyNode(null, componentID);
         }
 
-        if(this.nodes[this.idRoot] == null)
+        if(this.nodes[this.Environment] == null)
             return "Root element isn't present in components";
         else
-            this.root = this.nodes[this.idRoot];
+            this.root = this.nodes[this.Environment];
 
         //Second pass - analyze & parse remaining details
 
@@ -1270,12 +1270,12 @@ class MySceneGraph
         if(typeof (childrenList = this.parseComponentChildren(children[index], componentID)) == "string")
             return childrenList;
 
-        for(let i = 0; i < this.nodes[this.idRoot].materials.length; i++)
-            if(this.nodes[this.idRoot].materials[i] == "inherit" || this.nodes[this.idRoot].materials[i] == "none")
-                this.nodes[this.idRoot].materials[i] = new CGFappearance(this.scene);
+        for(let i = 0; i < this.nodes[this.Environment].materials.length; i++)
+            if(this.nodes[this.Environment].materials[i] == "inherit" || this.nodes[this.Environment].materials[i] == "none")
+                this.nodes[this.Environment].materials[i] = new CGFappearance(this.scene);
 
-        if(this.nodes[this.idRoot].texture[0] == "inherit")
-            this.nodes[this.idRoot].texture[0] = "none";
+        if(this.nodes[this.Environment].texture[0] == "inherit")
+            this.nodes[this.Environment].texture[0] = "none";
     }
 
     /**
@@ -1716,8 +1716,8 @@ class MySceneGraph
      */
     displayScene()
     {
-        this.displayNode(this.idRoot, this.nodes[this.idRoot].texture,
-            this.nodes[this.idRoot].materials[this.nodes[this.idRoot].materialIndex]);
+        this.displayNode(this.Environment, this.nodes[this.Environment].texture,
+            this.nodes[this.Environment].materials[this.nodes[this.Environment].materialIndex]);
     }
 
     /**
