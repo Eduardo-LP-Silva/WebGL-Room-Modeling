@@ -16,6 +16,17 @@ update_game_CvC(Game, Player) :-
         switch_players(Player, NextPlayer), !, update_game_CvC(PlayedGame, NextPlayer)
     ).
 
+update_game_CvC_ajax(Game, Player, Message) :-
+    play_turn_CvC_ajax(Game, Player, PlayedGame),
+    nth0(0, PlayedGame, Board),
+    (
+        game_over(Board, Winner, 0), victory(Winner), Message = ['game_over', Winner, PlayedGame]; 
+        (switch_players(Player, NextPlayer), Message = [next_move, NextPlayer, Board])   
+    ).
+
+update_game_CvC_ajax(Game, Player, _, Message) :-
+    Message = [invalid_play, Player, Game].
+
 % Executes the necessary instructions to play a CvC turn
 play_turn_CvC(Game, Player, PlayedGame) :-
     nth0(0, Game, Board),
@@ -31,3 +42,12 @@ play_turn_CvC(Game, Player, PlayedGame) :-
         !, play_turn_CvC(Game, Player, PlayedGame) % If not repeats the process.
     ),
     update_game_table(Game, NewBoard, PlayedGame). % Updates the game board with the new one
+
+play_turn_CvC_ajax(Game, Player, PlayedGame) :-
+    nth0(0, Game, Board),
+    nth0(1, Game, Difficulty),  
+    valid_moves(Board, Player, ListOfMoves), % Gets valid moves
+    sleep(5),
+    choose_move(Board, Player, Move, Difficulty, ListOfMoves),
+    move(Move, ListOfMoves, Board, NewBoard), 
+    update_game_table(Game, NewBoard, PlayedGame).
