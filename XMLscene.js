@@ -1,20 +1,20 @@
-var DEGREE_TO_RAD = Math.PI / 180; //Formula to convert from degrees to radians 
+var DEGREE_TO_RAD = Math.PI / 180; //Formula to convert from degrees to radians
 
 /**
  * XMLscene class, representing the scene that is to be rendered.
  */
-class XMLscene extends CGFscene 
+class XMLscene extends CGFscene
 {
     /**
      * @constructor
-     * @param {MyInterface} myinterface 
+     * @param {MyInterface} myinterface
      */
-    constructor(myinterface) 
+    constructor(myinterface)
     {
         super();
         this.interface = myinterface;
         this.interface.initKeys();
-    
+
         this.viewIndex = 0; //The index associated with the active camera
         this.oldViewIndex = this.viewIndex; //The second camera index used to check if the camera has changed
     }
@@ -23,7 +23,7 @@ class XMLscene extends CGFscene
      * Initializes the scene, setting some WebGL defaults, initializing the camera and the axis.
      * @param {CGFApplication} application
      */
-    init(application) 
+    init(application)
     {
         super.init(application);
 
@@ -35,12 +35,18 @@ class XMLscene extends CGFscene
         this.gl.enable(this.gl.CULL_FACE);
         this.gl.depthFunc(this.gl.LEQUAL);
         this.axis = new CGFaxis(this);
+        this.objects=[
+          new CGFplane(this),
+		      new CGFplane(this),
+		      new CGFplane(this),
+		      new CGFplane(this)
+        ];
     }
 
     /**
      * Initializes the scene's camera.
      */
-    initCameras() 
+    initCameras()
     {
        this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
     }
@@ -48,17 +54,17 @@ class XMLscene extends CGFscene
     /**
      * Initializes the scene's lights with the values read from the XML file.
      */
-    initLights() 
+    initLights()
     {
         var i = 0; // Lights index.
-        
+
         // Reads the lights from the scene graph.
-        for (var key in this.graph.lights) 
+        for (var key in this.graph.lights)
         {
             if (i >= 8)
                 break; // Only eight lights allowed by WebGL.
 
-            if (this.graph.lights.hasOwnProperty(key)) 
+            if (this.graph.lights.hasOwnProperty(key))
             {
                 var light = this.graph.lights[key];
 
@@ -89,16 +95,16 @@ class XMLscene extends CGFscene
         }
     }
 
-    /* Handler called when the graph is finally loaded. 
+    /* Handler called when the graph is finally loaded.
      * As loading is asynchronous, this may be called already after the application has started the run loop.
      */
-    onGraphLoaded() 
+    onGraphLoaded()
     {
         this.axis = new CGFaxis(this, this.graph.referenceLength);
 
-        this.gl.clearColor(this.graph.background[0], this.graph.background[1], this.graph.background[2], 
+        this.gl.clearColor(this.graph.background[0], this.graph.background[1], this.graph.background[2],
             this.graph.background[3]);
-        this.setGlobalAmbientLight(this.graph.ambientIllumination[0], 
+        this.setGlobalAmbientLight(this.graph.ambientIllumination[0],
             this.graph.ambientIllumination[1], this.graph.ambientIllumination[2], this.graph.ambientIllumination[3]);
 
         this.initLights();
@@ -113,9 +119,9 @@ class XMLscene extends CGFscene
         if(cameraSpecs[0] == 'P')
             this.camera = new CGFcamera(cameraSpecs[1], cameraSpecs[2], cameraSpecs[3], cameraSpecs[4], cameraSpecs[5]);
         else
-            this.camera = new CGFcameraOrtho(cameraSpecs[1], cameraSpecs[2], cameraSpecs[3], cameraSpecs[4], 
+            this.camera = new CGFcameraOrtho(cameraSpecs[1], cameraSpecs[2], cameraSpecs[3], cameraSpecs[4],
                 cameraSpecs[5], cameraSpecs[6], cameraSpecs[7], cameraSpecs[8], cameraSpecs[9]);
-        
+
         this.interface.setActiveCamera(this.camera);
         this.viewIndex = this.graph.defaultViewID;
         this.oldViewIndex = this.viewIndex;
@@ -127,7 +133,7 @@ class XMLscene extends CGFscene
 
     /**
      * Reipmplementation of the update function of CGFscene.
-     * @param {long} currTime 
+     * @param {long} currTime
      */
     update(currTime)
     {
@@ -136,13 +142,13 @@ class XMLscene extends CGFscene
 
     /**
      * Goes through the nodes and updates their animations.
-     * @param {long} currTime 
+     * @param {long} currTime
      */
     updateComponentAnimations(currTime)
     {
-        for (var key in this.graph.nodes) 
+        for (var key in this.graph.nodes)
         {
-            if (this.graph.nodes.hasOwnProperty(key)) 
+            if (this.graph.nodes.hasOwnProperty(key))
             {
                 this.graph.nodes[key].updateAnimations(currTime);
 
@@ -155,7 +161,7 @@ class XMLscene extends CGFscene
     /**
      * Displays the scene.
      */
-    display() 
+    display()
     {
         // Clear image and depth buffer everytime we update the scene
         this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
@@ -165,19 +171,19 @@ class XMLscene extends CGFscene
         if(this.viewIndex != this.oldViewIndex)
         {
             var cameraSpecs = this.graph.views[this.viewIndex];
-            
+
             if(cameraSpecs[0] == 'P')
-                this.camera = new CGFcamera(cameraSpecs[1], cameraSpecs[2], cameraSpecs[3], cameraSpecs[4], 
+                this.camera = new CGFcamera(cameraSpecs[1], cameraSpecs[2], cameraSpecs[3], cameraSpecs[4],
                     cameraSpecs[5]);
             else
-                this.camera = new CGFcameraOrtho(cameraSpecs[1], cameraSpecs[2], cameraSpecs[3], cameraSpecs[4], 
+                this.camera = new CGFcameraOrtho(cameraSpecs[1], cameraSpecs[2], cameraSpecs[3], cameraSpecs[4],
                     cameraSpecs[5], cameraSpecs[6], cameraSpecs[7], cameraSpecs[8], cameraSpecs[9]);
 
             this.interface.setActiveCamera(this.camera);
 
                 this.oldViewIndex = this.viewIndex;
         }
-        
+
         // Initialize Model-View matrix as identity (no transformation)
         this.updateProjectionMatrix();
         this.loadIdentity();
@@ -187,7 +193,7 @@ class XMLscene extends CGFscene
 
         this.pushMatrix();
 
-            if (this.sceneInited) 
+            if (this.sceneInited)
             {
                 // Draw axis
                 this.axis.display();
@@ -198,12 +204,27 @@ class XMLscene extends CGFscene
                 // Displays the scene (MySceneGraph function).
                 this.graph.displayScene();
             }
-            else 
+            else
             {
                 // Draw axis
                 this.axis.display();
             }
 
         this.popMatrix();
+    }
+
+    logPicking(){
+      if (this.pickMode == false) {
+		      if (this.pickResults != null && this.pickResults.length > 0) {
+			         for (var i=0; i< this.pickResults.length; i++) {
+				           var obj = this.pickResults[i][0];
+				           if (obj){
+					             var customId = this.pickResults[i][1];
+					             console.log("Picked object: " + obj + ", with pick id " + customId);
+				           }
+			         }
+			         this.pickResults.splice(0,this.pickResults.length);
+		      }
+	     }
     }
 }
