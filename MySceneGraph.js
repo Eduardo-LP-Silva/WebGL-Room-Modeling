@@ -289,7 +289,7 @@ class MySceneGraph
         }
         //Symbol, camera, velocity, lastSavedTime, begginingTime, playerView coords
         this.views["Player Perspective"] = ['PP', new CGFcamera(70, 0.01, 500, [4, 7.2, 20], [0, 2, 20]), 
-            vec3.fromValues(0, 0, 0), 0, 0, vec3.fromValues(-4, 7.2, 20)]; 
+            vec3.fromValues(0, 0, 0), 0, 0, vec3.fromValues(4, 7.2, 20)]; 
         
         if(this.views[defaultID] == null)
             return "Default view " + defaultID + " not defined";

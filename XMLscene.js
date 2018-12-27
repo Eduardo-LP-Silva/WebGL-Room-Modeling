@@ -192,7 +192,13 @@ class XMLscene extends CGFscene
             let currentPosition = playerView[1].position;
 
             if(totalTimeDiff >= 2)
-                return;
+            {
+                playerView[2] = vec3.fromValues(0, 0, 0);
+                playerView[1] = new CGFcamera(70, 0.01, 500, playerView[5], [0, 2, 20]);
+                this.camera = playerView[1];
+                this.interface.setActiveCamera(playerView[1]);
+                this.updateProjectionMatrix();
+            }
 
             let newPosition = vec3.fromValues(currentPosition[0] + playerView[2][0] * timeDiff, 
                 currentPosition[1] + playerView[2][1] * timeDiff, currentPosition[2] + playerView[2][2] * timeDiff);
