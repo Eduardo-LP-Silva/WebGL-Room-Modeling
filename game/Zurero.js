@@ -4,15 +4,17 @@ class Zurero
     {
         this.scene = scene;
         this.port = 8081;
+        this.state = 0; //0 = Stationary, 1 = Playing 
         this.board = null;
         this.boardList = [];
         this.moveList = [];
-        this.mode = 1;
+        this.mode = -1;
         this.botDifficulty = 1;
         this.playerOneScore = 0;
         this.playerTwoScore = 0;
         this.turnPlayer = 'w';
-        this.turnTime = 30;
+        this.turnStartTime = 0;
+        this.lastTurnTime = 0;
     }
 
     updateGame(move) //move = [Symbol, Column/Line, Direction]
@@ -49,17 +51,49 @@ class Zurero
             default:
                 console.log("Invalid game mode");
         }
+    }
 
-         
+    update(currTime)
+    {
+        if(this.state == 1)
+        {
+            let timePassed = Math.round((currTime - this.turnStartTime) / 1000);
+
+            if(timePassed != this.lastTurnTime)
+            {
+                let timeLeft = 30 - timePassed;
+                let units = timeLeft % 10;
+                let dozens = Math.floor(timeLeft / 10);
+                let digitPath = "" + units + "_yellow";
+    
+                this.scene.graph.nodes['timer_units'].texture[0] =  this.scene.graph.textures[digitPath];
+    
+                digitPath = "" + dozens + "_yellow";
+    
+                this.scene.graph.nodes['timer_dozens'].texture[0] =  this.scene.graph.textures[digitPath];
+                this.lastTurnTime = timePassed;
+
+                if(timeLeft <= 0)
+                    this.state = 0;
+            }
+            
+            
+        }
+        
+
     }
 
     startGame(mode, difficulty)
     {
         let game = this;
         this.mode = mode;
+        this.state = 1;
         this.moveList = [];
         this.boardList = [];
         this.botDifficulty = difficulty;
+        
+        let date = new Date();
+        this.turnStartTime = date.getTime();
 
         this.sendPrologRequest("start_game(" + mode + "," + difficulty + ")", function(data)
         {

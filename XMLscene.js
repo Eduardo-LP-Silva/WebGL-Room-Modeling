@@ -146,6 +146,7 @@ class XMLscene extends CGFscene
     {
         this.updateComponentAnimations(currTime);
         this.updatePlayerCamera(currTime);
+        this.graph.game.update(currTime);
     }
 
     /**

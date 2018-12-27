@@ -100,7 +100,16 @@
     <texture id="black_tile" file="scenes/images/black_tile.jpg" />
     <texture id="board_texture" file="scenes/images/board.png" />
     <texture id="tv" file="scenes/images/tv.png" />
-    <texture id="zero" file="scenes/images/zero.png" />
+    <texture id="0_yellow" file="scenes/images/0_yellow.png" />
+    <texture id="1_yellow" file="scenes/images/1_yellow.png" />
+    <texture id="2_yellow" file="scenes/images/2_yellow.png" />
+    <texture id="3_yellow" file="scenes/images/3_yellow.png" />
+    <texture id="4_yellow" file="scenes/images/4_yellow.png" />
+    <texture id="5_yellow" file="scenes/images/5_yellow.png" />
+    <texture id="6_yellow" file="scenes/images/6_yellow.png" />
+    <texture id="7_yellow" file="scenes/images/7_yellow.png" />
+    <texture id="8_yellow" file="scenes/images/8_yellow.png" />
+    <texture id="9_yellow" file="scenes/images/9_yellow.png" />
   </textures>
 
   <!-- Materials -->
@@ -377,6 +386,23 @@
       <transformation>
         <translate x="0" y="5" z="24.7"/>
         <rotate axis="y" angle="180"/>
+      </transformation>
+
+      <materials>
+        <material id="default_mat" />
+      </materials>
+
+      <texture id="none"/>
+
+      <children>
+        <componentref id="TV_screen"/>
+        <componentref id="timer_units"/>
+        <componentref id="timer_dozens"/>
+      </children>
+    </component>
+
+    <component id="TV_screen">
+      <transformation>
         <scale x="6" y="4" z="1"/>
       </transformation>
 
@@ -385,6 +411,40 @@
       </materials>
 
       <texture id="tv" length_s="1" length_t="1"/>
+
+      <children>
+        <primitiveref id="rectangle"/>
+      </children>
+    </component>
+
+    <component id="timer_dozens">
+      <transformation>
+        <translate x="-0.2" y="1.6" z="0.01"/>
+        <scale x="0.3" y="0.3" z="1"/>
+      </transformation>
+
+      <materials>
+        <material id="shiny_mat" />
+      </materials>
+
+      <texture id="1_yellow" length_s="1" length_t="1"/>
+
+      <children>
+        <primitiveref id="rectangle"/>
+      </children>
+    </component>
+
+    <component id="timer_units">
+      <transformation>
+        <translate x="0.2" y="1.6" z="0.01"/>
+        <scale x="0.3" y="0.3" z="1"/>
+      </transformation>
+
+      <materials>
+        <material id="shiny_mat" />
+      </materials>
+
+      <texture id="0_yellow" length_s="1" length_t="1"/>
 
       <children>
         <primitiveref id="rectangle"/>
