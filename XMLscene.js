@@ -14,9 +14,9 @@ class XMLscene extends CGFscene
         super();
         this.interface = myinterface;
         this.interface.initKeys();
-
-        this.viewIndex = 0; //The index associated with the active camera
-        this.oldViewIndex = this.viewIndex; //The second camera index used to check if the camera has changed
+    
+        this.activeCamera = 0; //The index associated with the active camera
+        this.oldViewIndex = this.activeCamera; //The second camera index used to check if the camera has changed
     }
 
     /**
@@ -115,20 +115,23 @@ class XMLscene extends CGFscene
 
         // Adds lights group.
         this.interface.addLightsGroup(this.lights);
-        this.interface.addScenesGroup();
-
+        
         //Associates the camera with the default one referenced in the XML file.
         var cameraSpecs = this.graph.views[this.graph.defaultViewID];
 
         if(cameraSpecs[0] == 'P')
-            this.camera = new CGFcamera(cameraSpecs[1], cameraSpecs[2], cameraSpecs[3], cameraSpecs[4], cameraSpecs[5]);
+            this.camera = new CGFcamera(cameraSpecs[1], cameraSpecs[2], cameraSpecs[3], cameraSpecs[4], 
+                cameraSpecs[5]);
         else
-            this.camera = new CGFcameraOrtho(cameraSpecs[1], cameraSpecs[2], cameraSpecs[3], cameraSpecs[4],
-                cameraSpecs[5], cameraSpecs[6], cameraSpecs[7], cameraSpecs[8], cameraSpecs[9]);
-
+            if(cameraSpecs[0] == 'O')
+                this.camera = new CGFcameraOrtho(cameraSpecs[1], cameraSpecs[2], cameraSpecs[3], cameraSpecs[4], 
+                    cameraSpecs[5], cameraSpecs[6], cameraSpecs[7], cameraSpecs[8], cameraSpecs[9]);
+            else
+                this.camera = cameraSpecs[1];
+        
         this.interface.setActiveCamera(this.camera);
-        this.viewIndex = this.graph.defaultViewID;
-        this.oldViewIndex = this.viewIndex;
+        this.activeCamera = this.graph.defaultViewID;
+        this.oldViewIndex = this.activeCamera;
         this.interface.addViewsGroup(this.graph.views);
         this.setUpdatePeriod(10);
 
@@ -142,6 +145,7 @@ class XMLscene extends CGFscene
     update(currTime)
     {
         this.updateComponentAnimations(currTime);
+        this.updatePlayerCamera(currTime);
     }
 
     /**
@@ -162,6 +166,58 @@ class XMLscene extends CGFscene
         }
     }
 
+    updatePlayerCamera(currTime)
+    {
+        if(this.graph.views['Player Perspective'] != null && vec3.length(this.graph.views['Player Perspective'][2]) != 0)
+        {
+            let playerView = this.graph.views["Player Perspective"];
+            let timeDiff = (currTime - playerView[3]) / 1000;
+            let totalTimeDiff = (currTime - playerView[4]) / 1000;
+            let currentPosition = playerView[1].position;
+
+            if(totalTimeDiff >= 2)
+            {
+                playerView[2] = vec3.fromValues(0, 0, 0);
+                playerView[1] = new CGFcamera(70, 0.01, 500, playerView[5], [0, 2, 20]);
+                this.camera = playerView[1];
+                this.interface.setActiveCamera(playerView[1]);
+                this.updateProjectionMatrix();
+            }
+
+            let newPosition = vec3.fromValues(currentPosition[0] + playerView[2][0] * timeDiff, 
+                currentPosition[1] + playerView[2][1] * timeDiff, currentPosition[2] + playerView[2][2] * timeDiff);
+
+            playerView[1].setPosition(newPosition);
+            playerView[3] = currTime;
+        }
+    }
+
+    switchPlayerView()
+    {
+        if(this.graph.views["Player Perspective"] != null)
+        {
+            let playerView = this.graph.views["Player Perspective"];
+
+            playerView[1].setTarget([0, 2, 20]);
+            playerView[5][0] *= -1;  
+
+            let currentPosition = playerView[1].position;
+
+            let diffVector = vec3.create();
+
+            vec3.subtract(diffVector, playerView[5], currentPosition);
+
+            playerView[2][0] = diffVector[0] / 2;
+            playerView[2][1] = diffVector[1] / 2;
+            playerView[2][2] = diffVector[2] / 2;
+
+            let date = new Date();
+
+            playerView[3] = date.getTime();
+            playerView[4] = playerView[3];
+        }
+    }
+
     /**
      * Displays the scene.
      */
@@ -173,20 +229,23 @@ class XMLscene extends CGFscene
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
         //Checks if camera has changed
-        if(this.viewIndex != this.oldViewIndex)
+        if(this.activeCamera != this.oldViewIndex)
         {
-            var cameraSpecs = this.graph.views[this.viewIndex];
-
+            var cameraSpecs = this.graph.views[this.activeCamera];
+            
             if(cameraSpecs[0] == 'P')
                 this.camera = new CGFcamera(cameraSpecs[1], cameraSpecs[2], cameraSpecs[3], cameraSpecs[4],
                     cameraSpecs[5]);
             else
-                this.camera = new CGFcameraOrtho(cameraSpecs[1], cameraSpecs[2], cameraSpecs[3], cameraSpecs[4],
-                    cameraSpecs[5], cameraSpecs[6], cameraSpecs[7], cameraSpecs[8], cameraSpecs[9]);
+                if(cameraSpecs[0] == 'O')
+                    this.camera = new CGFcameraOrtho(cameraSpecs[1], cameraSpecs[2], cameraSpecs[3], cameraSpecs[4], 
+                        cameraSpecs[5], cameraSpecs[6], cameraSpecs[7], cameraSpecs[8], cameraSpecs[9]);
+                else
+                    this.camera = cameraSpecs[1];
 
             this.interface.setActiveCamera(this.camera);
 
-                this.oldViewIndex = this.viewIndex;
+                this.oldViewIndex = this.activeCamera;
         }
 
         // Initialize Model-View matrix as identity (no transformation)

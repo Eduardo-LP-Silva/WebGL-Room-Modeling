@@ -51,11 +51,6 @@ class MyInterface extends CGFinterface
             
     }
 
-    addScenesGroup()
-    {
-        this.gui.add(this.scene.graph, 'Environment', ['scene', 'scene_2']);
-    }
-
     /**
      * Adds a new Views folder to the GUI.
      * @param {array} views 
@@ -73,7 +68,9 @@ class MyInterface extends CGFinterface
             }
         }
 
-        group.add(this.scene, "viewIndex", viewIDs);
+        group.add(this.scene, "activeCamera", viewIDs);
+        group.add(this.scene.graph, 'environment', ['scene', 'scene_2']);
+        group.add(this.scene, 'switchPlayerView');
     }
 
     /**
