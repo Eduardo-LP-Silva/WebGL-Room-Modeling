@@ -110,8 +110,18 @@ print_header_line(_).
 
 %Ex: parse_input(url_arg, variavel_de_resposta) :- instrução(ões) a chamar com a variavel_de_resposta.
 
-parse_input(start_game, Game) :-
-	create_game([Game, _], 1).
+parse_input(update_game(Mode, Game, Player, Move), Message) :-
+	(
+		Mode = 1, update_game_PvP_ajax(Game, Player, Move, Message);
+		Mode = 2, update_game_PvC_ajax(Game, Player, Move, Message);
+		Mode = 3, update_game_CvC_ajax(Game, Player, Message)
+	).
+
+parse_input(start_game(Mode, Difficulty), Board) :-
+	(Mode = 1, start_game_ajax(Difficulty, [Board, _])).
+
+parse_input(test(Board), _) :-
+	print_board(Board).
 
 parse_input(handshake, handshake).
 parse_input(test(C,N), Res) :- 

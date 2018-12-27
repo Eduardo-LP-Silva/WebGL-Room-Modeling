@@ -5,11 +5,6 @@ start_PvP(Game) :-
     update_game_table(Game, NewTable, StartedGame),
     update_game_PvP(StartedGame, 'w').
 
-start_PvP_ajax(Game, StartedGame) :-
-    nth0(0, Game, Table),
-    replace_piece(10, 10, 'b', Table, NewTable),
-    update_game_table(Game, NewTable, StartedGame).
-
 % Main PvP game loop
 update_game_PvP(Game, Player) :-
     play_turn_PvP(Game, Player, PlayedGame),
@@ -21,14 +16,16 @@ update_game_PvP(Game, Player) :-
         switch_players(Player, NextPlayer), !, update_game_PvP(PlayedGame, NextPlayer)
     ).
 
-update_game_PvP_ajax(Game, Player, Move, PlayedGame, Message) :-
-    (play_turn_PvP_ajax(Game, Player, Move, PlayedGame),
+update_game_PvP_ajax(Game, Player, Move, Message) :-
+    play_turn_PvP_ajax(Game, Player, Move, PlayedGame),
     nth0(0, PlayedGame, Board),
     (
-        (game_over(Board, Winner, 0), Message = ['game_over', Winner]) ; 
-        (switch_players(Player, NextPlayer) Message = [next_move, NextPlayer]) 
-    )); Message = ['invalid_play', Player].
+        game_over(Board, Winner, 0), victory(Winner), Message = ['game_over', Winner, PlayedGame]; 
+        (switch_players(Player, NextPlayer), Message = [next_move, NextPlayer, Board])   
+    ).
     
+update_game_PvP_ajax(Game, Player, _, Message) :-
+    Message = [invalid_play, Player, Game].
 
 % Executes the necessary instructions to play a PvP turn
 play_turn_PvP(Game, Player, PlayedGame) :-
@@ -45,12 +42,8 @@ play_turn_PvP(Game, Player, PlayedGame) :-
 play_turn_PvP_ajax(Game, Player, Move, PlayedGame) :-
     nth0(0, Game, Board),
     valid_moves(Board, Player, ListOfMoves), % Gets valid moves
-    move(Move, ListOfMoves, Board, NewBoard),
+    move(Move, ListOfMoves, Board, NewBoard), 
     update_game_table(Game, NewBoard, PlayedGame).
-
-
-
-
 
 % Gets player input about which type of play he wants (Line or Column)
 get_play_input(Player, Play) :-

@@ -19,6 +19,12 @@ start_game(3, Difficulty) :-
     create_game(Game, Difficulty),
     startCvC(Game), !.
 
+start_game_ajax(Difficulty, StartedGame) :-
+    create_game(Game, Difficulty),
+    nth0(0, Game, Table),
+    replace_piece(10, 10, 'b', Table, NewTable),
+    update_game_table(Game, NewTable, StartedGame).
+
 % Replaces the game's board in the Game structure/list with a new one.
 update_game_table(Game, NewTable, StartedGame) :-
     replace_element(1, Game, NewTable, StartedGame).

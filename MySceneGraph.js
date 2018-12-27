@@ -47,6 +47,9 @@ class MySceneGraph
         this.root = null; //The root node
         this.defaultViewID = null; //The default camera ID
         this.animations = []; //Animation array
+        this.game = new Zurero(this.scene); //The zurero game instance
+        this.game.startGame(1, 1);
+        
 
         // File reading
         this.reader = new CGFXMLreader();
