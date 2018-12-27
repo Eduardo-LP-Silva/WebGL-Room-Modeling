@@ -36,11 +36,31 @@ class XMLscene extends CGFscene
         this.gl.depthFunc(this.gl.LEQUAL);
         this.axis = new CGFaxis(this);
         this.objects=[
-          new CGFplane(this),
-		      new CGFplane(this),
-		      new CGFplane(this),
-		      new CGFplane(this)
-        ];
+		        new CGFplane(this),
+		        new CGFplane(this),
+		        new CGFplane(this),
+		        new CGFplane(this),
+		        new CGFplane(this),
+		        new CGFplane(this),
+		        new CGFplane(this),
+		        new CGFplane(this),
+		        new CGFplane(this),
+		        new CGFplane(this),
+		        new CGFplane(this),
+		        new CGFplane(this),
+		        new CGFplane(this),
+		        new CGFplane(this),
+		        new CGFplane(this),
+		        new CGFplane(this),
+		        new CGFplane(this),
+		        new CGFplane(this),
+            new CGFplane(this),
+
+            new CGFplane(this)]; //the last one is for the extra id
+        //for(var i = 0; i < 4, i++){
+        //  var plane = new CGFplane(this);
+		    //  this.objects.push(plane);
+        //}
     }
 
     /**
@@ -112,7 +132,7 @@ class XMLscene extends CGFscene
         // Adds lights group.
         this.interface.addLightsGroup(this.lights);
         this.interface.addScenesGroup();
-        
+
         //Associates the camera with the default one referenced in the XML file.
         var cameraSpecs = this.graph.views[this.graph.defaultViewID];
 
@@ -163,6 +183,7 @@ class XMLscene extends CGFscene
      */
     display()
     {
+      this.logPicking();
         // Clear image and depth buffer everytime we update the scene
         this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
@@ -193,6 +214,8 @@ class XMLscene extends CGFscene
 
         this.pushMatrix();
 
+
+
             if (this.sceneInited)
             {
                 // Draw axis
@@ -210,7 +233,24 @@ class XMLscene extends CGFscene
                 this.axis.display();
             }
 
+
         this.popMatrix();
+        this.pushMatrix();
+          this.translate(0, 2.601, 20);
+          this.scale(0.26, 0.26, 0.26)
+          this.translate(-10, 0, 9);
+
+          for(var i = 0; i < this.objects.length; i++){
+            this.registerForPick(i+1, this.objects[i]);
+            if(this.pickMode){
+              this.objects[i].display()
+            };//dont show the planes
+            this.translate(0, 0, -1);
+
+          }
+
+        this.popMatrix();
+
     }
 
     logPicking(){
