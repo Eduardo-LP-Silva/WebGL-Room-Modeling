@@ -62,6 +62,10 @@ class Zurero
             if(timePassed != this.lastTurnTime)
             {
                 let timeLeft = 30 - timePassed;
+
+                if(timeLeft <= 0)
+                    this.state = 0;
+                    
                 let units = timeLeft % 10;
                 let dozens = Math.floor(timeLeft / 10);
                 let digitPath = "" + units + "_yellow";
@@ -72,9 +76,6 @@ class Zurero
     
                 this.scene.graph.nodes['timer_dozens'].texture[0] =  this.scene.graph.textures[digitPath];
                 this.lastTurnTime = timePassed;
-
-                if(timeLeft <= 0)
-                    this.state = 0;
             }
             
             

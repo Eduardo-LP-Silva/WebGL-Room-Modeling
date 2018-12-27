@@ -110,6 +110,16 @@
     <texture id="7_yellow" file="scenes/images/7_yellow.png" />
     <texture id="8_yellow" file="scenes/images/8_yellow.png" />
     <texture id="9_yellow" file="scenes/images/9_yellow.png" />
+    <texture id="0_purple" file="scenes/images/0_purple.png" />
+    <texture id="1_purple" file="scenes/images/1_purple.png" />
+    <texture id="2_purple" file="scenes/images/2_purple.png" />
+    <texture id="3_purple" file="scenes/images/3_purple.png" />
+    <texture id="4_purple" file="scenes/images/4_purple.png" />
+    <texture id="5_purple" file="scenes/images/5_purple.png" />
+    <texture id="6_purple" file="scenes/images/6_purple.png" />
+    <texture id="7_purple" file="scenes/images/7_purple.png" />
+    <texture id="8_purple" file="scenes/images/8_purple.png" />
+    <texture id="9_purple" file="scenes/images/9_purple.png" />
   </textures>
 
   <!-- Materials -->
@@ -398,6 +408,10 @@
         <componentref id="TV_screen"/>
         <componentref id="timer_units"/>
         <componentref id="timer_dozens"/>
+        <componentref id="player1_dozens"/>
+        <componentref id="player1_units"/>
+        <componentref id="player2_dozens"/>
+        <componentref id="player2_units"/>
       </children>
     </component>
 
@@ -445,6 +459,74 @@
       </materials>
 
       <texture id="0_yellow" length_s="1" length_t="1"/>
+
+      <children>
+        <primitiveref id="rectangle"/>
+      </children>
+    </component>
+
+    <component id="player1_units">
+      <transformation>
+        <translate x="-1.75" y="1.2" z="0.01"/>
+        <scale x="0.3" y="0.3" z="1"/>
+      </transformation>
+
+      <materials>
+        <material id="shiny_mat" />
+      </materials>
+
+      <texture id="0_purple" length_s="1" length_t="1"/>
+
+      <children>
+        <primitiveref id="rectangle"/>
+      </children>
+    </component>
+
+    <component id="player1_dozens">
+      <transformation>
+        <translate x="-2.15" y="1.2" z="0.01"/>
+        <scale x="0.3" y="0.3" z="1"/>
+      </transformation>
+
+      <materials>
+        <material id="shiny_mat" />
+      </materials>
+
+      <texture id="0_purple" length_s="1" length_t="1"/>
+
+      <children>
+        <primitiveref id="rectangle"/>
+      </children>
+    </component>
+
+    <component id="player2_units">
+      <transformation>
+        <translate x="2.05" y="1.2" z="0.01"/>
+        <scale x="0.3" y="0.3" z="1"/>
+      </transformation>
+
+      <materials>
+        <material id="shiny_mat" />
+      </materials>
+
+      <texture id="0_purple" length_s="1" length_t="1"/>
+
+      <children>
+        <primitiveref id="rectangle"/>
+      </children>
+    </component>
+
+    <component id="player2_dozens">
+      <transformation>
+        <translate x="1.65" y="1.2" z="0.01"/>
+        <scale x="0.3" y="0.3" z="1"/>
+      </transformation>
+
+      <materials>
+        <material id="shiny_mat" />
+      </materials>
+
+      <texture id="0_purple" length_s="1" length_t="1"/>
 
       <children>
         <primitiveref id="rectangle"/>
