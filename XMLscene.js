@@ -35,32 +35,16 @@ class XMLscene extends CGFscene
         this.gl.enable(this.gl.CULL_FACE);
         this.gl.depthFunc(this.gl.LEQUAL);
         this.axis = new CGFaxis(this);
-        this.objects=[
-		        new CGFplane(this),
-		        new CGFplane(this),
-		        new CGFplane(this),
-		        new CGFplane(this),
-		        new CGFplane(this),
-		        new CGFplane(this),
-		        new CGFplane(this),
-		        new CGFplane(this),
-		        new CGFplane(this),
-		        new CGFplane(this),
-		        new CGFplane(this),
-		        new CGFplane(this),
-		        new CGFplane(this),
-		        new CGFplane(this),
-		        new CGFplane(this),
-		        new CGFplane(this),
-		        new CGFplane(this),
-		        new CGFplane(this),
-            new CGFplane(this),
-
-            new CGFplane(this)]; //the last one is for the extra id
+        this.objects=[];
         //for(var i = 0; i < 4, i++){
         //  var plane = new CGFplane(this);
 		    //  this.objects.push(plane);
         //}
+        for(var i = 0; i < 84; i++){
+          var test = new CGFplane(this);
+          this.objects.push(test);
+        }
+
     }
 
     /**
@@ -235,21 +219,112 @@ class XMLscene extends CGFscene
 
 
         this.popMatrix();
-        this.pushMatrix();
+
+        this.pushMatrix();// BOARD NUMBERS AND LETTERS
           this.translate(0, 2.601, 20);
           this.scale(0.26, 0.26, 0.26)
           this.translate(-10, 0, 9);
 
-          for(var i = 0; i < this.objects.length; i++){
+          for(var i = 0; i < 19; i++){
             this.registerForPick(i+1, this.objects[i]);
             if(this.pickMode){
-              this.objects[i].display()
-            };//dont show the planes
+              this.objects[i].display();
+            }//dont show the planes
             this.translate(0, 0, -1);
 
           }
+          this.translate(20, 0, 1);
+
+          for(var i = 0; i < 19; i++){
+            this.registerForPick(i+20, this.objects[i+19]);
+            if(this.pickMode){
+              this.objects[i+19].display();
+            }//dont show the planes
+            this.translate(0, 0, 1);
+
+          }
+
+          this.translate(-1, 0, 0);
+
+          for(var i = 0; i < 19; i++){
+            this.registerForPick(i+39, this.objects[i+38]);
+            if(this.pickMode){
+              this.objects[i+38].display();
+            }//dont show the planes
+            this.translate(-1, 0, 0);
+
+          }
+
+          this.translate(1, 0, -20);
+
+          for(var i = 0; i < 19; i++){
+            this.registerForPick(i+58, this.objects[i+57]);
+            if(this.pickMode){
+              this.objects[i+57].display();
+            }//dont show the planes
+            this.translate(1, 0, 0);
+
+          }
+        this.popMatrix();
+
+        this.pushMatrix();
+          // GAME MODES (player vs. player, player vs. bot, bot vs. bot)
+          this.translate(1.9, 5.5, 24.61);
+          this.scale(1.3, 0.8, 1);
+          this.rotate(-90*DEGREE_TO_RAD, 1, 0, 0);
+
+          this.registerForPick(77, this.objects[76]);
+          if(this.pickMode){
+            this.objects[76].display();
+          }
+
+          this.translate(-1.4, 0, 0);
+          this.registerForPick(78, this.objects[77]);
+          if(this.pickMode){
+            this.objects[77].display();
+          }
+          this.translate(-1.4, 0, 0);
+          this.registerForPick(79, this.objects[78]);
+          if(this.pickMode){
+            this.objects[78].display();
+          }
+
+          //BOT DIFFICULTY
+          this.translate(1.92, 0, -1.6);
+          this.scale(0.65, 1, 0.5);
+
+          this.registerForPick(80, this.objects[79]);
+          if(this.pickMode){
+            this.objects[79].display();
+          }
+
+          this.translate(-1.65, 0, 0);
+          this.registerForPick(81, this.objects[80]);
+          if(this.pickMode){
+            this.objects[80].display();
+          }
+
+          //UNDO AND REPLAY GAME
+          this.translate(3.8, 0, -1.6);
+          this.scale(1, 1, 1.8);
+
+          this.registerForPick(82, this.objects[81]);
+          if(this.pickMode){
+            this.objects[81].display();
+          }
+
+          this.translate(-6, 0, 0);
+          this.registerForPick(83, this.objects[82]);
+          if(this.pickMode){
+            this.objects[82].display();
+          }
+
+
 
         this.popMatrix();
+
+
+        this.registerForPick(84, this.objects[83]); // DEFAULT PLANE ID
 
     }
 
