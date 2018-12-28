@@ -50,6 +50,7 @@ class MySceneGraph
         this.game = new Zurero(this.scene); //The zurero game instance
         
 
+
         // File reading
         this.reader = new CGFXMLreader();
 
@@ -287,9 +288,9 @@ class MySceneGraph
                 return error;
         }
         //Symbol, camera, velocity, lastSavedTime, begginingTime, playerView coords
-        this.views["Player Perspective"] = ['PP', new CGFcamera(70, 0.01, 500, [4, 7.2, 20], [0, 2, 20]), 
-            vec3.fromValues(0, 0, 0), 0, 0, vec3.fromValues(4, 7.2, 20)]; 
-        
+        this.views["Player Perspective"] = ['PP', new CGFcamera(70, 0.01, 500, [4, 7.2, 20], [0, 2, 20]),
+            vec3.fromValues(0, 0, 0), 0, 0, vec3.fromValues(4, 7.2, 20)];
+
         if(this.views[defaultID] == null)
             return "Default view " + defaultID + " not defined";
         else
@@ -1164,6 +1165,10 @@ class MySceneGraph
 
             case "vehicle":
                 build = new Vehicle(this.scene);
+                break;
+
+            case "piece":
+                build = new GamePiece(this.scene, this.reader.getString(children[0], "color"));
                 break;
 
             default:

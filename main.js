@@ -18,8 +18,8 @@ serialInclude(['../lib/CGF.js', 'XMLscene.js', 'MySceneGraph.js', 'MyInterface.j
     'primitives/MySphere.js', 'primitives/MyDisk.js', 'primitives/MyCylinderBody.js', 'primitives/Plane.js',
     'primitives/Terrain.js', 'animations/Animation.js', 'primitives/Water.js',
     'animations/CircularAnimation.js', 'animations/LinearAnimation.js', 'primitives/Cylinder2.js', 'primitives/Vehicle.js',
-    'game/Zurero.js',
-    
+    'game/Zurero.js', 'primitives/GamePiece.js',
+
 main=function()
 {
 	// Standard application, scene and interface setup

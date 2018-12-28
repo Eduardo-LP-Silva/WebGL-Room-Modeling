@@ -38,7 +38,7 @@
   <!-- Ambient -->
   <ambient>
     <ambient r="0.2" g="0.2" b="0.2" a="1" />
-    <background r="0.12" g="0" b="0.12" a="1" />
+    <background r="0.4" g="0.71" b="1" a="1" />
   </ambient>
 
   <!-- Lights -->
@@ -221,6 +221,12 @@
   <!-- Primitives -->
   <primitives>
 
+    <!-- teste -->
+    <primitive id="game_piece_primitive">
+      <piece color="white"/>
+    </primitive>
+
+
     <primitive id="piece_sphere">
       <sphere radius="0.1" slices="30" stacks="30"/>
     </primitive>
@@ -352,6 +358,22 @@
         <componentref id="white_game_piece"/>
         <componentref id="black_game_piece"/>
         <componentref id="TV"/>
+        <componentref id="teste"/>
+      </children>
+    </component>
+
+    <component id="teste">
+      <transformation>
+      </transformation>
+
+      <materials>
+        <material id="inherit" />
+      </materials>
+
+      <texture id="white_tile" length_s="1" length_t="1"/>
+
+      <children>
+        <primitiveref id="game_piece_primitive"/>
       </children>
     </component>
 
