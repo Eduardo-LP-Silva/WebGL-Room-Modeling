@@ -70,7 +70,6 @@ class MyInterface extends CGFinterface
 
         group.add(this.scene, "activeCamera", viewIDs);
         group.add(this.scene.graph, 'environment', ['scene', 'scene_2']);
-        group.add(this.scene, 'switchPlayerView');
     }
 
     /**

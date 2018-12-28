@@ -117,8 +117,8 @@ parse_input(update_game(Mode, Game, Player, Move), Message) :-
 		Mode = 3, update_game_CvC_ajax(Game, Player, Message)
 	).
 
-parse_input(start_game(Mode, Difficulty), Board) :-
-	(Mode = 1, start_game_ajax(Difficulty, [Board, _])).
+parse_input(start_game(Difficulty), Board) :-
+	start_game_ajax(Difficulty, [Board, _]).
 
 parse_input(test(Board), _) :-
 	print_board(Board).

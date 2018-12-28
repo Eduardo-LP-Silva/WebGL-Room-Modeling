@@ -168,6 +168,10 @@ class XMLscene extends CGFscene
         }
     }
 
+    /**
+     * Function used to update the player's view camera animation.
+     * @param {float} currTime 
+     */
     updatePlayerCamera(currTime)
     {
         if(this.graph.views['Player Perspective'] != null && vec3.length(this.graph.views['Player Perspective'][2]) != 0)
@@ -184,6 +188,10 @@ class XMLscene extends CGFscene
                 this.camera = playerView[1];
                 this.interface.setActiveCamera(playerView[1]);
                 this.updateProjectionMatrix();
+
+                if(this.graph.game.state == 2)
+                    this.graph.game.resetTurnClock();
+                
             }
 
             let newPosition = vec3.fromValues(currentPosition[0] + playerView[2][0] * timeDiff, 
@@ -194,6 +202,9 @@ class XMLscene extends CGFscene
         }
     }
 
+    /**
+     * Begins the animation to switch the player's perspective.
+     */
     switchPlayerView()
     {
         if(this.graph.views["Player Perspective"] != null)
@@ -259,73 +270,75 @@ class XMLscene extends CGFscene
 
         this.pushMatrix();
 
+        if (this.sceneInited)
+        {
+            // Draw axis
+            this.axis.display();
 
+            for (var i = 0; i < this.lights.length; i++)
+                this.lights[i].update();
 
-            if (this.sceneInited)
-            {
-                // Draw axis
-                this.axis.display();
-
-                for (var i = 0; i < this.lights.length; i++)
-                    this.lights[i].update();
-
-                // Displays the scene (MySceneGraph function).
-                this.graph.displayScene();
-            }
-            else
-            {
-                // Draw axis
-                this.axis.display();
-            }
-
+            // Displays the scene (MySceneGraph function).
+            this.graph.displayScene();
+        }
+        else
+        {
+            // Draw axis
+            this.axis.display();
+        }
 
         this.popMatrix();
 
         this.pushMatrix();// BOARD NUMBERS AND LETTERS
-          this.translate(0, 2.601, 20);
-          this.scale(0.26, 0.26, 0.26)
-          this.translate(-10, 0, 9);
+        this.translate(0, 2.601, 20);
+        this.scale(0.26, 0.26, 0.26)
+        this.translate(-10, 0, 9);
 
-          for(var i = 0; i < 19; i++){
+        for(var i = 0; i < 19; i++)
+        {
             this.registerForPick(i+1, this.objects[i]);
-            if(this.pickMode){
-              this.objects[i].display();
-            }//dont show the planes
+
+            if(this.pickMode)
+                this.objects[i].display(); //dont show the planes
+
             this.translate(0, 0, -1);
+        }
 
-          }
-          this.translate(20, 0, 1);
+        this.translate(20, 0, 1);
 
-          for(var i = 0; i < 19; i++){
+        for(var i = 0; i < 19; i++)
+        {
             this.registerForPick(i+20, this.objects[i+19]);
-            if(this.pickMode){
-              this.objects[i+19].display();
-            }//dont show the planes
+
+            if(this.pickMode)
+                this.objects[i+19].display(); //dont show the planes
+
             this.translate(0, 0, 1);
+        }
 
-          }
+        this.translate(-1, 0, 0);
 
-          this.translate(-1, 0, 0);
-
-          for(var i = 0; i < 19; i++){
+        for(var i = 0; i < 19; i++)
+        {
             this.registerForPick(i+39, this.objects[i+38]);
-            if(this.pickMode){
-              this.objects[i+38].display();
-            }//dont show the planes
+
+            if(this.pickMode)
+                this.objects[i+38].display(); //dont show the planes
+
             this.translate(-1, 0, 0);
+        }
 
-          }
+        this.translate(1, 0, -20);
 
-          this.translate(1, 0, -20);
-
-          for(var i = 0; i < 19; i++){
+        for(var i = 0; i < 19; i++)
+        {
             this.registerForPick(i+58, this.objects[i+57]);
-            if(this.pickMode){
-              this.objects[i+57].display();
-            }//dont show the planes
-            this.translate(1, 0, 0);
 
-          }
+            if(this.pickMode)
+                this.objects[i+57].display(); //dont show the planes
+
+            this.translate(1, 0, 0);
+        }
         this.popMatrix();
 
         this.pushMatrix();
@@ -380,14 +393,13 @@ class XMLscene extends CGFscene
             this.objects[82].display();
           }
 
-
-
         this.popMatrix();
-
-
         this.registerForPick(84, this.objects[83]); // DEFAULT PLANE ID
     }
 
+    /**
+     * Processes the picking events.
+     */
     processPicking()
     {
         if (this.pickMode == false) 
@@ -412,6 +424,10 @@ class XMLscene extends CGFscene
 	    }
     }
 
+    /**
+     * Processes a single picking event.
+     * @param {array} pickResult 
+     */
     processPick(pickResult)
     {
         var customId = pickResult[1];
@@ -423,20 +439,27 @@ class XMLscene extends CGFscene
                 this.processBoardPick(pickResult);
     }
 
+    /**
+     * Process a picking event on the television.
+     * @param {array} pickResult 
+     */
     processTvPick(pickResult)
     {
         switch(pickResult[1])
         {
             case 77:
                 this.graph.game.startGame(1);
+                this.activeCamera = 'Player Perspective';
                 break;
 
             case 78:
                 this.graph.game.startGame(2);
+                this.activeCamera = 'Player Perspective';
                 break;
 
             case 79:
                 this.graph.game.startGame(3);
+                this.activeCamera = 'Player Perspective';
                 break;
 
             case 80:
@@ -460,9 +483,15 @@ class XMLscene extends CGFscene
         }
     }
 
+    /**
+     * Processes a picking event on the board.
+     * @param {array} pickResult 
+     */
     processBoardPick(pickResult)
     {
-        if(this.graph.game.state == 1)
+        let game = this.graph.game;
+
+        if(game.state == 1 && (game.mode == 1 || (game.mode == 2 && game.turnPlayer == 'w')))
         {
             let pickId = pickResult[1];
             let symbol, direction, move;
@@ -514,6 +543,7 @@ class XMLscene extends CGFscene
             }
             
             console.log(move);
+            game.updateGame(move);
         }
     }
 }

@@ -226,7 +226,6 @@
       <piece color="white"/>
     </primitive>
 
-
     <primitive id="piece_sphere">
       <sphere radius="0.1" slices="30" stacks="30"/>
     </primitive>
@@ -358,22 +357,6 @@
         <componentref id="white_game_piece"/>
         <componentref id="black_game_piece"/>
         <componentref id="TV"/>
-        <componentref id="teste"/>
-      </children>
-    </component>
-
-    <component id="teste">
-      <transformation>
-      </transformation>
-
-      <materials>
-        <material id="inherit" />
-      </materials>
-
-      <texture id="white_tile" length_s="1" length_t="1"/>
-
-      <children>
-        <primitiveref id="game_piece_primitive"/>
       </children>
     </component>
 
@@ -463,7 +446,7 @@
         <material id="shiny_mat" />
       </materials>
 
-      <texture id="1_yellow" length_s="1" length_t="1"/>
+      <texture id="0_yellow" length_s="1" length_t="1"/>
 
       <children>
         <primitiveref id="rectangle"/>

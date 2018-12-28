@@ -1,11 +1,12 @@
 /**
- * MyVehicle class, representing a miniature hot air ballon.
+ * GamePiece class, representing a zurero's piece.
  */
 class GamePiece extends CGFobject
 {
     /**
 	 * @constructor
 	 * @param {CGFscene} scene
+   * @param {string} color
 	 */
     constructor(scene, color)
     {
@@ -19,7 +20,7 @@ class GamePiece extends CGFobject
     	  this.blackTileAppearence.setDiffuse(0.9, 0.9, 0.9, 0.5);
         this.blackTileAppearence.setSpecular(0.1, 0.1, 0.1, 0.5);
     	  this.blackTileAppearence.setShininess(20);
-    	  this.blackTileAppearence.loadTexture("scenes/images/black_tile.jpg");
+    	  this.blackTileAppearence.setTexture(scene.graph.textures['black_tile']);
 
 
         this.whiteTileAppearence = new CGFappearance(this.scene);
@@ -27,11 +28,11 @@ class GamePiece extends CGFobject
         this.whiteTileAppearence.setDiffuse(0.9, 0.9, 0.9, 0.5);
         this.whiteTileAppearence.setSpecular(1, 1, 1, 0.2);
         this.whiteTileAppearence.setShininess(20);
-        this.whiteTileAppearence.loadTexture("scenes/images/balloon.jpg");
+        this.whiteTileAppearence.setTexture(scene.graph.textures['white_tile']);
     }
 
     /**
-     * Assembles the diferent parts of the object and displays it.
+     * Displays the piece.
      */
     display()
     {
@@ -39,7 +40,7 @@ class GamePiece extends CGFobject
       if(this.color == "white"){
         this.whiteTileAppearence.apply();
       }else{
-        this.blackTileAppearent.apply();
+        this.blackTileAppearence.apply();
       }
       this.scene.scale(1, 0.5, 1);
       this.piece.display();

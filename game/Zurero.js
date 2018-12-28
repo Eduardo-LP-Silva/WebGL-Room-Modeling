@@ -1,22 +1,33 @@
+/**
+ * The game class
+ */
 class Zurero
 {
+    /**
+     * @constructor
+     * @param {CGFscene} scene 
+     */
     constructor(scene)
     {
         this.scene = scene;
-        this.port = 8081;
-        this.state = 0; //0 = Stationary, 1 = Playing
-        this.board = null;
-        this.boardList = [];
-        this.moveList = [];
-        this.mode = -1;
-        this.botDifficulty = 1;
-        this.playerOneScore = 0;
-        this.playerTwoScore = 0;
-        this.turnPlayer = 'w';
-        this.turnStartTime = 0;
-        this.lastTurnTime = 0;
+        this.port = 8081; //Port to connect to
+        this.state = 0; //0 = Stationary, 1 = Playing, 2 = Paused
+        this.board = null; //The board
+        this.boardList = []; //A list of boards used to undo plays
+        this.moveList = []; //A list of moves to playback a game movie
+        this.mode = -1; //The game mode, 1 = HvH, 2 = HvE, 3 = EvE
+        this.botDifficulty = 1; //The bot difficulty, 1 = Easy, 2 = Hard
+        this.playerOneScore = 0; //Player 1's score
+        this.playerTwoScore = 0; //Player 2's score
+        this.turnPlayer = 'w'; //The current player
+        this.turnStartTime = 0; //The current turn's start time
+        this.lastTurnTime = 0; //The last updated time value since the turn began
     }
 
+    /**
+     * Updates the game by making a move (or attempting to).
+     * @param {array} move 
+     */
     updateGame(move) //move = [Symbol, Column/Line, Direction]
     {
         let game = this;
@@ -53,6 +64,39 @@ class Zurero
         }
     }
 
+    /**
+     * Creates a piece and adds it to the scene.
+     * @param {string} color 
+     * @param {array} starterCoords 
+     * @param {array} endCoords 
+     * @param {Animation} animation 
+     */
+    createPiece(color, starterCoords, endCoords, animation)
+    {
+        let build = new GamePiece(this.scene, color);
+        let texture = ["none"];
+        let materials = [this.scene.graph.materials['matte_mat']];
+        let animations = [animation];
+        let id = "@piece_" + endCoords[0] + "_" + endCoords[1]; 
+        let transformations = mat4.create();
+        mat4.translate(transformations, transformations, [-2.32, 2.65, -2.32]);
+        
+        let resizedStarterCoords = [];
+        resizedStarterCoords[0] = starterCoords[0] * 0.232;
+        resizedStarterCoords[1] = starterCoords[1] * 0.232;
+        resizedStarterCoords[2] = starterCoords[2] * 0.232;
+
+        mat4.translate(transformations, transformations, resizedStarterCoords);
+
+        let node = new MyNode(build, id, [], transformations, texture, materials, animations);
+        this.scene.graph.nodes[id] = node;
+        this.scene.graph.nodes["board_table"].children.push(id);
+    }
+
+    /**
+     * Updates the turn clock.
+     * @param {float} currTime 
+     */
     update(currTime)
     {
         if(this.state == 1)
@@ -80,24 +124,73 @@ class Zurero
         }
     }
 
+    /**
+     * Starts a new game.
+     * @param {int} mode 
+     */
     startGame(mode)
     {
         let game = this;
-        this.mode = mode;
-        this.state = 1;
-        this.moveList = [];
-        this.boardList = [];
         
-        let date = new Date();
-        this.turnStartTime = date.getTime();
-
-        this.sendPrologRequest("start_game(" + mode + "," + this.botDifficulty + ")", function(data)
+        this.sendPrologRequest("start_game(" + this.botDifficulty + ")", function(data)
         {
+            game.cleanBoard();
+            game.mode = mode;
+            game.state = 1;
+
+            if(game.turnPlayer == 'b')
+            {
+                game.scene.switchPlayerView();
+                game.turnPlayer = 'w';
+            }
+
+            game.createPiece("black", [10, 5, 10], [10, 0, 10], new LinearAnimation([[0, 0, 0], [0, -5 * 0.232, 0]], 2));
+            
+            let date = new Date();
+            game.turnStartTime = date.getTime();
             game.parseBoardToJs(data.target.response);
-            //game.updateGame(["'L'", 10, "'R'"]);
         });
     }
 
+    /**
+     * Eliminates all the pieces from the board and scene.
+     */
+    cleanBoard()
+    {
+        this.moveList = [];
+        this.boardList = [];
+        this.board = [];
+
+        for (var key in this.scene.graph.nodes)
+        {
+            if (this.scene.graph.nodes.hasOwnProperty(key))
+            {
+                if(key.substring(0, 7) == "@piece_")
+                {
+                    delete this.scene.graph.nodes[key];
+                    delete this.scene.graph.nodes["board_table"].children[key];
+                    console.log("Cleaned board");
+                }
+                    
+            }
+        }
+    }
+
+    /**
+     * Resets the turn clock and switches the state back to one.
+     */
+    resetTurnClock()
+    {
+        let date = new Date();
+        this.turnStartTime = date.getTime();
+        this.state = 1;
+    }
+
+    /**
+     * Parses a prolog message to js.
+     * @param {string} message 
+     * @param {array} move 
+     */
     parseMessageToJs(message, move)
     {
         let commaIndex = message.indexOf(',');
@@ -106,6 +199,7 @@ class Zurero
         switch(anwser)
         {
             case "next_move":
+                this.state = 2;
                 this.moveList.push(move);
 
                 commaIndex++;
@@ -113,10 +207,11 @@ class Zurero
                 
                 let board = message.substring(commaIndex + 2, message.length - 1);
                 this.parseBoardToJs(board);
+                this.scene.switchPlayerView();
                 break;
 
             case "invalid_play":
-                alert("Invalid Play!");
+                console.log("Invalid Play!");
                 break;
             
             case "game_over":
@@ -141,16 +236,27 @@ class Zurero
         }
     }
 
+    /**
+     * Parses a move array to a string.
+     * @param {array} jsMove 
+     */
     parseMoveToPl(jsMove)
     {
         return "[" + jsMove[0] + "," + jsMove[1] + "," + jsMove[2] + "," + this.turnPlayer + "]";
     }
 
+    /**
+     * Parses a game array to a string.
+     */
     parseGameToPl()
     {
         return "[" + this.parseBoardToPl() + "," + this.botDifficulty + "]";
     }
 
+    /**
+     * Parses a prolog board to js.
+     * @param {string} pl_board 
+     */
     parseBoardToJs(pl_board)
     {
         this.board = [];
@@ -185,6 +291,9 @@ class Zurero
         this.boardList.push(this.board);
     }
 
+    /**
+     * Parses a js board to prolog.
+     */
     parseBoardToPl()
     {
         let boardPl = "[";
@@ -212,6 +321,11 @@ class Zurero
         return boardPl;
     }
 
+    /**
+     * Sends a prolog server request.
+     * @param {string} requestName 
+     * @param {function} onLoad 
+     */
     sendPrologRequest(requestName, onLoad)
     {
         let request = new XMLHttpRequest();
