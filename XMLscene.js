@@ -40,7 +40,8 @@ class XMLscene extends CGFscene
         //  var plane = new CGFplane(this);
 		    //  this.objects.push(plane);
         //}
-        for(var i = 0; i < 84; i++){
+        for(var i = 0; i < 84; i++)
+        {
           var test = new CGFplane(this);
           this.objects.push(test);
         }
@@ -224,7 +225,7 @@ class XMLscene extends CGFscene
      */
     display()
     {
-      this.logPicking();
+        this.processPicking();
         // Clear image and depth buffer everytime we update the scene
         this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
@@ -385,21 +386,134 @@ class XMLscene extends CGFscene
 
 
         this.registerForPick(84, this.objects[83]); // DEFAULT PLANE ID
-
     }
 
-    logPicking(){
-      if (this.pickMode == false) {
-		      if (this.pickResults != null && this.pickResults.length > 0) {
-			         for (var i=0; i< this.pickResults.length; i++) {
-				           var obj = this.pickResults[i][0];
-				           if (obj){
-					             var customId = this.pickResults[i][1];
-					             console.log("Picked object: " + obj + ", with pick id " + customId);
-				           }
-			         }
-			         this.pickResults.splice(0,this.pickResults.length);
+    processPicking()
+    {
+        if (this.pickMode == false) 
+        {
+            if (this.pickResults != null && this.pickResults.length > 0) 
+            {
+                for (var i=0; i< this.pickResults.length; i++) 
+                {
+                        var obj = this.pickResults[i][0];
+                        
+                        if (obj)
+                        {
+                            var customId = this.pickResults[i][1];				
+                            console.log("Picked object: " + obj + ", with pick id " + customId);
+                            
+					        this.processPick(this.pickResults[i]);
+				        }
+			    }
+                
+                this.pickResults.splice(0,this.pickResults.length);
 		      }
-	     }
+	    }
+    }
+
+    processPick(pickResult)
+    {
+        var customId = pickResult[1];
+        
+        if(customId >= 77 && customId <= 83)
+            this.processTvPick(pickResult);
+        else
+            if(customId < 77)
+                this.processBoardPick(pickResult);
+    }
+
+    processTvPick(pickResult)
+    {
+        switch(pickResult[1])
+        {
+            case 77:
+                this.graph.game.startGame(1);
+                break;
+
+            case 78:
+                this.graph.game.startGame(2);
+                break;
+
+            case 79:
+                this.graph.game.startGame(3);
+                break;
+
+            case 80:
+                this.graph.game.botDifficulty = 1;
+                break;
+            
+            case 81:
+                this.graph.game.botDifficulty = 2;
+                break;
+
+            case 82:
+                //It's rewind time
+                break;
+
+            case 83:
+                //Movie
+                break;
+
+            default:
+                console.log("Tv pick not recognized | Id = " + pickResult[1]);
+        }
+    }
+
+    processBoardPick(pickResult)
+    {
+        if(this.graph.game.state == 1)
+        {
+            let pickId = pickResult[1];
+            let symbol, direction, move;
+
+            if(pickId <= 38)
+            {
+                symbol = "'C'";
+                let column;
+
+                if(pickId <= 19)
+                {
+                    column = pickId;
+                    direction = "'D'";
+                }
+                else
+                {
+                    column = 20 - (pickId - 20) - 1;
+                    direction = "'U'"; 
+                }
+
+                move = [symbol, column, direction];
+            }
+            else
+            {
+                symbol = "'L'";
+                let line;
+
+                if(pickId <= 57)
+                {
+                    let aux = pickId % 19;
+
+                    if(aux == 0)
+                        aux = 19;
+
+                    line = 20 - aux;
+                    direction = "'R'";
+                }
+                else
+                {
+                    line = pickId % 19;
+
+                    if(line == 0)
+                        line = 19;
+
+                    direction = "'L'";
+                }
+
+                move = [symbol, line, direction];
+            }
+            
+            console.log(move);
+        }
     }
 }

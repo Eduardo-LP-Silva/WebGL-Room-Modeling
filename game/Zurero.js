@@ -4,7 +4,7 @@ class Zurero
     {
         this.scene = scene;
         this.port = 8081;
-        this.state = 0; //0 = Stationary, 1 = Playing 
+        this.state = 0; //0 = Stationary, 1 = Playing
         this.board = null;
         this.boardList = [];
         this.moveList = [];
@@ -65,7 +65,7 @@ class Zurero
 
                 if(timeLeft <= 0)
                     this.state = 0;
-                    
+
                 let units = timeLeft % 10;
                 let dozens = Math.floor(timeLeft / 10);
                 let digitPath = "" + units + "_yellow";
@@ -77,26 +77,21 @@ class Zurero
                 this.scene.graph.nodes['timer_dozens'].texture[0] =  this.scene.graph.textures[digitPath];
                 this.lastTurnTime = timePassed;
             }
-            
-            
         }
-        
-
     }
 
-    startGame(mode, difficulty)
+    startGame(mode)
     {
         let game = this;
         this.mode = mode;
         this.state = 1;
         this.moveList = [];
         this.boardList = [];
-        this.botDifficulty = difficulty;
         
         let date = new Date();
         this.turnStartTime = date.getTime();
 
-        this.sendPrologRequest("start_game(" + mode + "," + difficulty + ")", function(data)
+        this.sendPrologRequest("start_game(" + mode + "," + this.botDifficulty + ")", function(data)
         {
             game.parseBoardToJs(data.target.response);
             //game.updateGame(["'L'", 10, "'R'"]);
