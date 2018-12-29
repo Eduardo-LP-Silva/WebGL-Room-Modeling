@@ -11,8 +11,10 @@
       * @param {mat4} transformations 
       * @param {array} texture 
       * @param {array} materials 
+      * @param {boolean} animationContinuity
       */
-     constructor(build = null, id, children = [], transformations = null, texture = [], materials = [], animations = [])
+     constructor(build = null, id, children = [], transformations = null, texture = [], materials = [], animations = [], 
+        animationContinuity = false)
      {
         this.id = id;
         this.build = build;
@@ -25,6 +27,7 @@
         this.animationTransformations = transformations; //Transformation matrix affected by the animations
         this.materialIndex = 0; //Current material index
         this.animationIndex = 0; //Current animation index
+        this.animationContinuity = animationContinuity; //If set, the animations will have continuity between each other
      }
 
      /**
@@ -49,8 +52,18 @@
             if(this.animations[this.animationIndex].initTime == - 1) //Animations hasn't been initiated yet
             {
                 this.animations[this.animationIndex].initTimeStamps(currTime);
-                this.animationTransformations = mat4.clone(this.transformations);
-                this.originalTransformations = mat4.clone(this.transformations);
+
+                if(this.animationContinuity)
+                {
+                    this.animationTransformations = this.transformations;
+                    this.originalTransformations = this.transformations;
+                }
+                else
+                {
+                    this.animationTransformations = mat4.clone(this.transformations);
+                    this.originalTransformations = mat4.clone(this.transformations);
+                }
+                
             }
                 
             if(this.animations[this.animationIndex].getElapsedTime(currTime) 

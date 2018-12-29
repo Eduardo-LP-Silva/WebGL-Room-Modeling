@@ -76,21 +76,90 @@ class Zurero
         let build = new GamePiece(this.scene, color);
         let texture = ["none"];
         let materials = [this.scene.graph.materials['matte_mat']];
-        let animations = [animation];
-        let id = "@piece_" + endCoords[0] + "_" + endCoords[1]; 
+        let animations = [];
+        animations.push(animation);
+     
+        let id = "@piece_" + endCoords[0] + "_" + endCoords[2]; 
         let transformations = mat4.create();
-        mat4.translate(transformations, transformations, [-2.32, 2.65, -2.32]);
+        mat4.translate(transformations, transformations, [-2.585, 2.65, -2.585]);
         
         let resizedStarterCoords = [];
-        resizedStarterCoords[0] = starterCoords[0] * 0.232;
+        resizedStarterCoords[0] = starterCoords[2] * 0.259;
         resizedStarterCoords[1] = starterCoords[1] * 0.232;
-        resizedStarterCoords[2] = starterCoords[2] * 0.232;
+        resizedStarterCoords[2] = starterCoords[0] * 0.259;
 
         mat4.translate(transformations, transformations, resizedStarterCoords);
-
-        let node = new MyNode(build, id, [], transformations, texture, materials, animations);
+        
+        let node = new MyNode(build, id, [], transformations, texture, materials, animations, true);
         this.scene.graph.nodes[id] = node;
         this.scene.graph.nodes["board_table"].children.push(id);
+    }
+
+    /**
+     * Executes a move in the scene.
+     * @param {string} move 
+     */
+    executeMove(move)
+    {
+        this.showPiecesInNodes();
+        let direction = move[9];
+        move = move.substring(5);
+        let index = parseInt(move.substring(0, move.indexOf(',')));
+        let starterCoords = [];
+        let endCoords = [];
+        let controlPoints = [[0, 0, 0]];
+        let secondControlPoint = [];
+        let color;
+
+        let secondStarterCoords = [];
+        let secondEndCoords = [];
+        let secondColor;
+
+        if(this.turnPlayer == 'w')
+            color = "white";
+        else
+            color = "black";
+        
+        switch(direction)
+        {
+            case 'U':
+                starterCoords = [index, 0, 20];
+
+                for(let i = 18; i >= 0; i--)
+                    if(this.board[i][index - 1] != "empty")
+                    {
+                        let j = i + 1;
+
+                        if(this.board[i - 1][index - 1] != "empty")
+                        {
+                            secondControlPoint = [-(19 - j) * 0.259, 0, 0];
+                            endCoords = [j + 1, 0, index];
+                        }
+                        else
+                        {
+                            secondControlPoint = [-(19 - j + 1) * 0.259, 0, 0];
+                            endCoords = [j, 0, index];
+                            secondColor = this.scene.graph.nodes["@piece_" + endCoords[0] + "_" + 
+                                endCoords[2]].build.color;
+
+                            this.deletePiece("@piece_" + endCoords[0] + "_" + endCoords[2]);
+
+                            secondStarterCoords = endCoords.slice();
+                            secondEndCoords = [secondStarterCoords[0] - 1, secondStarterCoords[1], secondStarterCoords[2]];
+                            this.createPiece(secondColor, secondStarterCoords, secondEndCoords, 
+                                new LinearAnimation([[0, 0, 0], [-1 * 0.259, 0, 0]], 2));
+                        }
+                        break;
+                    }
+                    
+                break;
+
+            default:
+                console.log("Unknown direction " + direction);
+        }
+
+        controlPoints.push(secondControlPoint);
+        this.createPiece(color, starterCoords, endCoords, new LinearAnimation(controlPoints, 2));
     }
 
     /**
@@ -144,7 +213,7 @@ class Zurero
                 game.turnPlayer = 'w';
             }
 
-            game.createPiece("black", [10, 5, 10], [10, 0, 10], new LinearAnimation([[0, 0, 0], [0, -5 * 0.232, 0]], 2));
+            game.createPiece("black", [10, 5, 10], [10, 0, 10], new LinearAnimation([[0, 0, 0], [0, -5 * 0.232, 0]], 1));
             
             let date = new Date();
             game.turnStartTime = date.getTime();
@@ -160,6 +229,7 @@ class Zurero
         this.moveList = [];
         this.boardList = [];
         this.board = [];
+        let tableChildren = this.scene.graph.nodes["board_table"].children;
 
         for (var key in this.scene.graph.nodes)
         {
@@ -168,12 +238,24 @@ class Zurero
                 if(key.substring(0, 7) == "@piece_")
                 {
                     delete this.scene.graph.nodes[key];
-                    delete this.scene.graph.nodes["board_table"].children[key];
+                    tableChildren.splice(tableChildren.indexOf(key), 1);
                     console.log("Cleaned board");
                 }
                     
             }
         }
+    }
+
+    /**
+     * Deletes a specific piece from the scene.
+     * @param {string} pieceId 
+     */
+    deletePiece(pieceId)
+    {
+        let tableChildren = this.scene.graph.nodes["board_table"].children;
+
+        delete this.scene.graph.nodes[pieceId];
+        tableChildren.splice(tableChildren.indexOf(pieceId), 1);
     }
 
     /**
@@ -201,6 +283,7 @@ class Zurero
             case "next_move":
                 this.state = 2;
                 this.moveList.push(move);
+                this.executeMove(move);
 
                 commaIndex++;
                 this.turnPlayer = message[commaIndex];
@@ -319,6 +402,25 @@ class Zurero
         boardPl += "]";
 
         return boardPl;
+    }
+
+    /**
+     * Logs the pieces currently in the nodes array.
+     */
+    showPiecesInNodes()
+    {
+        for (var key in this.scene.graph.nodes)
+        {
+            if (this.scene.graph.nodes.hasOwnProperty(key))
+            {
+                if(key.substring(0, 7) == "@piece_")
+                {
+                    console.log(key);
+                    console.log(this.scene.graph.nodes[key]);
+                }
+                    
+            }
+        }
     }
 
     /**

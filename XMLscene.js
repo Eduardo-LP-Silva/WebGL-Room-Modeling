@@ -542,7 +542,6 @@ class XMLscene extends CGFscene
                 move = [symbol, line, direction];
             }
             
-            console.log(move);
             game.updateGame(move);
         }
     }
