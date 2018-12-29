@@ -81,12 +81,12 @@ class Zurero
      
         let id = "@piece_" + endCoords[0] + "_" + endCoords[2]; 
         let transformations = mat4.create();
-        mat4.translate(transformations, transformations, [-2.585, 2.65, -2.585]);
+        mat4.translate(transformations, transformations, [-2.585, 2.65, 2.585]);
         
         let resizedStarterCoords = [];
-        resizedStarterCoords[0] = starterCoords[2] * 0.259;
+        resizedStarterCoords[0] = starterCoords[0] * 0.259;
         resizedStarterCoords[1] = starterCoords[1] * 0.232;
-        resizedStarterCoords[2] = starterCoords[0] * 0.259;
+        resizedStarterCoords[2] = -starterCoords[2] * 0.259;
 
         mat4.translate(transformations, transformations, resizedStarterCoords);
         
@@ -101,8 +101,7 @@ class Zurero
      */
     executeMove(move)
     {
-        this.showPiecesInNodes();
-        let direction = move[9];
+        let direction = move[move.length - 5];
         move = move.substring(5);
         let index = parseInt(move.substring(0, move.indexOf(',')));
         let starterCoords = [];
@@ -123,7 +122,7 @@ class Zurero
         switch(direction)
         {
             case 'U':
-                starterCoords = [index, 0, 20];
+                starterCoords = [20, 0, index];
 
                 for(let i = 18; i >= 0; i--)
                     if(this.board[i][index - 1] != "empty")
@@ -154,12 +153,111 @@ class Zurero
                     
                 break;
 
+            case 'D':
+                starterCoords = [0, 0, index];
+
+                for(let i = 0; i < this.board.length; i++)
+                    if(this.board[i][index - 1] != "empty")
+                    {
+                        let j = i + 1;
+
+                        if(this.board[i + 1][index - 1] != "empty")
+                        {
+                            secondControlPoint = [(j - 1) * 0.259, 0, 0];
+                            endCoords = [j - 1, 0, index];
+                        }
+                        else
+                        {
+                            secondControlPoint = [j * 0.259, 0, 0];
+                            endCoords = [j, 0, index];
+                            secondColor = this.scene.graph.nodes["@piece_" + endCoords[0] + "_" + 
+                                endCoords[2]].build.color;
+
+                            this.deletePiece("@piece_" + endCoords[0] + "_" + endCoords[2]);
+
+                            secondStarterCoords = endCoords.slice();
+                            secondEndCoords = [secondStarterCoords[0] + 1, secondStarterCoords[1], secondStarterCoords[2]];
+                            this.createPiece(secondColor, secondStarterCoords, secondEndCoords, 
+                                new LinearAnimation([[0, 0, 0], [1 * 0.259, 0, 0]], 2));
+                        }
+                        break;
+                    }
+
+                break;
+
+            case 'R':
+                starterCoords = [index, 0, 0];
+
+                for(let i = 0; i < this.board[index - 1].length; i++)
+                    if(this.board[index - 1][i] != "empty")
+                    {
+                        let j = i + 1;
+
+                        if(this.board[index - 1][i + 1] != "empty")
+                        {
+                            secondControlPoint = [0, 0, -(j - 1) * 0.259];
+                            endCoords = [index, 0, j - 1];
+                        }
+                        else
+                        {
+                            secondControlPoint = [0, 0, -j * 0.259];
+                            endCoords = [index, 0, j];
+                            secondColor = this.scene.graph.nodes["@piece_" + endCoords[0] + "_" + 
+                                endCoords[2]].build.color;
+
+                            this.deletePiece("@piece_" + endCoords[0] + "_" + endCoords[2]);
+
+                            secondStarterCoords = endCoords.slice();
+                            secondEndCoords = [secondStarterCoords[0], secondStarterCoords[1], secondStarterCoords[2] + 1];
+                            this.createPiece(secondColor, secondStarterCoords, secondEndCoords, 
+                                new LinearAnimation([[0, 0, 0], [0, 0, -1 * 0.259]], 2));
+                        }
+                        break;
+                    }
+
+                    break;
+
+                case 'L':
+                starterCoords = [index, 0, 20];
+
+                for(let i = 18; i >= 0; i--)
+                    if(this.board[index - 1][i] != "empty")
+                    {
+                        let j = i + 1;
+
+                        if(this.board[index - 1][i - 1] != "empty")
+                        {
+                            secondControlPoint = [0, 0, (19 - j) * 0.259];
+                            endCoords = [index, 0, j + 1];
+                        }
+                        else
+                        {
+                            secondControlPoint = [0, 0, (19 - j + 1) * 0.259];
+                            endCoords = [index, 0, j];
+                            secondColor = this.scene.graph.nodes["@piece_" + endCoords[0] + "_" + 
+                                endCoords[2]].build.color;
+
+                            this.deletePiece("@piece_" + endCoords[0] + "_" + endCoords[2]);
+
+                            secondStarterCoords = endCoords.slice();
+                            console.log(secondStarterCoords);
+                            secondEndCoords = [secondStarterCoords[0], secondStarterCoords[1], secondStarterCoords[2] - 1];
+                            console.log(secondEndCoords);
+                            this.createPiece(secondColor, secondStarterCoords, secondEndCoords, 
+                                new LinearAnimation([[0, 0, 0], [0, 0, 1 * 0.259]], 2));
+                        }
+                        break;
+                    }
+
+                    break;
+
             default:
                 console.log("Unknown direction " + direction);
         }
 
         controlPoints.push(secondControlPoint);
         this.createPiece(color, starterCoords, endCoords, new LinearAnimation(controlPoints, 2));
+        this.showPiecesInNodes();   
     }
 
     /**
