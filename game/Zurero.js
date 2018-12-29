@@ -240,9 +240,7 @@ class Zurero
                             this.deletePiece("@piece_" + endCoords[0] + "_" + endCoords[2]);
 
                             secondStarterCoords = endCoords.slice();
-                            console.log(secondStarterCoords);
                             secondEndCoords = [secondStarterCoords[0], secondStarterCoords[1], secondStarterCoords[2] - 1];
-                            console.log(secondEndCoords);
                             this.createPiece(secondColor, secondStarterCoords, secondEndCoords, 
                                 new LinearAnimation([[0, 0, 0], [0, 0, 1 * 0.259]], 2));
                         }
@@ -257,7 +255,7 @@ class Zurero
 
         controlPoints.push(secondControlPoint);
         this.createPiece(color, starterCoords, endCoords, new LinearAnimation(controlPoints, 2));
-        this.showPiecesInNodes();   
+        //this.showPiecesInNodes();   
     }
 
     /**
@@ -275,7 +273,12 @@ class Zurero
                 let timeLeft = 30 - timePassed;
 
                 if(timeLeft <= 0)
-                    this.state = 0;
+                {
+                    this.state = 2;
+                    this.switchPlayers();
+                    this.scene.switchPlayerView();
+                }
+                    
 
                 let units = timeLeft % 10;
                 let dozens = Math.floor(timeLeft / 10);
@@ -364,6 +367,17 @@ class Zurero
         let date = new Date();
         this.turnStartTime = date.getTime();
         this.state = 1;
+    }
+
+    /**
+     * Changes the turn to the other player.
+     */
+    switchPlayers()
+    {
+        if(this.turnPlayer == 'w')
+            this.turnPlayer = 'b';
+        else
+            this.turnPlayer = 'w';
     }
 
     /**
