@@ -64,6 +64,36 @@ class Zurero
     }
 
     /**
+     * Undoes a player's last play.
+     */
+    undoPlay()
+    {
+        if(this.state == 1 && this.isPlayersTurn() && this.moveList.length >= 2)
+        {
+            this.moveList.splice(this.moveList.length - 2, 2);
+            this.boardList.splice(this.boardList.length - 2, 2);
+            this.cleanBoard();
+            this.board = this.boardList[this.boardList.length - 1];
+            this.addPiecesToNodesFromBoard();
+        }
+    }
+
+    /**
+     * Adds the pieces to the nodes array from the current board's information.
+     */
+    addPiecesToNodesFromBoard()
+    {
+        for(let i = 0; i < this.board.length; i++)
+            for(let j = 0; j < this.board[i].length; j++)
+                if(this.board[i][j] == 'w')
+                    this.createPiece("white", [i + 1, 0, j + 1], [i + 1, 0, j + 1], null);
+                else
+                    if(this.board[i][j] == 'b')
+                        this.createPiece("black", [i + 1, 0, j + 1], [i + 1, 0, j + 1], null);
+                
+    }
+
+    /**
      * Creates a piece and adds it to the scene.
      * @param {string} color 
      * @param {array} starterCoords 
@@ -76,7 +106,9 @@ class Zurero
         let texture = ["none"];
         let materials = [this.scene.graph.materials['matte_mat']];
         let animations = [];
-        animations.push(animation);
+
+        if(animation != null)
+            animations.push(animation);
      
         let id = "@piece_" + endCoords[0] + "_" + endCoords[2]; 
         let transformations = mat4.create();
@@ -307,6 +339,8 @@ class Zurero
         this.sendPrologRequest("start_game(" + this.botDifficulty + ")", function(data)
         {
             game.cleanBoard();
+            this.moveList = [];
+            this.boardList = [];
             game.mode = mode;
             game.state = 1;
 
@@ -332,8 +366,6 @@ class Zurero
      */
     cleanBoard()
     {
-        this.moveList = [];
-        this.boardList = [];
         this.board = [];
         let tableChildren = this.scene.graph.nodes["board_table"].children;
 

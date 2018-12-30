@@ -471,7 +471,7 @@ class XMLscene extends CGFscene
                 break;
 
             case 82:
-                //It's rewind time
+                this.graph.game.undoPlay();
                 break;
 
             case 83:
