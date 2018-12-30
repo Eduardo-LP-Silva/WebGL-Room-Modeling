@@ -254,7 +254,7 @@ class Zurero
 
         controlPoints.push(secondControlPoint);
         this.createPiece(color, starterCoords, endCoords, new LinearAnimation(controlPoints, 2));
-        //this.showPiecesInNodes();   
+        this.showPiecesInNodes();   
     }
 
     /**
@@ -276,6 +276,9 @@ class Zurero
                     this.state = 2;
                     this.switchPlayers();
                     this.scene.switchPlayerView();
+
+                    if(this.isBotsTurn())
+                        this.updateGame("null");
                 }
                     
 
@@ -318,6 +321,9 @@ class Zurero
             let date = new Date();
             game.turnStartTime = date.getTime();
             game.parseBoardToJs(data.target.response);
+
+            if(game.isBotsTurn())
+                game.updateGame("null");
         });
     }
 
@@ -369,6 +375,40 @@ class Zurero
     }
 
     /**
+     * Increases the score of the player who won, changing the scoreboard.
+     * @param {char} winner 
+     */
+    increaseWinnerScore(winner)
+    {
+        let units, dozens, digitPath;
+
+        if(winner == 'w')
+        {
+            this.playerOneScore++;
+
+            units = this.playerOneScore % 10;
+            digitPath = units + "_purple";
+            this.scene.graph.nodes['player1_units'].texture[0] = this.scene.graph.textures[digitPath];
+
+            dozens = Math.floor(this.playerOneScore / 10);
+            digitPath = dozens + "_purple";
+            this.scene.graph.nodes['player1_dozens'].texture[0] = this.scene.graph.textures[digitPath];
+        }
+        else
+        {
+            this.playerTwoScore++;
+
+            units = this.playerTwoScore % 10;
+            digitPath = units + "_purple";
+            this.scene.graph.nodes['player2_units'].texture[0] = this.scene.graph.textures[digitPath];
+
+            dozens = Math.floor(this.playerTwoScore / 10);
+            digitPath = dozens + "_purple";
+            this.scene.graph.nodes['player2_dozens'].texture[0] = this.scene.graph.textures[digitPath];
+        }
+    }
+
+    /**
      * True if it's the turn of an actual player.
      * @returns true if it's the turn of an acutal player or false if not
      */
@@ -398,7 +438,7 @@ class Zurero
     }
 
     /**
-     * Parses a prolog message to js.
+     * Parses a prolog message to js and acts accordingly.
      * @param {string} message 
      * @param {array} move 
      */
@@ -408,6 +448,7 @@ class Zurero
         let anwser = message.substring(1, commaIndex);
         let board;
         let play2;
+        let endPlay;
 
         switch(anwser)
         {
@@ -436,9 +477,7 @@ class Zurero
                     commaIndex = play2.indexOf(",", 3);
                     botPlay += symbol + "'" + play2.slice(2, commaIndex) + ",'";
                     let playNumber = play2.slice(commaIndex + 1, commaIndex + 2);
-                    console.log(playNumber);
                     botPlay += playNumber + "'" + play2.slice(commaIndex + 2);
-                    console.log(botPlay);
                     this.moveList.push(botPlay);
                     this.executeMove(botPlay);
                 }
@@ -448,7 +487,7 @@ class Zurero
                 this.scene.switchPlayerView();
 
                 if(this.isBotsTurn())
-                this.updateGame("null");
+                    this.updateGame("null");
                 
                 break;
 
@@ -458,21 +497,42 @@ class Zurero
                 break;
             
             case "game_over":
-                this.moveList.push(move);
-                this.executeMove(move);
-
                 commaIndex++;
                 let winner = message[commaIndex];
+                this.increaseWinnerScore(winner);
+                commaIndex += 2;
 
-                if(winner == 'w')
-                    this.playerOneScore++;
+                if(this.mode != 1)
+                {
+                    let endPlayPosition =  message.indexOf(']');
+                    endPlay = message.substring(commaIndex, endPlayPosition);
+                    endPlay += ']';
+                    commaIndex = endPlayPosition + 2;
+                }
+
+                board = message.substring(commaIndex, message.length - 1);
+
+                if(this.isPlayersTurn())
+                {
+                    this.moveList.push(move);
+                    this.executeMove(move);
+                }
                 else
-                    this.playerTwoScore++;
+                {
+                    let botEndPlay = "['";
+                    let endSymbol = endPlay[1];
+                    commaIndex = endPlay.indexOf(",", 3);
+                    botEndPlay += endSymbol + "'" + endPlay.slice(2, commaIndex) + ",'";
+                    let endPlayNumber = endPlay.slice(commaIndex + 1, commaIndex + 2);
+                    botEndPlay += endPlayNumber + "'" + endPlay.slice(commaIndex + 2);
+                    this.moveList.push(botEndPlay);
+                    this.executeMove(botEndPlay);
+                }
 
+                this.parseBoardToJs(board);
+                this.scene.switchPlayerView();
                 this.turnPlayer = "w";
-                
-                let end_board = message.substring(commaIndex + 2, message.length - 1);
-                this.parseBoardToJs(end_board);
+                this.state = 0;
                 break;
 
             default:
