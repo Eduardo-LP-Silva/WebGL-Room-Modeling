@@ -120,6 +120,8 @@
     <texture id="7_purple" file="scenes/images/7_purple.png" />
     <texture id="8_purple" file="scenes/images/8_purple.png" />
     <texture id="9_purple" file="scenes/images/9_purple.png" />
+    <texture id="ring_floor" file="scenes/images/gray.jpg" />
+    <texture id="blue_rope" file="scenes/images/blue_rope.jpg" />
   </textures>
 
   <!-- Materials -->
@@ -297,10 +299,41 @@
       <vehicle />
     </primitive>
 
+    <primitive id="pole">
+      <cylinder base="0.3" top="0.3" height="8" slices="40" stacks="40" />
+    </primitive>
+
+    <primitive id="pole_ball">
+      <sphere radius="0.5" slices="30" stacks="30"/>
+    </primitive>
+
+    <primitive id="rope">
+      <cylinder base="0.1" top="0.1" height="17" slices="40" stacks="40" />
+    </primitive>
+
   </primitives>
 
   <!-- Components -->
   <components>
+
+    <component id="scene_3">
+      <transformation>
+      </transformation>
+
+      <materials>
+        <material id="default_mat" />
+      </materials>
+
+      <texture id="none" length_s="1" length_t="1" />
+
+      <children>
+        <componentref id="board_table"/>
+        <componentref id="white_game_piece"/>
+        <componentref id="black_game_piece"/>
+        <componentref id="TV"/>
+        <componentref id="ring"/>
+      </children>
+    </component>
 
     <component id="scene_2">
       <transformation>
@@ -357,6 +390,320 @@
         <componentref id="white_game_piece"/>
         <componentref id="black_game_piece"/>
         <componentref id="TV"/>
+      </children>
+    </component>
+
+    <!-- RING -->
+
+    <component id="ring">
+      <transformation>
+        <translate x="0" y="0" z="20" />
+
+      </transformation>
+
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+
+      <texture id="none" length_s="1" length_t="1"/>
+
+      <children>
+        <componentref id="ring_floor"/>
+        <componentref id="all_poles"/>
+        <componentref id="all_pole_balls"/>
+        <componentref id="all_ropes"/>
+      </children>
+    </component>
+
+    <component id="ring_floor">
+      <transformation>
+
+        <scale x="18" y="1" z="18" />
+
+      </transformation>
+
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+
+      <texture id="ring_floor" length_s="1" length_t="1"/>
+
+      <children>
+        <componentref id="cube"/>
+      </children>
+    </component>
+
+    <component id="all_poles">
+      <transformation>
+        <scale x="0.8" y="0.8" z="0.8" />
+        <rotate axis="x" angle="-90"/>
+      </transformation>
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+      <texture id="black_tile" length_s="1" length_t="1"/>
+      <children>
+        <componentref id="pole_1"/>
+        <componentref id="pole_2"/>
+        <componentref id="pole_3"/>
+        <componentref id="pole_4"/>
+      </children>
+    </component>
+
+    <component id="all_pole_balls">
+      <transformation>
+        <translate x="8.38" y="6.5" z="-8.38" />
+      </transformation>
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+      <texture id="black_tile" length_s="1" length_t="1"/>
+      <children>
+        <componentref id="pole_ball_1"/>
+        <componentref id="pole_ball_2"/>
+        <componentref id="pole_ball_3"/>
+        <componentref id="pole_ball_4"/>
+      </children>
+    </component>
+
+    <component id="all_ropes">
+      <transformation>
+      </transformation>
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+      <texture id="blue_rope" length_s="1" length_t="1"/>
+      <children>
+        <componentref id="set_of_ropes_1"/>
+        <componentref id="set_of_ropes_2"/>
+        <componentref id="set_of_ropes_3"/>
+        <componentref id="set_of_ropes_4"/>
+      </children>
+    </component>
+
+
+
+
+    <component id="set_of_ropes_1">
+      <transformation>
+        <translate x="8.3" y="5.4" z="-8.5" />
+      </transformation>
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+      <texture id="inherit" length_s="1" length_t="1"/>
+      <children>
+        <componentref id="rope_1"/>
+        <componentref id="rope_2"/>
+        <componentref id="rope_3"/>
+        <componentref id="rope_4"/>
+      </children>
+    </component>
+
+    <component id="set_of_ropes_2">
+      <transformation>
+        <translate x="8.5" y="5.4" z="-8.5" />
+        <rotate axis="y" angle="-90" />
+      </transformation>
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+      <texture id="inherit" length_s="1" length_t="1"/>
+      <children>
+        <componentref id="rope_1"/>
+        <componentref id="rope_2"/>
+        <componentref id="rope_3"/>
+        <componentref id="rope_4"/>
+      </children>
+    </component>
+
+    <component id="set_of_ropes_3">
+      <transformation>
+        <translate x="-8.3" y="5.4" z="-8.5" />
+      </transformation>
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+      <texture id="inherit" length_s="1" length_t="1"/>
+      <children>
+        <componentref id="rope_1"/>
+        <componentref id="rope_2"/>
+        <componentref id="rope_3"/>
+        <componentref id="rope_4"/>
+      </children>
+    </component>
+
+    <component id="set_of_ropes_4">
+      <transformation>
+        <rotate axis="y" angle="-90" />
+        <translate x="8.5" y="5.4" z="-8.5" />
+      </transformation>
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+      <texture id="inherit" length_s="1" length_t="1"/>
+      <children>
+        <componentref id="rope_1"/>
+        <componentref id="rope_2"/>
+        <componentref id="rope_3"/>
+        <componentref id="rope_4"/>
+      </children>
+    </component>
+
+    <component id="pole_1">
+      <transformation>
+        <translate x="10.5" y="10.5" z="0" />
+      </transformation>
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+      <texture id="black_tile" length_s="1" length_t="1"/>
+      <children>
+        <primitiveref id="pole"/>
+      </children>
+    </component>
+
+
+    <component id="pole_2">
+      <transformation>
+        <translate x="-10.5" y="10.5" z="0" />
+      </transformation>
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+      <texture id="black_tile" length_s="1" length_t="1"/>
+      <children>
+        <primitiveref id="pole"/>
+      </children>
+    </component>
+
+
+    <component id="pole_3">
+      <transformation>
+        <translate x="10.5" y="-10.5" z="0" />
+      </transformation>
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+      <texture id="black_tile" length_s="1" length_t="1"/>
+      <children>
+        <primitiveref id="pole"/>
+      </children>
+    </component>
+
+    <component id="pole_4">
+      <transformation>
+        <translate x="-10.5" y="-10.5" z="0" />
+      </transformation>
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+      <texture id="black_tile" length_s="1" length_t="1"/>
+      <children>
+        <primitiveref id="pole"/>
+      </children>
+    </component>
+
+    <component id="pole_ball_1">
+      <transformation>
+
+      </transformation>
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+      <texture id="black_tile" length_s="1" length_t="1"/>
+      <children>
+        <primitiveref id="pole_ball"/>
+      </children>
+    </component>
+
+    <component id="pole_ball_2">
+      <transformation>
+        <translate x="-16.8" y="0" z="0" />
+      </transformation>
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+      <texture id="black_tile" length_s="1" length_t="1"/>
+      <children>
+        <primitiveref id="pole_ball"/>
+      </children>
+    </component>
+
+    <component id="pole_ball_3">
+      <transformation>
+        <translate x="0" y="0" z="16.8" />
+      </transformation>
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+      <texture id="black_tile" length_s="1" length_t="1"/>
+      <children>
+        <primitiveref id="pole_ball"/>
+      </children>
+    </component>
+
+    <component id="pole_ball_4">
+      <transformation>
+        <translate x="-16.8" y="0" z="16.8" />
+      </transformation>
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+      <texture id="black_tile" length_s="1" length_t="1"/>
+      <children>
+        <primitiveref id="pole_ball"/>
+      </children>
+    </component>
+
+    <component id="rope_1">
+      <transformation>
+      </transformation>
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+      <texture id="inherit" length_s="1" length_t="1"/>
+      <children>
+        <primitiveref id="rope"/>
+      </children>
+    </component>
+
+    <component id="rope_2">
+      <transformation>
+        <translate x="0" y="-1.2" z="0" />
+      </transformation>
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+      <texture id="inherit" length_s="1" length_t="1"/>
+      <children>
+        <primitiveref id="rope"/>
+      </children>
+    </component>
+
+    <component id="rope_3">
+      <transformation>
+        <translate x="0" y="-2.4" z="0" />
+      </transformation>
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+      <texture id="inherit" length_s="1" length_t="1"/>
+      <children>
+        <primitiveref id="rope"/>
+      </children>
+    </component>
+
+    <component id="rope_4">
+      <transformation>
+        <translate x="0" y="-3.6" z="0" />
+      </transformation>
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+      <texture id="inherit" length_s="1" length_t="1"/>
+      <children>
+        <primitiveref id="rope"/>
       </children>
     </component>
 
