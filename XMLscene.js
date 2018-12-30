@@ -491,10 +491,12 @@ class XMLscene extends CGFscene
     {
         let game = this.graph.game;
 
-        if(game.state == 1 && (game.mode == 1 || (game.mode == 2 && game.turnPlayer == 'w')))
+        if(game.state == 1 && game.isPlayersTurn())
         {
             let pickId = pickResult[1];
             let symbol, direction, move;
+
+            game.state = 2;
 
             if(pickId <= 38)
             {

@@ -36,15 +36,7 @@ class Zurero
         switch(this.mode)
         {
             case 1:
-                move = this.parseMoveToPl(move);
-                
-                this.sendPrologRequest("update_game(" + this.mode + "," + gamePl + "," +  this.turnPlayer + "," 
-                + move + ")", 
-                function(data)
-                {
-                    game.parseMessageToJs(data.target.response, move);
-                });
-
+                move = this.parseMoveToPl(move);                
                 break;
 
             case 2:
@@ -53,6 +45,7 @@ class Zurero
                     move = this.parseMoveToPl(move);
                 else
                     move = "null";
+
                 break;
 
             case 3:
@@ -62,6 +55,12 @@ class Zurero
             default:
                 console.log("Invalid game mode");
         }
+
+        this.sendPrologRequest("update_game(" + this.mode + "," + gamePl + "," +  this.turnPlayer + "," + move + ")", 
+        function(data)
+        {
+            game.parseMessageToJs(data.target.response, move);
+        });
     }
 
     /**
@@ -370,6 +369,24 @@ class Zurero
     }
 
     /**
+     * True if it's the turn of an actual player.
+     * @returns true if it's the turn of an acutal player or false if not
+     */
+    isPlayersTurn()
+    {
+        return (this.mode == 1 || (this.mode == 2 && this.turnPlayer == 'w'));
+    }
+
+    /**
+     * True if it's the turn of a bot.
+     * @returns true if it's a bot's turn or false if otherwise
+     */
+    isBotsTurn()
+    {
+        return (this.mode == 3 || (this.mode == 2 && this.turnPlayer == 'b'));
+    }
+
+    /**
      * Changes the turn to the other player.
      */
     switchPlayers()
@@ -389,28 +406,60 @@ class Zurero
     {
         let commaIndex = message.indexOf(',');
         let anwser = message.substring(1, commaIndex);
+        let board;
+        let play2;
 
         switch(anwser)
         {
             case "next_move":
-                this.state = 2;
-                this.moveList.push(move);
-                this.executeMove(move);
-
                 commaIndex++;
-                this.turnPlayer = message[commaIndex];
                 
-                let board = message.substring(commaIndex + 2, message.length - 1);
+                if(this.mode != 1)
+                {
+                    let endOfPlay2 = message.indexOf(']');
+                    play2 = message.substring(commaIndex, endOfPlay2);
+                    play2 += "]";
+                    commaIndex = endOfPlay2 + 2;
+                }
+
+                board = message.substring(commaIndex, message.length - 1);
+
+                if(this.isPlayersTurn())
+                {
+                    this.moveList.push(move);
+                    this.executeMove(move);
+                }
+                else
+                {
+                    let botPlay = "['";
+                    let symbol = play2[1];
+                    commaIndex = play2.indexOf(",", 3);
+                    botPlay += symbol + "'" + play2.slice(2, commaIndex) + ",'";
+                    let playNumber = play2.slice(commaIndex + 1, commaIndex + 2);
+                    console.log(playNumber);
+                    botPlay += playNumber + "'" + play2.slice(commaIndex + 2);
+                    console.log(botPlay);
+                    this.moveList.push(botPlay);
+                    this.executeMove(botPlay);
+                }
+
                 this.parseBoardToJs(board);
+                this.switchPlayers();
                 this.scene.switchPlayerView();
+
+                if(this.isBotsTurn())
+                this.updateGame("null");
+                
                 break;
 
             case "invalid_play":
                 console.log("Invalid Play!");
+                this.state = 1;
                 break;
             
             case "game_over":
                 this.moveList.push(move);
+                this.executeMove(move);
 
                 commaIndex++;
                 let winner = message[commaIndex];
