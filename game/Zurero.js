@@ -11,7 +11,7 @@ class Zurero
     {
         this.scene = scene;
         this.port = 8081; //Port to connect to
-        this.state = 0; //0 = Stationary, 1 = Playing, 2 = Paused
+        this.state = 0; //0 = Stationary, 1 = Playing, 2 = Paused, 3 = Movie
         this.board = null; //The board
         this.boardList = []; //A list of boards used to undo plays
         this.moveList = []; //A list of moves to playback a game movie
@@ -60,7 +60,38 @@ class Zurero
         function(data)
         {
             game.parseMessageToJs(data.target.response, move);
+
+            if(game.isBotsTurn())
+            {
+                game.state = 2;
+                game.updateGame("null");
+            }
+                
         });
+    }
+
+    startMovie()
+    {
+        if(this.turnPlayer == 'b')
+        {
+            this.scene.switchPlayerView();
+            this.turnPlayer = 'w';
+        }
+
+        let game = this;
+
+        this.cleanBoard();
+        this.board = this.boardList[0];
+        this.addPiecesToNodesFromBoard();
+        this.state = 3;
+
+        for(let i = 0; i < this.moveList.length; i++)
+        {    
+            this.executeMove(this.moveList[i]);
+            this.switchPlayers();
+            this.scene.switchPlayerView();   
+        }
+            
     }
 
     /**
@@ -516,11 +547,7 @@ class Zurero
 
                 this.parseBoardToJs(board);
                 this.switchPlayers();
-                this.scene.switchPlayerView();
-
-                if(this.isBotsTurn())
-                    this.updateGame("null");
-                
+                this.scene.switchPlayerView();                
                 break;
 
             case "invalid_play":
