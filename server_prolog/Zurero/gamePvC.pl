@@ -50,7 +50,7 @@ play_turn_PvC_ajax(Game, Player, Move, PlayedGame, ActualMove) :-
     nth0(1, Game, Difficulty),  
     valid_moves(Board, Player, ListOfMoves), % Gets valid moves
     (
-        Player = 'b', sleep(5), choose_move(Board, Player, ActualMove, Difficulty, ListOfMoves); % Gets bot input
+        Player = 'b', sleep(2), choose_move(Board, Player, ActualMove, Difficulty, ListOfMoves); % Gets bot input
         Player = 'w', ActualMove = Move % Gets player input
     ),
     !, move(ActualMove, ListOfMoves, Board, NewBoard), 

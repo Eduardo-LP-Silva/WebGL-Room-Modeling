@@ -47,7 +47,7 @@ play_turn_CvC_ajax(Game, Player, PlayedGame, ActualMove) :-
     nth0(0, Game, Board),
     nth0(1, Game, Difficulty),  
     valid_moves(Board, Player, ListOfMoves), % Gets valid moves
-    sleep(5),
+    sleep(2),
     choose_move(Board, Player, ActualMove, Difficulty, ListOfMoves),
     move(ActualMove, ListOfMoves, Board, NewBoard), 
     update_game_table(Game, NewBoard, PlayedGame).

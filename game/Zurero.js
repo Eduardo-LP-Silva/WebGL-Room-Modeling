@@ -15,8 +15,9 @@ class Zurero
         this.board = null; //The board
         this.boardList = []; //A list of boards used to undo plays
         this.moveList = []; //A list of moves to playback a game movie
+        this.moveIndex = 0; //The current movie move index
         this.mode = -1; //The game mode, 1 = HvH, 2 = HvE, 3 = EvE
-        this.botDifficulty = 1; //The bot difficulty, 1 = Easy, 2 = Hard
+        this.botDifficulty = 2; //The bot difficulty, 1 = Easy, 2 = Hard
         this.playerOneScore = 0; //Player 1's score
         this.playerTwoScore = 0; //Player 2's score
         this.turnPlayer = 'w'; //The current player
@@ -70,28 +71,38 @@ class Zurero
         });
     }
 
+    /**
+     * Starts the playback of the movie.
+     */
     startMovie()
     {
         if(this.turnPlayer == 'b')
         {
+            this.switchPlayers();
             this.scene.switchPlayerView();
-            this.turnPlayer = 'w';
         }
 
-        let game = this;
-
+        this.state = 3;
+        this.moveIndex = 0;
         this.cleanBoard();
         this.board = this.boardList[0];
         this.addPiecesToNodesFromBoard();
-        this.state = 3;
+        this.playNextMove();
+    }
 
-        for(let i = 0; i < this.moveList.length; i++)
-        {    
-            this.executeMove(this.moveList[i]);
-            this.switchPlayers();
-            this.scene.switchPlayerView();   
-        }
-            
+    /**
+     * Plays the next move in the move list when in movie mode.
+     */
+    playNextMove()
+    {
+        if(this.moveIndex == this.moveList.length - 1)
+            this.state = 0;
+
+        this.executeMove(this.moveList[this.moveIndex]);
+        this.board = this.boardList[this.moveIndex + 1];
+        this.moveIndex++;
+        this.switchPlayers();
+        this.scene.switchPlayerView(); 
     }
 
     /**
@@ -590,7 +601,6 @@ class Zurero
 
                 this.parseBoardToJs(board);
                 this.scene.switchPlayerView();
-                this.turnPlayer = "w";
                 this.state = 0;
                 break;
 

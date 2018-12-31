@@ -189,10 +189,11 @@ class XMLscene extends CGFscene
                 this.interface.setActiveCamera(playerView[1]);
                 this.updateProjectionMatrix();
 
-                console.log(this.graph.game.state);
-
                 if(this.graph.game.state == 2)
                     this.graph.game.resetTurnClock();
+
+                if(this.graph.game.state == 3)
+                    this.graph.game.playNextMove();
                 
             }
 
