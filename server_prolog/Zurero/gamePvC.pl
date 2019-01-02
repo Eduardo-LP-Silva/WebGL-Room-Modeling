@@ -19,11 +19,11 @@ update_game_PvC(Game, Player) :-
     ).
 
 update_game_PvC_ajax(Game, Player, Move, Message) :-
-    play_turn_PvC_ajax(Game, Player, Move, PlayedGame),
+    play_turn_PvC_ajax(Game, Player, Move, PlayedGame, ActualMove),
     nth0(0, PlayedGame, Board),
     (
-        game_over(Board, Winner, 0), victory(Winner), Message = ['game_over', Winner, PlayedGame]; 
-        (switch_players(Player, NextPlayer), Message = [next_move, NextPlayer, Board])   
+        game_over(Board, Winner, 0), victory(Winner), Message = ['game_over', Winner, ActualMove, PlayedGame]; 
+        Message = [next_move, ActualMove, Board]   
     ).
 
 update_game_PvC_ajax(Game, Player, _, Message) :-
@@ -45,15 +45,15 @@ play_turn_PvC(Game, Player, PlayedGame) :-
     ),
     update_game_table(Game, NewBoard, PlayedGame). % Updates the game board with the new one
 
-play_turn_PvC_ajax(Game, Player, Move, PlayedGame) :-
+play_turn_PvC_ajax(Game, Player, Move, PlayedGame, ActualMove) :-
     nth0(0, Game, Board),
     nth0(1, Game, Difficulty),  
     valid_moves(Board, Player, ListOfMoves), % Gets valid moves
     (
-        Player = 'b', sleep(5), choose_move(Board, Player, ActualMove, Difficulty, ListOfMoves); % Gets bot input
+        Player = 'b', sleep(2), choose_move(Board, Player, ActualMove, Difficulty, ListOfMoves); % Gets bot input
         Player = 'w', ActualMove = Move % Gets player input
     ),
-    move(ActualMove, ListOfMoves, Board, NewBoard), 
+    !, move(ActualMove, ListOfMoves, Board, NewBoard), 
     update_game_table(Game, NewBoard, PlayedGame).
 
 % Writes the bot input 

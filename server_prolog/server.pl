@@ -120,8 +120,8 @@ parse_input(update_game(Mode, Game, Player, Move), Message) :-
 parse_input(start_game(Difficulty), Board) :-
 	start_game_ajax(Difficulty, [Board, _]).
 
-parse_input(test(Board), _) :-
-	print_board(Board).
+parse_input(sleep(N), sleeped) :-
+	sleep(N).
 
 parse_input(handshake, handshake).
 parse_input(test(C,N), Res) :- 

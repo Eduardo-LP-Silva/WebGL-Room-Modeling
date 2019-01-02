@@ -21,7 +21,7 @@ update_game_PvP_ajax(Game, Player, Move, Message) :-
     nth0(0, PlayedGame, Board),
     (
         game_over(Board, Winner, 0), victory(Winner), Message = ['game_over', Winner, PlayedGame]; 
-        (switch_players(Player, NextPlayer), Message = [next_move, NextPlayer, Board])   
+        Message = [next_move, Board]   
     ).
     
 update_game_PvP_ajax(Game, Player, _, Message) :-
@@ -42,7 +42,7 @@ play_turn_PvP(Game, Player, PlayedGame) :-
 play_turn_PvP_ajax(Game, Player, Move, PlayedGame) :-
     nth0(0, Game, Board),
     valid_moves(Board, Player, ListOfMoves), % Gets valid moves
-    move(Move, ListOfMoves, Board, NewBoard), 
+    !, move(Move, ListOfMoves, Board, NewBoard), 
     update_game_table(Game, NewBoard, PlayedGame).
 
 % Gets player input about which type of play he wants (Line or Column)

@@ -17,11 +17,11 @@ update_game_CvC(Game, Player) :-
     ).
 
 update_game_CvC_ajax(Game, Player, Message) :-
-    play_turn_CvC_ajax(Game, Player, PlayedGame),
+    play_turn_CvC_ajax(Game, Player, PlayedGame, ActualMove),
     nth0(0, PlayedGame, Board),
     (
-        game_over(Board, Winner, 0), victory(Winner), Message = ['game_over', Winner, PlayedGame]; 
-        (switch_players(Player, NextPlayer), Message = [next_move, NextPlayer, Board])   
+        game_over(Board, Winner, 0), victory(Winner), Message = ['game_over', Winner, ActualMove, PlayedGame]; 
+        Message = [next_move, ActualMove, Board]  
     ).
 
 update_game_CvC_ajax(Game, Player, _, Message) :-
@@ -38,16 +38,16 @@ play_turn_CvC(Game, Player, PlayedGame) :-
         Player = 'w', choose_move(Board, Player, Move, Difficulty, ListOfMoves) % Gets the other bot input
     ),
     (
-        move(Move, ListOfMoves, Board, NewBoard); % Verifies if player move is acceptable
+        !, move(Move, ListOfMoves, Board, NewBoard); % Verifies if player move is acceptable
         !, play_turn_CvC(Game, Player, PlayedGame) % If not repeats the process.
     ),
     update_game_table(Game, NewBoard, PlayedGame). % Updates the game board with the new one
 
-play_turn_CvC_ajax(Game, Player, PlayedGame) :-
+play_turn_CvC_ajax(Game, Player, PlayedGame, ActualMove) :-
     nth0(0, Game, Board),
     nth0(1, Game, Difficulty),  
     valid_moves(Board, Player, ListOfMoves), % Gets valid moves
-    sleep(5),
-    choose_move(Board, Player, Move, Difficulty, ListOfMoves),
-    move(Move, ListOfMoves, Board, NewBoard), 
+    sleep(2),
+    choose_move(Board, Player, ActualMove, Difficulty, ListOfMoves),
+    move(ActualMove, ListOfMoves, Board, NewBoard), 
     update_game_table(Game, NewBoard, PlayedGame).

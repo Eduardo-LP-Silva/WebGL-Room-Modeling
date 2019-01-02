@@ -36,7 +36,7 @@ switch_players(CurrentPlayer, NextPlayer) :-
 
 % Validates and executes a play.
 move(Move, MoveList, Board, NewBoard) :-
-    member(Move, MoveList), !, 
+    member(Move, MoveList), 
     Move = [Symbol | RestOfPlay],
     check_play_type(Symbol, RestOfPlay, Board, NewBoard).
 

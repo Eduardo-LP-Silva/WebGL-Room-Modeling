@@ -191,6 +191,9 @@ class XMLscene extends CGFscene
 
                 if(this.graph.game.state == 2)
                     this.graph.game.resetTurnClock();
+
+                if(this.graph.game.state == 3)
+                    this.graph.game.playNextMove();
                 
             }
 
@@ -471,11 +474,11 @@ class XMLscene extends CGFscene
                 break;
 
             case 82:
-                //It's rewind time
+                this.graph.game.undoPlay();
                 break;
 
             case 83:
-                //Movie
+                this.graph.game.startMovie();
                 break;
 
             default:
@@ -491,10 +494,12 @@ class XMLscene extends CGFscene
     {
         let game = this.graph.game;
 
-        if(game.state == 1 && (game.mode == 1 || (game.mode == 2 && game.turnPlayer == 'w')))
+        if(game.state == 1 && game.isPlayersTurn())
         {
             let pickId = pickResult[1];
             let symbol, direction, move;
+
+            game.state = 2;
 
             if(pickId <= 38)
             {
