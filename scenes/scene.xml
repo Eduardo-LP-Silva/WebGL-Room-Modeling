@@ -1,6 +1,6 @@
 <yas>
   <!-- Scene -->
-  <scene root="scene" axis_length="2" />
+  <scene root="room" axis_length="2" />
 
   <!-- Views -->
   <views default="Default Perspective">
@@ -27,6 +27,11 @@
     <perspective id="Jacuzzi View" near="0.01" far="500" angle="70">
       <from x="20" y="10" z="10" />
       <to x="20" y="0" z="20" />
+    </perspective>
+
+    <perspective id="TV View" near="0.01" far="500" angle="70">
+      <from x="0" y="5" z="17" />
+      <to x="0" y="5" z="30" />
     </perspective>
 
     <ortho id="Ortho View" near="0.01" far="500" left="-10" right="10" top="10" bottom="-5">
@@ -58,8 +63,36 @@
     </omni>
 
     <omni id="Board Overhead Light" enabled="1">
-      <location x="0" y="10" z="20" w="1" />
+      <location x="0" y="7.9" z="20" w="1" />
       <ambient r="0.5" g="0.5" b="0.5" a="1.0" />
+      <diffuse r="1" g="0.7" b="0.2" a="1.0" />
+      <specular r="1" g="0.7" b="0.2" a="1.0" />
+    </omni>
+
+    <omni id="TV Light 1" enabled="1">
+      <location x="-3" y="7" z="24.5" w="1" />
+      <ambient r="0.5" g="0.5" b="0.5" a="1.0" />
+      <diffuse r="1" g="0.7" b="0.2" a="1.0" />
+      <specular r="1" g="0.7" b="0.2" a="1.0" />
+    </omni>
+
+    <omni id="TV Light 2" enabled="1">
+      <location x="3" y="7" z="24.5" w="1" />
+      <ambient r="0.3" g="0.3" b="0.3" a="1.0" />
+      <diffuse r="1" g="0.7" b="0.2" a="1.0" />
+      <specular r="1" g="0.7" b="0.2" a="1.0" />
+    </omni>
+
+    <omni id="TV Light 3" enabled="1">
+      <location x="3" y="3" z="24.5" w="1" />
+      <ambient r="0.3" g="0.3" b="0.3" a="1.0" />
+      <diffuse r="1" g="0.7" b="0.2" a="1.0" />
+      <specular r="1" g="0.7" b="0.2" a="1.0" />
+    </omni>
+
+    <omni id="TV Light 4" enabled="1">
+      <location x="-3" y="3" z="24.5" w="1" />
+      <ambient r="0.3" g="0.3" b="0.3" a="1.0" />
       <diffuse r="1" g="0.7" b="0.2" a="1.0" />
       <specular r="1" g="0.7" b="0.2" a="1.0" />
     </omni>
@@ -67,7 +100,7 @@
     <spot id="Spot Light" enabled="1" angle="20" exponent="1">
       <location x="-24.8" y="8" z="0" w="1" />
       <target x="-15" y="0" z="0"/>
-      <ambient r="0.5" g="0.5" b="0.5" a="1.0" />
+      <ambient r="0.3" g="0.3" b="0.3" a="1.0" />
       <diffuse r="0.2" g="0.2" b="0.2" a="1.0" />
       <specular r="1.0" g="1.0" b="1.0" a="1.0" />
     </spot>
@@ -122,6 +155,7 @@
     <texture id="9_purple" file="scenes/images/9_purple.png" />
     <texture id="ring_floor" file="scenes/images/gray.jpg" />
     <texture id="blue_rope" file="scenes/images/blue_rope.jpg" />
+    <texture id="white_fabric" file="scenes/images/white_fabric.jpg" />
   </textures>
 
   <!-- Materials -->
@@ -228,10 +262,6 @@
       <piece color="white"/>
     </primitive>
 
-    <primitive id="piece_sphere">
-      <sphere radius="0.1" slices="30" stacks="30"/>
-    </primitive>
-
     <primitive id="rectangle">
       <rectangle x1="-0.5" y1="-0.5" x2="0.5" y2="0.5" />
     </primitive>
@@ -311,12 +341,24 @@
       <cylinder base="0.1" top="0.1" height="17" slices="40" stacks="40" />
     </primitive>
 
+    <primitive id="ceiling_lamp_cylinder">
+      <cylinder base="0.5" top="1" height="1" slices="50" stacks="50"/>
+    </primitive>
+
+    <primitive id="ceiling_lamp_pole">
+      <cylinder base="0.1" top="0.1" height="1" slices="50" stacks="50"/>
+    </primitive>
+
+    <primitive id="ceiling_lamp_lid">
+      <cylinder base="1" top="1" height="0.01" slices="50" stacks="50"/>
+    </primitive>
+
   </primitives>
 
   <!-- Components -->
   <components>
 
-    <component id="scene_3">
+    <component id="boxing_ring">
       <transformation>
       </transformation>
 
@@ -328,14 +370,12 @@
 
       <children>
         <componentref id="board_table"/>
-        <componentref id="white_game_piece"/>
-        <componentref id="black_game_piece"/>
         <componentref id="TV"/>
         <componentref id="ring"/>
       </children>
     </component>
 
-    <component id="scene_2">
+    <component id="mountain">
       <transformation>
       </transformation>
 
@@ -347,13 +387,47 @@
 
       <children>
         <componentref id="board_table"/>
-        <componentref id="white_game_piece"/>
-        <componentref id="black_game_piece"/>
         <componentref id="TV"/>
+        <componentref id="resize_mountain"/>
+        <componentref id="resize_water"/>
       </children>
     </component>
 
-    <component id="scene">
+    <component id="resize_mountain">
+      <transformation>
+        <scale x="20" y="20" z="20" />
+        <translate x="0" y="-2.85" z="0"/>
+      </transformation>
+
+      <materials>
+        <material id="default_mat" />
+      </materials>
+
+      <texture id="none" length_s="1" length_t="1" />
+
+      <children>
+        <componentref id="mountains"/>
+      </children>
+    </component>
+
+    <component id="resize_water">
+      <transformation>
+        <scale x="35" y="20" z="35" />
+        <translate x="0" y="-2.75" z="0"/>
+      </transformation>
+
+      <materials>
+        <material id="default_mat" />
+      </materials>
+
+      <texture id="none" length_s="1" length_t="1" />
+
+      <children>
+        <componentref id="mockup_water"/>
+      </children>
+    </component>
+
+    <component id="room">
       <transformation>
       </transformation>
 
@@ -376,6 +450,7 @@
         <componentref id="fork_2"/>
         <componentref id="candle"/>
         <componentref id="scene_floor"/>
+        <componentref id="scene_ceiling"/>
         <componentref id="bed"/>
         <componentref id="wall_1"/>
         <componentref id="wall_2"/>
@@ -387,9 +462,62 @@
         <componentref id="jacuzzi"/>
         <componentref id="air_balloon"/>
         <componentref id="board_table"/>
-        <componentref id="white_game_piece"/>
-        <componentref id="black_game_piece"/>
         <componentref id="TV"/>
+        <componentref id="ceiling_lamp"/>
+      </children>
+    </component>
+
+
+    <component id="ceiling_lamp">
+      <transformation>
+        <translate x="0" y="9" z="20" />
+        <rotate axis="x" angle="90"/>
+
+
+      </transformation>
+
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+
+      <texture id="white_fabric" length_s="1" length_t="1"/>
+
+      <children>
+        <primitiveref id="ceiling_lamp_cylinder"/>
+        <componentref id="ceiling_lamp_pole_translate"/>
+        <componentref id="ceiling_lamp_pole_lid"/>
+      </children>
+    </component>
+
+    <component id="ceiling_lamp_pole_translate">
+      <transformation>
+        <translate x="0" y="0" z="-1" />
+      </transformation>
+
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+
+      <texture id="dark_wood" length_s="1" length_t="1"/>
+
+      <children>
+        <primitiveref id="ceiling_lamp_pole"/>
+      </children>
+    </component>
+
+    <component id="ceiling_lamp_pole_lid">
+      <transformation>
+        <translate x="0" y="0" z="1" />
+      </transformation>
+
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+
+      <texture id="wax" length_s="1" length_t="1"/>
+
+      <children>
+        <primitiveref id="ceiling_lamp_lid"/>
       </children>
     </component>
 
@@ -706,43 +834,6 @@
         <primitiveref id="rope"/>
       </children>
     </component>
-
-    <!-- Pieces -->
-    <component id="white_game_piece">
-      <transformation>
-        <scale x="1" y="0.5" z="1" />
-        <translate x="0" y="5.2" z="0" />
-      </transformation>
-
-      <materials>
-        <material id="matte_mat" />
-      </materials>
-
-      <texture id="white_tile" length_s="1" length_t="1"/>
-
-      <children>
-        <primitiveref id="piece_sphere"/>
-      </children>
-    </component>
-
-    <component id="black_game_piece">
-      <transformation>
-        <scale x="1" y="0.5" z="1" />
-        <translate x="0.5" y="5.2" z="0" />
-
-      </transformation>
-
-      <materials>
-        <material id="matte_mat" />
-      </materials>
-
-      <texture id="black_tile" length_s="1" length_t="1"/>
-
-      <children>
-        <primitiveref id="piece_sphere"/>
-      </children>
-    </component>
-
     <!-- Game TV -->
     <component id="TV">
       <transformation>
@@ -1619,6 +1710,23 @@
       </children>
     </component>
 
+    <component id="scene_ceiling">
+      <transformation>
+        <translate x="0" y="10" z="0"/>
+        <rotate axis="x" angle="180"/>
+      </transformation>
+
+      <materials>
+        <material id="default_mat" />
+      </materials>
+
+      <texture id="none" length_s="1" length_t="1" />
+
+      <children>
+        <componentref id="ceiling"/>
+      </children>
+    </component>
+
     <component id="floor">
       <transformation>
         <translate x="0" y="-0.02" z="0"/>
@@ -1630,6 +1738,23 @@
       </materials>
 
       <texture id="carpet" length_s="10" length_t="10" />
+
+      <children>
+        <primitiveref id="floor_quad"/>
+      </children>
+    </component>
+
+    <component id="ceiling">
+      <transformation>
+        <translate x="0" y="-0.02" z="0"/>
+        <rotate axis="x" angle="-90"/>
+      </transformation>
+
+      <materials>
+        <material id="matte_mat"/>
+      </materials>
+
+      <texture id="zebra" length_s="5" length_t="5" />
 
       <children>
         <primitiveref id="floor_quad"/>
