@@ -240,19 +240,19 @@
 
     <linear id="ballon_linear" span="10">
       <controlpoint xx="0" yy="0" zz="0"/>
-      <controlpoint xx="0" yy="8" zz="18"/>
+      <controlpoint xx="0" yy="5" zz="18"/>
       <controlpoint xx="13" yy="0" zz="0"/>
       <controlpoint xx="0" yy="-2" zz="-28"/>
     </linear>
 
     <linear id="ballon_land" span="5">
-      <controlpoint xx="-7" yy="6" zz="-10"/>
-      <controlpoint xx="0" yy="-6" zz="10"/>
+      <controlpoint xx="-7" yy="3" zz="-10"/>
+      <controlpoint xx="0" yy="-3" zz="10"/>
     </linear>
 
     <circular id="chair_rotate" span="5" center="-2 0 0" radius="4" startang="0" rotang="270"/>
     <circular id="lamp_rotate" span="2" center="3 0 -20" radius="10" startang="0" rotang="120"/>
-    <circular id="ballon_rotate" span="5" center="3 6 -10" radius="10" startang="0" rotang="180"/>
+    <circular id="ballon_rotate" span="5" center="3 3 -10" radius="10" startang="0" rotang="180"/>
   </animations>
 
   <!-- Primitives -->
@@ -413,7 +413,7 @@
 
     <component id="resize_water">
       <transformation>
-        <scale x="35" y="20" z="35" />
+        <scale x="75" y="40" z="75" />
         <translate x="0" y="-2.75" z="0"/>
       </transformation>
 
