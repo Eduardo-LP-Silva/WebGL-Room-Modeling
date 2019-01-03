@@ -1754,7 +1754,7 @@
         <material id="matte_mat"/>
       </materials>
 
-      <texture id="zebra" length_s="5" length_t="5" />
+      <texture id="zebra" length_s="1" length_t="1" />
 
       <children>
         <primitiveref id="floor_quad"/>
