@@ -133,6 +133,7 @@
     <texture id="black_tile" file="scenes/images/black_tile.jpg" />
     <texture id="board_texture" file="scenes/images/board.png" />
     <texture id="tv" file="scenes/images/tv.png" />
+    <texture id="tv_back" file="scenes/images/tv_back.jpg" />
     <texture id="0_yellow" file="scenes/images/0_yellow.png" />
     <texture id="1_yellow" file="scenes/images/1_yellow.png" />
     <texture id="2_yellow" file="scenes/images/2_yellow.png" />
@@ -849,6 +850,7 @@
 
       <children>
         <componentref id="TV_screen"/>
+        <componentref id="tv_back"/>
         <componentref id="timer_units"/>
         <componentref id="timer_dozens"/>
         <componentref id="player1_dozens"/>
@@ -868,6 +870,23 @@
       </materials>
 
       <texture id="tv" length_s="1" length_t="1"/>
+
+      <children>
+        <primitiveref id="rectangle"/>
+      </children>
+    </component>
+
+    <component id="tv_back">
+      <transformation>
+        <scale x="6" y="4" z="1"/>
+        <rotate  axis="y" angle="180"/>
+      </transformation>
+
+      <materials>
+        <material id="shiny_mat" />
+      </materials>
+
+      <texture id="tv_back" length_s="1" length_t="1"/>
 
       <children>
         <primitiveref id="rectangle"/>
