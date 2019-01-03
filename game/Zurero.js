@@ -62,7 +62,7 @@ class Zurero
         {
             game.parseMessageToJs(data.target.response, move);
 
-            if(game.isBotsTurn())
+            if(game.isBotsTurn() && game.state != 0)
             {
                 game.state = 2;
                 game.updateGame("null");
@@ -76,6 +76,9 @@ class Zurero
      */
     startMovie()
     {
+        if(this.moveList.length <= 0)
+            return;
+            
         if(this.turnPlayer == 'b')
         {
             this.switchPlayers();
@@ -328,7 +331,7 @@ class Zurero
 
         controlPoints.push(secondControlPoint);
         this.createPiece(color, starterCoords, endCoords, new LinearAnimation(controlPoints, 2));
-        this.showPiecesInNodes();   
+        //this.showPiecesInNodes();   
     }
 
     /**
@@ -381,15 +384,15 @@ class Zurero
         this.sendPrologRequest("start_game(" + this.botDifficulty + ")", function(data)
         {
             game.cleanBoard();
-            this.moveList = [];
-            this.boardList = [];
+            game.moveList = [];
+            game.boardList = [];
             game.mode = mode;
             game.state = 1;
 
             if(game.turnPlayer == 'b')
             {
+                game.switchPlayers();
                 game.scene.switchPlayerView();
-                game.turnPlayer = 'w';
             }
 
             game.createPiece("black", [10, 5, 10], [10, 0, 10], new LinearAnimation([[0, 0, 0], [0, -5 * 0.232, 0]], 1));
@@ -567,6 +570,7 @@ class Zurero
                 break;
             
             case "game_over":
+                this.state = 0;
                 commaIndex++;
                 let winner = message[commaIndex];
                 this.increaseWinnerScore(winner);
@@ -600,8 +604,9 @@ class Zurero
                 }
 
                 this.parseBoardToJs(board);
+                this.switchPlayers();
                 this.scene.switchPlayerView();
-                this.state = 0;
+                
                 break;
 
             default:
