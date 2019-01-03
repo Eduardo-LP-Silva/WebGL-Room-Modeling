@@ -36,10 +36,7 @@ class XMLscene extends CGFscene
         this.gl.depthFunc(this.gl.LEQUAL);
         this.axis = new CGFaxis(this);
         this.objects=[];
-        //for(var i = 0; i < 4, i++){
-        //  var plane = new CGFplane(this);
-		    //  this.objects.push(plane);
-        //}
+        
         for(var i = 0; i < 84; i++)
         {
           var test = new CGFplane(this);

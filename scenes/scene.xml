@@ -354,28 +354,25 @@
       <cylinder base="1" top="1" height="0.01" slices="50" stacks="50"/>
     </primitive>
 
+    <primitive id="nymph">
+      <object file="scenes/models/nymph.obj"/>
+    </primitive>
+
+    <primitive id="rock">
+      <object file="scenes/models/rocks.obj"/>
+    </primitive>
+
+    <primitive id="liberty_statue">
+      <object file="scenes/models/LibertStatue.obj"/>
+    </primitive>
+
   </primitives>
 
   <!-- Components -->
+
+  <!-- MOUNTAIN SIDE -->
+
   <components>
-
-    <component id="boxing_ring">
-      <transformation>
-      </transformation>
-
-      <materials>
-        <material id="default_mat" />
-      </materials>
-
-      <texture id="none" length_s="1" length_t="1" />
-
-      <children>
-        <componentref id="board_table"/>
-        <componentref id="TV"/>
-        <componentref id="ring"/>
-      </children>
-    </component>
-
     <component id="mountain">
       <transformation>
       </transformation>
@@ -391,6 +388,9 @@
         <componentref id="TV"/>
         <componentref id="resize_mountain"/>
         <componentref id="resize_water"/>
+        <componentref id="sea_rocks_1"/>
+        <componentref id="sea_rocks_2"/>
+        <componentref id="statue_of_liberty"/>
       </children>
     </component>
 
@@ -413,7 +413,7 @@
 
     <component id="resize_water">
       <transformation>
-        <scale x="75" y="40" z="75" />
+        <scale x="100" y="40" z="100" />
         <translate x="0" y="-2.75" z="0"/>
       </transformation>
 
@@ -428,7 +428,61 @@
       </children>
     </component>
 
-    <component id="room">
+    <component id="statue_of_liberty">
+      <transformation>
+        <translate x="0" y="-10" z="80"/>
+        <scale x="30" y="30" z="30"/>
+        <rotate axis="y" angle="180"/>
+      </transformation>
+
+      <materials>
+        <material id="default_mat" />
+      </materials>
+
+      <texture id="none"/>
+
+      <children>
+        <primitiveref id="liberty_statue"/>
+      </children>
+    </component>
+
+    <component id="sea_rocks_2">
+      <transformation>
+        <translate x="-40" y="-7" z="80"/>
+        <scale x="0.05" y="0.05" z="0.05"/>
+      </transformation>
+
+      <materials>
+        <material id="default_mat" />
+      </materials>
+
+      <texture id="none"/>
+
+      <children>
+        <primitiveref id="rock"/>
+      </children>
+    </component>
+
+    <component id="sea_rocks_1">
+      <transformation>
+        <translate x="40" y="-7" z="80"/>
+        <scale x="0.05" y="0.05" z="0.05"/>
+      </transformation>
+
+      <materials>
+        <material id="default_mat" />
+      </materials>
+
+      <texture id="none"/>
+
+      <children>
+        <primitiveref id="rock"/>
+      </children>
+    </component>
+
+    <!-- BOXING RING -->
+
+    <component id="boxing_ring">
       <transformation>
       </transformation>
 
@@ -439,95 +493,15 @@
       <texture id="none" length_s="1" length_t="1" />
 
       <children>
-        <componentref id="table" />
-        <componentref id="chair_1" />
-        <componentref id="chair_2" />
-        <componentref id="plate_1"/>
-        <componentref id="plate_2"/>
-        <componentref id="plate_3"/>
-        <componentref id="knife_1"/>
-        <componentref id="knife_2"/>
-        <componentref id="fork_1"/>
-        <componentref id="fork_2"/>
-        <componentref id="candle"/>
-        <componentref id="scene_floor"/>
-        <componentref id="scene_ceiling"/>
-        <componentref id="bed"/>
-        <componentref id="wall_1"/>
-        <componentref id="wall_2"/>
-        <componentref id="wall_3"/>
-        <componentref id="wall_4"/>
-        <componentref id="mirror_ball_lamp"/>
-        <componentref id="cake"/>
-        <componentref id="mockup_table"/>
-        <componentref id="jacuzzi"/>
-        <componentref id="air_balloon"/>
         <componentref id="board_table"/>
         <componentref id="TV"/>
-        <componentref id="ceiling_lamp"/>
+        <componentref id="ring"/>
       </children>
     </component>
-
-
-    <component id="ceiling_lamp">
-      <transformation>
-        <translate x="0" y="9" z="20" />
-        <rotate axis="x" angle="90"/>
-
-
-      </transformation>
-
-      <materials>
-        <material id="matte_mat" />
-      </materials>
-
-      <texture id="white_fabric" length_s="1" length_t="1"/>
-
-      <children>
-        <primitiveref id="ceiling_lamp_cylinder"/>
-        <componentref id="ceiling_lamp_pole_translate"/>
-        <componentref id="ceiling_lamp_pole_lid"/>
-      </children>
-    </component>
-
-    <component id="ceiling_lamp_pole_translate">
-      <transformation>
-        <translate x="0" y="0" z="-1" />
-      </transformation>
-
-      <materials>
-        <material id="matte_mat" />
-      </materials>
-
-      <texture id="dark_wood" length_s="1" length_t="1"/>
-
-      <children>
-        <primitiveref id="ceiling_lamp_pole"/>
-      </children>
-    </component>
-
-    <component id="ceiling_lamp_pole_lid">
-      <transformation>
-        <translate x="0" y="0" z="1" />
-      </transformation>
-
-      <materials>
-        <material id="matte_mat" />
-      </materials>
-
-      <texture id="wax" length_s="1" length_t="1"/>
-
-      <children>
-        <primitiveref id="ceiling_lamp_lid"/>
-      </children>
-    </component>
-
-    <!-- RING -->
 
     <component id="ring">
       <transformation>
         <translate x="0" y="0" z="20" />
-
       </transformation>
 
       <materials>
@@ -546,9 +520,7 @@
 
     <component id="ring_floor">
       <transformation>
-
         <scale x="18" y="1" z="18" />
-
       </transformation>
 
       <materials>
@@ -609,9 +581,6 @@
         <componentref id="set_of_ropes_4"/>
       </children>
     </component>
-
-
-
 
     <component id="set_of_ropes_1">
       <transformation>
@@ -835,6 +804,144 @@
         <primitiveref id="rope"/>
       </children>
     </component>
+
+    <!-- ROOM -->
+
+    <component id="room">
+      <transformation>
+      </transformation>
+
+      <materials>
+        <material id="default_mat" />
+      </materials>
+
+      <texture id="none" length_s="1" length_t="1" />
+
+      <children>
+        <componentref id="table" />
+        <componentref id="chair_1" />
+        <componentref id="chair_2" />
+        <componentref id="plate_1"/>
+        <componentref id="plate_2"/>
+        <componentref id="plate_3"/>
+        <componentref id="knife_1"/>
+        <componentref id="knife_2"/>
+        <componentref id="fork_1"/>
+        <componentref id="fork_2"/>
+        <componentref id="candle"/>
+        <componentref id="scene_floor"/>
+        <componentref id="scene_ceiling"/>
+        <componentref id="bed"/>
+        <componentref id="wall_1"/>
+        <componentref id="wall_2"/>
+        <componentref id="wall_3"/>
+        <componentref id="wall_4"/>
+        <componentref id="mirror_ball_lamp"/>
+        <componentref id="cake"/>
+        <componentref id="mockup_table"/>
+        <componentref id="jacuzzi"/>
+        <componentref id="air_balloon"/>
+        <componentref id="board_table"/>
+        <componentref id="TV"/>
+        <componentref id="ceiling_lamp"/>
+        <primitiveref id="statue_1"/>
+        <primitiveref id="statue_2"/>
+      </children>
+    </component>
+
+
+    <component id="ceiling_lamp">
+      <transformation>
+        <translate x="0" y="9" z="20" />
+        <rotate axis="x" angle="90"/>
+
+
+      </transformation>
+
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+
+      <texture id="white_fabric" length_s="1" length_t="1"/>
+
+      <children>
+        <primitiveref id="ceiling_lamp_cylinder"/>
+        <componentref id="ceiling_lamp_pole_translate"/>
+        <componentref id="ceiling_lamp_pole_lid"/>
+      </children>
+    </component>
+
+    <component id="ceiling_lamp_pole_translate">
+      <transformation>
+        <translate x="0" y="0" z="-1" />
+      </transformation>
+
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+
+      <texture id="dark_wood" length_s="1" length_t="1"/>
+
+      <children>
+        <primitiveref id="ceiling_lamp_pole"/>
+      </children>
+    </component>
+
+    <component id="ceiling_lamp_pole_lid">
+      <transformation>
+        <translate x="0" y="0" z="1" />
+      </transformation>
+
+      <materials>
+        <material id="matte_mat" />
+      </materials>
+
+      <texture id="wax" length_s="1" length_t="1"/>
+
+      <children>
+        <primitiveref id="ceiling_lamp_lid"/>
+      </children>
+    </component>
+
+    <!-- Statues -->
+    <component id="statue_1">
+      <transformation>
+        <translate x="5" y="0" z="23"/>
+        <scale x="0.03" y="0.03" z="0.03"/>
+        <rotate axis="y" angle="180"/>
+        <rotate axis="x" angle="-90"/>
+      </transformation>
+
+      <materials>
+        <material id="default_mat" />
+      </materials>
+
+      <texture id="none"/>
+
+      <children>
+        <primitiveref id="nymph"/>
+      </children>
+    </component>
+
+    <component id="statue_2">
+      <transformation>
+        <translate x="-5" y="0" z="23"/>
+        <scale x="0.03" y="0.03" z="0.03"/>
+        <rotate axis="y" angle="-180"/>
+        <rotate axis="x" angle="-90"/>
+      </transformation>
+
+      <materials>
+        <material id="default_mat" />
+      </materials>
+
+      <texture id="none"/>
+
+      <children>
+        <primitiveref id="nymph"/>
+      </children>
+    </component>
+
     <!-- Game TV -->
     <component id="TV">
       <transformation>

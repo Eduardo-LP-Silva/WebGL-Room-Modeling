@@ -1171,6 +1171,10 @@ class MySceneGraph
                 build = new GamePiece(this.scene, this.reader.getString(children[0], "color"));
                 break;
 
+            case "object":
+                    build = new CGFOBJModel(this.scene, this.reader.getString(children[0], "file"));
+                    break;
+
             default:
                 return "Tag not identified on primitive " + primitiveID + ": " + primitiveBlock.children[0].nodeName;
         }
