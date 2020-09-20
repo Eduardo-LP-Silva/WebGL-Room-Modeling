@@ -1,6 +1,6 @@
 # Room Modeling
 
-A 3D model of a dining/living/bed room created in the Graphical Applications Laboratory class.
+A 3D model of a dining/living/bed room created using WebGL.
 
 ![image](https://user-images.githubusercontent.com/32617691/52222065-8c928d00-289a-11e9-8afc-4719ab65f268.png)
 
